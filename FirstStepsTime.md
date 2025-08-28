@@ -45,7 +45,7 @@ git submodule update --recursive
 Note that this has been incorporated into my first "cleaning" do file. 
 
 ## Run Main.do from covid_data_rsa
-My analyses have been conducted across multiple do files. These files include an exploratory do file and regression analyses. 
+My analyses have been conducted across multiple do files. 
 
 
 ## Add this local folder to Github
@@ -61,7 +61,7 @@ git commit -m "first commit"
 
 ### Return to VS Code and in the terminal type: 
 git remote add origin <<link>> 
-(e.g., git remote add origin https://github.com/RinelleC/SAbeliefs.git )
+(i.e., git remote add origin https://github.com/RinelleC/TimePreferences.git )
 
 git push -u origin master
 
