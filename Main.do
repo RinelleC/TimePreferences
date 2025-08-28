@@ -1,9 +1,8 @@
 *****************************************************************************
-* This is the main do file to analyse Beliefs in South Africa               *
+* This is the main do file to analyse Time Preferences in South Africa      *
 * It relies on two MLfunctions files and three do-files.                    *
-* The main folder for this analysis is titled "beliefs".					*
 *                                                                           *
-* Date first generated:             19 July 2023                            *
+* Date first generated:             28 August 2025                          *
 * Created by:                       Rinelle Chetty                          * 
 *****************************************************************************
 
@@ -14,30 +13,28 @@ clear all
 *******************************************************************************
 
 * Move to main folder - remove this before sharing 
-global mainfolder "/Volumes/RinellePhD/SAbeliefs" 
+global mainfolder "/Volumes/RinellePhD/TimePreferences" 
 cd $mainfolder
 
 * Set paths of subfolders
 global dofiles 		"dofiles"
 global logfiles 	"logfiles"
+global estimations	"estimates"
 global stata_tables	"stata_tables"
 global graphs 		"stata_graphs" 
 global figures 		"figures"
 	global simple 		"$figures/simplefigures"
 	global figuresSA 	"$figures/figuresSA"
-	global figuresUSA 	"$figures/figuresUSA"
 
 * Start log file 
 cap log close 
-//log using "$logfiles/Log_Beliefs_Analysis.txt", replace 
-log using "$logfiles/Log_Beliefs_Analysis.smcl", replace 
+//log using "$logfiles/Log_Time_Analysis.txt", replace 	// text file
+log using "$logfiles/Log_Time_Analysis.smcl", replace 	// stata file 
 
 * Drop any labels in memory
 capture: label drop _all
 
 * Specify version
-capture: version 15.1
-capture: version 16.1
 capture: version 17
 set more off
 
@@ -46,30 +43,25 @@ about
 capture: timer clear
 timer on 1
 
+
 *******************************************************************************
 *** 	2. Set up globals for running separate do files or analyses later 	***
 *******************************************************************************
 
 * Global for installing packages
-global doPACKAGES	"n"
+global doPACKAGES		"n"
 
 * Global calculate covid deaths scale 
-global doDEATHS		"y"
+global doDEATHS			"y"
 
 * Globals for cleaning & relabelling data
-global doCLEAN		"y"
+global doCLEAN			"y"
 
 * Globals for estimations
-global doBELIEFS	"y"
-
-* Globals for moments (mean & standard deviations) estimations 
-global doMOMENTS	"y"
+global doTIMEANALYSIS	"y"
 
 * Global for figures
-global doFIGURES	"n" 
-
-* Global for appendix
-//global doAPPENDIX	"n"
+global doFIGURES		"n" 
 
 
 *******************************************************************************
@@ -112,11 +104,11 @@ if "$doPACKAGES" == "y"		{
 *** 	5. Run code to define programs 										***
 *******************************************************************************
 
-* Get the ML functions for Risk and Beliefs installed
+* Get the ML functions for Risk and Time installed
 qui {
 	do MLfunctionsRisk
-	do MLfunctionsBeliefs
-}
+	do MLfunctionsTime
+	}
 
 
 *******************************************************************************
@@ -129,13 +121,13 @@ unzipfile ExpData.zip, replace
 * Open original data file 
 use ExpData.dta                                                                             
 
-* Keep only Risk and Belief task observations 
-drop if task == 2 | task == 3 // drop time and CA data
+* Keep only Risk and Time task observations 
+drop if task == 3 | task == 4 // drop CA data and beliefs data 
 
 * Calculate covid deaths 
 if "$doDEATHS" == "y" {
 	do "dofiles/CovidDeathsScale"
-}
+	}
 
 
 *******************************************************************************
@@ -143,31 +135,25 @@ if "$doDEATHS" == "y" {
 *******************************************************************************
 
 * Clean and prepare the data 
-do "dofiles/CleanBeliefs"
+do "dofiles/CleanTime"
 
 * Save final dataset 
-save "beliefsdata.dta", replace 
+save "timedata.dta", replace 
 
 * Delete un-zipped version of original data 
 erase "ExpData.dta"
 
-//use "beliefsdata.dta" 
-
 
 *******************************************************************************
-*** 	8. Conduct Beliefs Analyses and Generate Figures 					***
+*** 	8. Conduct Time Analyses and Generate Figures 						***
 *******************************************************************************
 
-if "$doBELIEFS" == "y" {
-	do "dofiles/AnalysisBeliefs"
-}
-
-if "$doMOMENTS" == "y" {
-	do "dofiles/MomentsBeliefs"
+if "$doTIMEANALYSIS" == "y" {
+	do "dofiles/AnalysisTime"
 }
 
 if "$doFIGURES" == "y" {
-	do "dofiles/FiguresBeliefs" 
+	do "dofiles/FiguresTime" 
 }
 
 
