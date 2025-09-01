@@ -28,8 +28,7 @@ global figures 		"figures"
 
 * Start log file 
 cap log close 
-//log using "$logfiles/Log_Time_Analysis.txt", replace 	// text file
-log using "$logfiles/Log_Time_Analysis.smcl", replace 	// stata file 
+log using "$logfiles/Log_Time_Analysis.txt", replace 	// text file
 
 * Drop any labels in memory
 capture: label drop _all
@@ -121,9 +120,6 @@ unzipfile ExpData.zip, replace
 * Open original data file 
 use ExpData.dta                                                                             
 
-* Keep only Risk and Time task observations 
-drop if task == 3 | task == 4 // drop CA data and beliefs data 
-
 * Calculate covid deaths 
 if "$doDEATHS" == "y" {
 	do "dofiles/CovidDeathsScale"
@@ -131,7 +127,7 @@ if "$doDEATHS" == "y" {
 
 
 *******************************************************************************
-*** 	7. Clean and relabel the data, drop USA data 				 		***
+*** 	7. Clean and relabel the data, drop and rename variables 	 		***
 *******************************************************************************
 
 * Clean and prepare the data 
