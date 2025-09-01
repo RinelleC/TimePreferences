@@ -23,7 +23,6 @@ global stata_tables	"stata_tables"
 global graphs 		"stata_graphs" 
 global figures 		"figures"
 	global simple 		"$figures/simplefigures"
-	global figuresSA 	"$figures/figuresSA"
 
 * Start log file 
 cap log close 
@@ -110,7 +109,7 @@ qui {
 
 
 *******************************************************************************
-*** 	6. Open the data, drop other tasks, calculate deaths scale 			***
+*** 	6. Open the data, calculate deaths, clean and relabel, drop vars	***
 *******************************************************************************
 
 * Unzip the data file
@@ -124,11 +123,6 @@ if "$doDEATHS" == "y" {
 	do "dofiles/CovidDeathsScale"
 	}
 
-
-*******************************************************************************
-*** 	7. Clean and relabel the data, drop and rename variables 	 		***
-*******************************************************************************
-
 * Clean and prepare the data 
 do "dofiles/CleanTime"
 
@@ -140,7 +134,7 @@ erase "ExpData.dta"
 
 
 *******************************************************************************
-*** 	8. Conduct Time Analyses and Generate Figures 						***
+*** 	7. Conduct Time Analyses and Generate Figures 						***
 *******************************************************************************
 
 if "$doTIMEANALYSIS" == "y" {
