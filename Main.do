@@ -27,7 +27,7 @@ global figures 		"figures"
 
 * Start log file 
 cap log close 
-log using "$Log_Time_Analysis.txt", replace 	// text file
+log using "Log_Time_Analysis.txt", replace 	// text file
 
 * Drop any labels in memory
 capture: label drop _all
