@@ -18,7 +18,6 @@ cd $mainfolder
 
 * Set paths of subfolders
 global dofiles 		"dofiles"
-global logfiles 	"logfiles"
 global estimations	"estimates"
 global stata_tables	"stata_tables"
 global graphs 		"stata_graphs" 
@@ -28,7 +27,7 @@ global figures 		"figures"
 
 * Start log file 
 cap log close 
-log using "$logfiles/Log_Time_Analysis.txt", replace 	// text file
+log using "$Log_Time_Analysis.txt", replace 	// text file
 
 * Drop any labels in memory
 capture: label drop _all
