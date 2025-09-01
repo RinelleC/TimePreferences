@@ -82,7 +82,7 @@ else if "$doCRRA" == "crra" {
 	estimates store m1, title(Model - Prelec2Exp)
 
     ***********************************************************
-    ***     CRRA utility, quasi-hyperbolic discounting     ***
+    ***     CRRA utility, quasi-hyperbolic discounting      ***
     ***********************************************************
     
 	set more off
@@ -141,6 +141,233 @@ forvalues w = 1/6 {
 *** 	8.2 -- Heterogenous Preferences               						***
 *******************************************************************************
 
+set more off
+global cdf "invlogit"
+global maxtech "nr"
+global riskvars "prob1L prob2L prob3L prob1R prob2R prob3R prize1L prize2L prize3L prize1R prize2R prize3R uMax uMin"
+global timevars "risk ssamount ssdelay llamount lldelay"
+global hetero ""
+
+global error "context"
+global weigh "prelec2"
+
+
+if "$doCRRA" == "power" {
+
+	global ufunc "power"
+    
+    ***********************************************************
+    ***       Power utility, exponential discounting        ***
+    ***********************************************************
+
+	set more off
+	global discount "exp"
+
+	forvalues l = 1/2 {
+		
+        if `l' == 1 { 
+			estimates restore m1
+			global demog "i.wave c.age i.male c.anxiety_total c.depression_total i.race i.race#i.wave i.male#i.wave"
+			ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
+			(phi: $demog) (eta: $demog) (delta: ) ///
+			(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+			cluster(id) technique($maxtech) continue
+		}
+		
+        if `l' == 2 { 
+			estimates restore m1hetero
+			ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
+			(phi: $demog) (eta: $demog) (delta: $demog) ///
+			(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+			cluster(id) technique($maxtech) continue
+		}
+		
+        ml maximize, difficult
+		estimates store m1hetero
+
+	}
+
+
+    ***********************************************************
+    ***     Power utility, quasi-hyperbolic discounting     ***
+    ***********************************************************
+
+	set more off
+	global discount "qh"
+
+	ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
+	(phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
+	(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+	cluster(subjectid) technique($maxtech) continue
+	ml maximize, difficult
+
+	estimates store m3hetero, title(Model 3 - Prelec2QHyp)
+
+	test [beta]_cons == 1
+	
+}
+
+else if "$doCRRA" == "crra" {
+
+	global ufunc "crra"
+
+    ***********************************************************
+    ***        CRRA utility, exponential discounting        ***
+    ***********************************************************
+
+	set more off
+	global discount "exp"
+
+	forvalues l = 1/2 {
+	
+    	if `l' == 1 { 
+			estimates restore m1
+			global demog "c.age i.male##i.wave i.usa_race_combined##i.wave c.anxiety_total c.depression_total i.covid_media_exag"
+			ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
+			(phi: $demog) (eta: $demog) (delta: ) ///
+			(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+			cluster(subjectid) technique($maxtech) continue
+		}
+
+		if `l' == 2 { 
+			estimates restore m1hetero
+			ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
+			(phi: $demog) (eta: $demog) (delta: $demog) ///
+			(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+			cluster(subjectid) technique($maxtech) continue
+		}
+
+		ml maximize, difficult tolerance(1e-04) ltolerance(0) nrtolerance(1e-05)
+		estimates store m1hetero
+	
+    }
+
+	estimates save "$estimations/time_het_exp", replace
+
+
+    ***********************************************************
+    ***     CRRA utility, quasi-hyperbolic discounting      ***
+    ***********************************************************
+    
+	set more off
+	global discount "qh"
+	estimates restore m3
+
+	global demog "c.age i.male##i.wave i.usa_race_combined##i.wave c.anxiety_total c.depression_total i.covid_media_exag"
+
+	ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
+	(phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
+	(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+	cluster(subjectid) technique($maxtech) continue
+	ml maximize, difficult		
+
+	estimates store m3hetero, title(Model 3 - Prelec2QHyp)
+
+	estimates save "$estimations/time_het_qh", replace
+
+	test [beta]_cons == 1
+}
+		
+
+* Now estimate with simpler demographics and covid_scale
+* Specify stripped down demographics
+global demogX "c.age i.male i.race c.anxiety_total c.depression_total covid_scale_deaths covid_scale_deaths_sq"
+
+estimates restore m3
+ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demogX) (phi: $demogX) (eta: $demogX) (beta: $demogX) (delta: $demogX) (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, cluster(subjectid) technique($maxtech) continue
+ml maximize, difficult
+
+estimates save "$estimations/time_covid_scale_deaths", replace
+test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
+
+
+*******************************************************************************
+*** 	8.3 -- Margins for Exponential & Quasi-Hyperbolic Discounting       ***
+*******************************************************************************
+
+    ****************************************
+    ***     Exponential Discounting      ***
+    ****************************************
+    
+    * Delta Equation
+    estimates restore m1hetero
+    margins, over(wave) predict(equation(delta)) post
+
+    * Test for wave effects
+    foreach i in 1 2 3 4 5 6 {
+        foreach j in `ferest()' {
+        test `i'.wave == `j'.wave
+            if r(p) < 0.1 {
+                di as error r(p) 
+            }
+        }
+    }
+
+    * Estimate present value of $50 margins for comparisons across waves and downstream figures
+    estimates restore m1hetero
+    margins, over(wave) expression(50*(1/((1+predict(equation(delta)))^(14/365)))) ///
+    saving($estimations/pvExp50margin, replace) post
+
+    * Test for wave effects
+    foreach i in 1 2 3 4 5 6 {
+        foreach j in `ferest()' {
+        test `i'.wave == `j'.wave
+            if r(p) < 0.1 {
+                di as error r(p) 
+            }
+        }
+    }
+
+
+    ****************************************
+    ***   Quasi-Hyperbolic Discounting   ***
+    ****************************************
+    
+    * Beta Equation 
+	estimates restore m3hetero
+	margins, over(wave) predict(equation(beta)) post
+
+    * Test for wave effects
+    foreach i in 1 2 3 4 5 6 {
+        foreach j in `ferest()' {
+        test `i'.wave == `j'.wave
+            if r(p) < 0.1 {
+                di as error r(p) 
+            }
+        }
+    }
+
+    * Delta Equation
+    estimates restore m3hetero
+    margins, over(wave) predict(equation(delta)) post
+
+    * Test for wave effects
+    foreach i in 1 2 3 4 5 6 {
+        foreach j in `ferest()' {
+        test `i'.wave == `j'.wave
+            if r(p) < 0.1 {
+                di as error r(p) 
+            }
+        }
+    }
+
+    * Estimate present value of $50 margins for comparisons across waves and downstream figures
+    estimates restore m3hetero
+
+    local beta "(predict(equation(beta)))"
+
+    margins, over(wave) expression(50*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) ///
+    saving($estimations/pvQH50margin, replace) post
+
+    * Test for wave effects
+    foreach i in 1 2 3 4 5 6 {
+        foreach j in `ferest()' {
+        test `i'.wave == `j'.wave
+            if r(p) < 0.1 {
+                di as error r(p) 
+            }
+        }
+    }
 
 
 
