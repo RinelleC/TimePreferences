@@ -48,9 +48,6 @@ timer on 1
 * Global for installing packages
 global doPACKAGES		"n"
 
-* Global calculate covid deaths scale 
-global doDEATHS			"y"
-
 * Globals for cleaning & relabelling data
 global doCLEAN			"y"
 
@@ -119,9 +116,7 @@ unzipfile ExpData.zip, replace
 use ExpData.dta                                                                             
 
 * Calculate covid deaths 
-if "$doDEATHS" == "y" {
-	do "dofiles/CovidDeathsScale"
-	}
+do "dofiles/CovidDeathsScale"
 
 * Clean and prepare the data 
 do "dofiles/CleanTime"
