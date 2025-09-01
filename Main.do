@@ -115,9 +115,6 @@ unzipfile ExpData.zip, replace
 * Open original data file 
 use ExpData.dta                                                                             
 
-* Calculate covid deaths 
-do "dofiles/CovidDeathsScale"
-
 * Clean and prepare the data 
 do "dofiles/CleanTime"
 
