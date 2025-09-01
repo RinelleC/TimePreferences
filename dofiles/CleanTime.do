@@ -1,6 +1,6 @@
 *****************************************************************************
 * This is the Cleaning do file to clean and generate relevant variables     *
-* for the Time Preference Task in South Africa. This fits in section 7      *
+* for the Time Preference Task in South Africa. This fits in section 6      *
 * of the Main do file titled Main.do.                                       *
 *                                                                           *
 * Date first generated:             28 August 2025                          *
@@ -9,7 +9,7 @@
 
 
 *******************************************************************************
-***		7.1 -- Drop USA & unnecessary variables, drop other tasks           ***
+***		6.1 -- Drop USA & unnecessary variables, drop other tasks           ***
 *******************************************************************************
 
 * Keep only Risk and Time task observations 
@@ -51,11 +51,11 @@ drop usa
 
 
 *******************************************************************************
-***		7.2 -- Generate, relabel, and rename variables 		                ***
+***		6.2 -- Generate, relabel, and rename variables 		                ***
 *******************************************************************************
 
 rename rsa_race race 
-
+rename subjectid id 
 
 *******************************************************************************
 
