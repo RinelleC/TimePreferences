@@ -1,0 +1,368 @@
+{smcl}
+{txt}{sf}{ul off}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}/Volumes/RinellePhD/TimePreferences/Log_Time_Analysis.txt
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res} 1 Sep 2025, 11:12:53
+{txt}
+{com}. 
+. * Drop any labels in memory
+. capture: label drop _all
+{txt}
+{com}. 
+. * Specify version
+. capture: version 17
+{txt}
+{com}. set more off
+{txt}
+{com}. 
+. * Document what ran
+. about
+
+{txt}Stata/MP 17.0 for Mac (Apple Silicon)
+Revision 21 May 2024
+Copyright 1985-2021 StataCorp LLC
+
+Total physical memory: {res}8.01 GB
+
+{txt}Stata license: {res}Single-user 4-core  perpetual
+{txt}Serial number: {res}501706317819
+  {txt}Licensed to: {res}Rinelle Chetty
+               University of Cape Town
+{txt}
+{com}. capture: timer clear
+{txt}
+{com}. timer on 1
+{txt}
+{com}. 
+. 
+. *******************************************************************************
+. ***     2. Set up globals for running separate do files or analyses later       ***
+. *******************************************************************************
+. 
+. * Global for installing packages
+. global doPACKAGES               "n"
+{txt}
+{com}. 
+. * Global calculate covid deaths scale 
+. global doDEATHS                 "y"
+{txt}
+{com}. 
+. * Globals for cleaning & relabelling data
+. global doCLEAN                  "y"
+{txt}
+{com}. 
+. * Globals for estimations
+. global doTIMEANALYSIS   "y"
+{txt}
+{com}. 
+. * Global for figures
+. global doFIGURES                "n" 
+{txt}
+{com}. 
+. 
+. *******************************************************************************
+. ***     3. Configurations, fonts and graph colours                                                      ***
+. *******************************************************************************
+. 
+. * Allow big machines to process (needs capture so SE can run; comment out if you want to avoid too many processors)
+. capture: set processors 2
+{txt}
+{com}. capture: set processors 4
+{txt}
+{com}. capture: set processors 32
+{txt}
+{com}. 
+. * Need to ensure replications across computers with multiple processors
+. set seed 1234
+{txt}
+{com}. 
+. * Graphics font
+. graph set window fontface "Garamond"
+{txt}
+{com}. 
+. * Graphics scheme
+. set scheme s1color
+{txt}
+{com}. 
+. 
+. *******************************************************************************
+. ***     4. Install all packages                                                                                         ***
+. *******************************************************************************
+. 
+. if "$doPACKAGES" == "y"         {c -(}
+.         cap net install asdoc.pkg
+.         cap net install st0085_2.pkg
+.         cap net install gr0092.pkg
+.         cap net install grc1leg2, from("http://digital.cgdev.org/doc/stata/MO/Misc")
+.         cap ssc install dataex
+.         cap net install gr0075.pkg
+.         cap ssc install estout
+.         cap ssc install outreg2
+.         cap net install tabout.pkg
+. {c )-}
+{txt}
+{com}. 
+. 
+. *******************************************************************************
+. ***     5. Run code to define programs                                                                          ***
+. *******************************************************************************
+. 
+. * Get the ML functions for Risk and Time installed
+. qui {c -(}
+{txt}
+{com}. 
+. 
+. *******************************************************************************
+. ***     6. Open the data, drop other tasks, calculate deaths scale                      ***
+. *******************************************************************************
+. 
+. * Unzip the data file
+. unzipfile ExpData.zip, replace
+{res}{text:    inflating: ExpData.dta}
+
+{text:successfully unzipped ExpData.zip to current directory}
+{text:total processed:  1}
+{text:        skipped:  0}
+{text:      extracted:  1}
+{txt}
+{com}. 
+. * Open original data file 
+. use ExpData.dta                                                                             
+{txt}
+{com}. 
+. * Calculate covid deaths 
+. if "$doDEATHS" == "y" {c -(}
+.         do "dofiles/CovidDeathsScale"
+{txt}
+{com}. * Generate Covid cumulative deaths scale for complementary analyses 
+. capture: generate covid_scale_deaths = 0
+{txt}
+{com}. replace covid_scale_deaths = 106031 if wave == 1
+{txt}(48,552 real changes made)
+
+{com}. replace covid_scale_deaths = 127787 if wave == 2
+{txt}(53,074 real changes made)
+
+{com}. replace covid_scale_deaths = 154093 if wave == 3
+{txt}(51,646 real changes made)
+
+{com}. replace covid_scale_deaths = 183684 if wave == 4
+{txt}(47,162 real changes made)
+
+{com}. replace covid_scale_deaths = 206257 if wave == 5
+{txt}(38,147 real changes made)
+
+{com}. replace covid_scale_deaths = 229214 if wave == 6
+{txt}(32,213 real changes made)
+
+{com}. 
+. * Normalize
+. summ covid_scale_deaths
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+covid_scal~s {c |}{res}    270,794    161758.1    41208.79     106031     229214
+{txt}
+{com}. local max = r(max)
+{txt}
+{com}. replace covid_scale_deaths = covid_scale_deaths/`max'
+{txt}(270,794 real changes made)
+
+{com}. summ covid_scale_deaths
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+covid_scal~s {c |}{res}    270,794    .7057079     .179783   .4625852          1
+{txt}
+{com}. 
+. * Add the squared term
+. capture: generate covid_scale_deaths_sq = covid_scale_deaths * covid_scale_deaths
+{txt}
+{com}. 
+{txt}end of do-file
+{com}.         {c )-}
+{txt}
+{com}. 
+. 
+. *******************************************************************************
+. ***     7. Clean and relabel the data, drop and rename variables                        ***
+. *******************************************************************************
+. 
+. * Clean and prepare the data 
+. do "dofiles/CleanTime"
+{txt}
+{com}. *****************************************************************************
+. * This is the Cleaning do file to clean and generate relevant variables     *
+. * for the Time Preference Task in South Africa. This fits in section 7      *
+. * of the Main do file titled Main.do.                                       *
+. *                                                                           *
+. * Date first generated:             28 August 2025                          *
+. * Created by:                       Rinelle Chetty                          * 
+. *****************************************************************************
+. 
+. 
+. *******************************************************************************
+. ***             7.1 -- Drop USA & unnecessary variables, drop other tasks           ***
+. *******************************************************************************
+. 
+. * Keep only Risk and Time task observations 
+. drop if task == 3 | task == 4 // drop CA data and beliefs data 
+{txt}(53,814 observations deleted)
+
+{com}. 
+. * Drop some USA- and SA-specific variables and other unnecessary variables
+. drop expenditure_daily expenditure_daily_cat
+{txt}
+{com}. drop prize4* prob4*
+{txt}
+{com}. drop residence_type rsa_home_type 
+{txt}
+{com}. drop rsa_householdN
+{txt}
+{com}. drop rsa_covid_info_* rsa_covid_information rsa_information_confidence 
+{txt}
+{com}. drop rsa_experts_confidence rsa_covid_one_month rsa_covid_peak_capetown rsa_covid_situation_one_month 
+{txt}
+{com}. drop covid_*     
+{txt}
+{com}. drop hyp_risk BIS2Attimpulse BIS2Motorimpulse 
+{txt}
+{com}. drop householdN-BIS2Nonplanimpulse
+{txt}
+{com}. drop race location_completed relationship financial_situation 
+{txt}
+{com}. drop rsa_covid_personal_* 
+{txt}
+{com}. 
+. * Drop depression and anxiety line items 
+. drop depression_pleasure depression_hopeless depression_sleep depression_energy 
+{txt}
+{com}. drop depression_appetite depression_failure depression_concentration 
+{txt}
+{com}. drop depression_movement depression_dead
+{txt}
+{com}. drop anxiety_nervous anxiety_worry_uncontrolled anxiety_worry_multiple 
+{txt}
+{com}. drop anxiety_relax anxiety_restless anxiety_irritable anxiety_afraid
+{txt}
+{com}. 
+. * Keep the variables for SA analyses
+. /*keep subjectid wave taskorder showupfee period age male rsa_* ///
+> work anxiety_total anxiety_difficulty depression_total depression_difficulty ///
+> task qid choice risk time prize* prob* uMax uMin */ 
+. 
+. * Drop beliefs and CA task variables 
+. drop beliefs gid alpha beta text bin* token_allocation_bin* 
+{txt}
+{com}. drop ca cashorterdays calongerdays camoneysmaller camoneylarger calsprob
+{txt}
+{com}. 
+. * Drop all USA data
+. drop usa_*
+{txt}
+{com}. drop if usa == 1
+{txt}(113,620 observations deleted)
+
+{com}. drop usa
+{txt}
+{com}. 
+. 
+. *******************************************************************************
+. ***             7.2 -- Generate, relabel, and rename variables                          ***
+. *******************************************************************************
+. 
+. rename rsa_race race 
+{res}{txt}
+{com}. 
+. 
+. *******************************************************************************
+. 
+. di as error "End of Cleaning do-file" 
+{res}{err}End of Cleaning do-file
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. 
+. * Save final dataset 
+. save "timedata.dta", replace 
+{txt}{p 0 4 2}
+file {bf}
+timedata.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. * Delete un-zipped version of original data 
+. erase "ExpData.dta"
+{txt}
+{com}. 
+. 
+. *******************************************************************************
+. ***     8. Conduct Time Analyses and Generate Figures                                           ***
+. *******************************************************************************
+. 
+. if "$doTIMEANALYSIS" == "y" {c -(}
+.         do "dofiles/AnalysisTime"
+{txt}
+{com}. *****************************************************************************
+. * This is the Analysis do file to analyse Time Preferences in South Africa  *
+. * and fits within section 8 of the Main do-file.                            * 
+. *                                                                           *
+. * Date first generated:             28 August 2025                          *
+. * Created by:                       Rinelle Chetty                          * 
+. *****************************************************************************
+. 
+. 
+. ************************        RDU Discounting        ************************
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. *******************************************************************************
+. 
+. di as error "End of Analysis do-file" 
+{res}{err}End of Analysis do-file
+{txt}
+{com}. 
+{txt}end of do-file
+{com}. {c )-}
+{txt}
+{com}. 
+. if "$doFIGURES" == "y" {c -(}
+.         do "dofiles/FiguresTime" 
+. {c )-}
+{txt}
+{com}. 
+. 
+. *********************************************************************************
+. 
+. * End Timer
+. timer off 1
+{txt}
+{com}. timer list
+{res}   1:      6.11 /        1 =       6.1060
+{txt}
+{com}. local secs = r(t1)
+{txt}
+{com}. local mins = `secs'/60
+{txt}
+{com}. local hrs = `mins'/60
+{txt}
+{com}. local secs_ = string(`secs', "%10.0f")
+{txt}
+{com}. local mins_ = string(`mins', "%4.1f")
+{txt}
+{com}. local hrs_ = string(`hrs', "%4.2f")
+{txt}
+{com}. di "Calculations took `secs_' seconds, `mins_' minutes, or `hrs_' hours."
+{res}Calculations took 6 seconds, 0.1 minutes, or 0.00 hours.
+{txt}
+{com}. 
+. cap log close 
+{smcl}
+{com}{sf}{ul off}
