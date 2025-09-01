@@ -108,26 +108,24 @@ foreach x of numlist 7 14 42 84 {
 
 * Homogeneous preferences across waves to test whether all waves are best characterised by QH
 forvalues w = 1/6 {
-		estimates restore m3
-		di "" ""	
-		di as error "Estimates for Wave #`w'"
-		global discount "qh"
+	estimates restore m3
+	di "" ""	
+	di as error "Estimates for Wave #`w'"
+	global discount "qh"
 		
-        ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
+    ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
         (phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
 	    (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-	    cluster(subjectid) technique($maxtech) continue
-	    ml maximize, difficult
+	    cluster(id) technique($maxtech) continue
+	ml maximize, difficult
 
-		* test for QH
-		di as error "Test for QH in wave #`w'"
-		test [beta]_cons == 1
+	* test for QH
+	di as error "Test for QH in wave #`w'"
+	test [beta]_cons == 1
 }
 
 
 * Export the estimates to .TSV for easy import in Excel
-	cd Output
-	
 	estout * using "$estimations/RDUDiscEstimates.tsv", ///
 	replace starlevels(* 0.10 ** 0.05 *** 0.01) cells( b(star label("Estimate") fmt(3)) se(label("Std Error") par(`"="("' `")""') fmt(3))  ) ///
 	stats(N ll, fmt(%5.0f %10.3f) labels(N "log-likelihood")) nobaselevels ///
