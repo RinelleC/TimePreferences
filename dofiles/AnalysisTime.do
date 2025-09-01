@@ -99,11 +99,11 @@ else if "$doCRRA" == "crra" {
 }
 
 
-* Evaluate QH Discount rate at different horizons, specified in days
-foreach x of numlist 7 14 42 84 {
-	di as error "QH discount rate evaluated at `x' day horizon"
-	nlcom (QHDiscountRate : ([beta]_cons/(1+[delta]_cons)^(`x'/365))^(-1/(`x'/365)) - 1)
-}	
+    * Evaluate QH Discount rate at different horizons, specified in days
+    foreach x of numlist 7 14 42 84 {
+        di as error "QH discount rate evaluated at `x' day horizon"
+        nlcom (QHDiscountRate : ([beta]_cons/(1+[delta]_cons)^(`x'/365))^(-1/(`x'/365)) - 1)
+    }	
 
 
 * Homogeneous preferences across waves to test whether all waves are best characterised by QH
@@ -126,14 +126,14 @@ forvalues w = 1/6 {
 
 
 * Export the estimates to .TSV for easy import in Excel
-	estout * using "$estimations/RDUDiscEstimates.tsv", ///
-	replace starlevels(* 0.10 ** 0.05 *** 0.01) cells( b(star label("Estimate") fmt(3)) se(label("Std Error") par(`"="("' `")""') fmt(3))  ) ///
-	stats(N ll, fmt(%5.0f %10.3f) labels(N "log-likelihood")) nobaselevels ///
-	varlabels(r:_cons "CRRA function parameter (r)" phi:_cons "PWF parameter (phi)" eta:_cons "PWF parameter (eta)" beta:_cons "Discounting parameter (beta)" delta:_cons "Discounting parameter (delta)" noiseRA:_cons "Risk error (mu)" noiseDR:_cons "Time error (nu)") ///
-	prehead("Table" "Discounting Function ML Estimates" @title) ///
-	title("Concave Utility, Homogenous Preferences") ///
-	legend eqlabels(none) mlabels(,titles) /// ///
-	postfoot("Results account for clustering at the individual level" "Standard errors in parentheses")
+estout * using "$estimations/RDUDiscEstimates_Homogenous.tsv", ///
+replace starlevels(* 0.10 ** 0.05 *** 0.01) cells( b(star label("Estimate") fmt(3)) se(label("Std Error") par(`"="("' `")""') fmt(3))  ) ///
+stats(N ll, fmt(%5.0f %10.3f) labels(N "log-likelihood")) nobaselevels ///
+varlabels(r:_cons "CRRA function parameter (r)" phi:_cons "PWF parameter (phi)" eta:_cons "PWF parameter (eta)" beta:_cons "Discounting parameter (beta)" delta:_cons "Discounting parameter (delta)" noiseRA:_cons "Risk error (mu)" noiseDR:_cons "Time error (nu)") ///
+prehead("Table" "Discounting Function ML Estimates" @title) ///
+title("Concave Utility, Homogenous Preferences") ///
+legend eqlabels(none) mlabels(,titles) /// ///
+postfoot("Results account for clustering at the individual level" "Standard errors in parentheses")
 	
 
 
@@ -198,7 +198,7 @@ if "$doCRRA" == "power" {
 	ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
 	(phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
 	(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-	cluster(subjectid) technique($maxtech) continue
+	cluster(id) technique($maxtech) continue
 	ml maximize, difficult
 
 	estimates store m3hetero, title(Model 3 - Prelec2QHyp)
@@ -222,11 +222,11 @@ else if "$doCRRA" == "crra" {
 	
     	if `l' == 1 { 
 			estimates restore m1
-			global demog "c.age i.male##i.wave i.usa_race_combined##i.wave c.anxiety_total c.depression_total i.covid_media_exag"
+			global demog "i.wave c.age i.male c.anxiety_total c.depression_total i.race i.race#i.wave i.male#i.wave"
 			ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
 			(phi: $demog) (eta: $demog) (delta: ) ///
 			(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-			cluster(subjectid) technique($maxtech) continue
+			cluster(id) technique($maxtech) continue
 		}
 
 		if `l' == 2 { 
@@ -234,7 +234,7 @@ else if "$doCRRA" == "crra" {
 			ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
 			(phi: $demog) (eta: $demog) (delta: $demog) ///
 			(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-			cluster(subjectid) technique($maxtech) continue
+			cluster(id) technique($maxtech) continue
 		}
 
 		ml maximize, difficult tolerance(1e-04) ltolerance(0) nrtolerance(1e-05)
@@ -253,12 +253,12 @@ else if "$doCRRA" == "crra" {
 	global discount "qh"
 	estimates restore m3
 
-	global demog "c.age i.male##i.wave i.usa_race_combined##i.wave c.anxiety_total c.depression_total i.covid_media_exag"
+	global demog "i.wave c.age i.male c.anxiety_total c.depression_total i.race i.race#i.wave i.male#i.wave"
 
 	ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
 	(phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
 	(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-	cluster(subjectid) technique($maxtech) continue
+	cluster(id) technique($maxtech) continue
 	ml maximize, difficult		
 
 	estimates store m3hetero, title(Model 3 - Prelec2QHyp)
@@ -271,14 +271,18 @@ else if "$doCRRA" == "crra" {
 
 * Now estimate with simpler demographics and covid_scale
 * Specify stripped down demographics
-global demogX "c.age i.male i.race c.anxiety_total c.depression_total covid_scale_deaths covid_scale_deaths_sq"
+global demogX "i.wave c.age i.male i.race c.anxiety_total c.depression_total covid_scale_deaths covid_scale_deaths_sq"
 
 estimates restore m3
-ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demogX) (phi: $demogX) (eta: $demogX) (beta: $demogX) (delta: $demogX) (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, cluster(subjectid) technique($maxtech) continue
+ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demogX) ///
+    (phi: $demogX) (eta: $demogX) (beta: $demogX) (delta: $demogX) ///
+    (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+    cluster(id) technique($maxtech) continue
 ml maximize, difficult
 
 estimates save "$estimations/time_covid_scale_deaths", replace
 test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
+
 
 
 *******************************************************************************
@@ -370,6 +374,15 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
     }
 
 
+* Export the estimates to .TSV 
+estout m1hetero m3hetero using "$estimations/RDUDiscEstimates_Heterogenous.tsv", ///
+replace starlevels(* 0.10 ** 0.05 *** 0.01) cells( (b(star label("Estimate") fmt(3)) se(label("Std error") fmt(3)) )) ///
+stats(N ll, fmt(%5.0f %10.3f) labels(N "log-likelihood")) nobaselevels ///
+varlabels("$varlabels") ///
+prehead("Table" "Discounting Function ML Estimates" @title) ///
+title("Concave Utility, Heterogenous(?) Preferences") ///
+legend eqlabels("CRRA function parameter (r)" "PWF parameter (phi)" "PWF parameter (eta)" "Discounting parameter (delta)" "Risk error (mu)" "Time error (nu)" "Discounting parameter (beta)") mlabels(,titles) ///
+postfoot("Results account for clustering at the individual level" "Standard errors in parentheses")
 
 
 *******************************************************************************
