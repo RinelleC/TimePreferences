@@ -123,41 +123,6 @@ generate int month = month(date)
 * Retain months we have experiments for and regenerate
 drop if month<5
 
-* Generate the bar legends
-replace s = uniform()*500
-twoway  (bar s date if dec_c_sa == 1, sort fcolor(blue*0.05) lcolor(blue*0.05)) || ///
-        (bar s date if dec_c_sa == 2, sort fcolor(blue*0.15) lcolor(blue*0.15)) || ///
-        (bar s date if dec_c_sa == 3, sort fcolor(blue*0.25) lcolor(blue*0.25)) || ///
-        (bar s date if dec_c_sa == 4, sort fcolor(blue*0.35) lcolor(blue*0.35)) || ///
-        (bar s date if dec_c_sa == 5, sort fcolor(blue*0.45) lcolor(blue*0.45)) || ///
-        (bar s date if dec_c_sa == 6, sort fcolor(blue*0.55) lcolor(blue*0.55)) || ///
-        (bar s date if dec_c_sa == 7, sort fcolor(blue*0.65) lcolor(blue*0.65)) || ///
-        (bar s date if dec_c_sa == 8, sort fcolor(blue*0.75) lcolor(blue*0.75)) || ///
-        (bar s date if dec_c_sa == 9, sort fcolor(blue*0.85) lcolor(blue*0.85)) || ///
-        (bar s date if dec_c_sa == 10, sort fcolor(blue*0.95) lcolor(blue*0.95)), ///
-            legend(off) ytitle("") ///
-            l1title("Dollars", color(white) orientation(horizontal)) ///
-            ylabel(`ylabel', labcolor(white) angle(horizontal) tlcolor(white)) ///
-            xtitle("") xlabel(none, nolabels noticks) fysize(7.5) ///
-            saving(c_bar, replace)
-
-twoway  (bar s date if dec_d_us == 1, sort fcolor(red*0.05) lcolor(red*0.05)) || ///
-        (bar s date if dec_d_us == 2, sort fcolor(red*0.15) lcolor(red*0.15)) || ///
-        (bar s date if dec_d_us == 3, sort fcolor(red*0.25) lcolor(red*0.25)) || ///
-        (bar s date if dec_d_us == 4, sort fcolor(red*0.35) lcolor(red*0.35)) || ///
-        (bar s date if dec_d_us == 5, sort fcolor(red*0.45) lcolor(red*0.45)) || ///
-        (bar s date if dec_d_us == 6, sort fcolor(red*0.55) lcolor(red*0.55)) || ///
-        (bar s date if dec_d_us == 7, sort fcolor(red*0.65) lcolor(red*0.65)) || ///
-        (bar s date if dec_d_us == 8, sort fcolor(red*0.75) lcolor(red*0.75)) || ///
-        (bar s date if dec_d_us == 9, sort fcolor(red*0.85) lcolor(red*0.85)) || ///
-        (bar s date if dec_d_us == 10, sort fcolor(red*0.95) lcolor(red*0.95)), ///
-            legend(off) ytitle("") ///
-            l1title("Dollars", color(white) orientation(horizontal)) ///
-            ylabel(`ylabel', labcolor(white) angle(horizontal) tlcolor(white)) ////
-            xtitle("") xlabel(none, noticks nolabels) fysize(7.5) ///
-            saving(d_bar, replace)
-
-
 * Get the combined margins.dta files into the same format as the infection and death bars above
 use pvExp50margin, clear
 append using pvQH50margin, generate(_by2)
