@@ -46,6 +46,11 @@ if "$doCRRA" == "power" {
 
 	estimates store m1, title(Model - Prelec2Exp)
 
+	esttab m1 using "$stata_tables/ml_model_homogenous.rtf" , replace ///
+		label se b(%15.10g) ///
+        mtitle("Homogenous Preferences A") ///
+        title(Power Utility & Exponential Discounting)
+
     ***********************************************************
     ***     Power utility, quasi-hyperbolic discounting     ***
     ***********************************************************
@@ -59,6 +64,11 @@ if "$doCRRA" == "power" {
 	ml maximize, difficult
 
 	estimates store m3, title(Model 3 - Prelec2QHyp)
+
+	esttab m3 using "$stata_tables/ml_model_homogenous.rtf" , append ///
+		label se b(%15.10g) ///
+        mtitle("Homogenous Preferences B") ///
+        title(Power Utility & Quasi-Hyperbolic Discounting)
 
 	test [beta]_cons == 1
 }
@@ -81,6 +91,11 @@ else if "$doCRRA" == "crra" {
 
 	estimates store m1, title(Model - Prelec2Exp)
 
+	esttab m1 using "$stata_tables/ml_model_homogenous.rtf" , replace ///
+		label se b(%15.10g) ///
+        mtitle("Homogenous Preferences A") ///
+        title(CRRA Utility & Exponential Discounting)
+
     ***********************************************************
     ***     CRRA utility, quasi-hyperbolic discounting      ***
     ***********************************************************
@@ -94,6 +109,11 @@ else if "$doCRRA" == "crra" {
 	ml maximize, difficult
 
 	estimates store m3, title(Model 3 - Prelec2QHyp)
+
+	esttab m3 using "$stata_tables/ml_model_homogenous.rtf" , append ///
+		label se b(%15.10g) ///
+        mtitle("Homogenous Preferences B") ///
+        title(CRRA Utility & Quasi-Hyperbolic Discounting)
 
 	test [beta]_cons == 1
 }
@@ -185,6 +205,11 @@ if "$doCRRA" == "power" {
         ml maximize, difficult
 		estimates store m1hetero
 
+		esttab m1hetero using "$stata_tables/ml_model_heterogenous.rtf" , replace ///
+		label se b(%15.10g) ///
+        mtitle("Heterogenous Preferences A") ///
+        title(Power Utility & Exponential Discounting)
+
 	}
 
 
@@ -202,6 +227,11 @@ if "$doCRRA" == "power" {
 	ml maximize, difficult
 
 	estimates store m3hetero, title(Model 3 - Prelec2QHyp)
+
+	esttab m1hetero using "$stata_tables/ml_model_heterogenous.rtf" , append ///
+		label se b(%15.10g) ///
+        mtitle("Heterogenous Preferences B") ///
+        title(Power Utility & Quasi-Hyperbolic Discounting)
 
 	test [beta]_cons == 1
 	
@@ -238,8 +268,14 @@ else if "$doCRRA" == "crra" {
 		}
 
 		ml maximize, difficult tolerance(1e-04) ltolerance(0) nrtolerance(1e-05)
+		
 		estimates store m1hetero
 	
+		esttab m1hetero using "$stata_tables/ml_model_heterogenous.rtf" , replace ///
+		label se b(%15.10g) ///
+        mtitle("Heterogenous Preferences A") ///
+        title(CRRA Utility & Exponential Discounting)
+
     }
 
 	estimates save "$estimations/time_het_exp", replace
@@ -262,6 +298,11 @@ else if "$doCRRA" == "crra" {
 	ml maximize, difficult		
 
 	estimates store m3hetero, title(Model 3 - Prelec2QHyp)
+	
+	esttab m3hetero using "$stata_tables/ml_model_heterogenous.rtf" , append ///
+		label se b(%15.10g) ///
+        mtitle("Heterogenous Preferences B") ///
+        title(CRRA Utility & Quasi-Hyperbolic Discounting)
 
 	estimates save "$estimations/time_het_qh", replace
 
@@ -279,6 +320,13 @@ ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demogX) ///
     (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
     cluster(id) technique($maxtech) continue
 ml maximize, difficult
+
+estimates store mX 
+
+esttab mX using "$stata_tables/ml_model_coviddeaths.rtf" , replace ///
+		label se b(%15.10g) ///
+        mtitle("Heterogenous Preferences with Covid Deaths") ///
+        title(? Utility & ? Discounting)
 
 estimates save "$estimations/time_covid_scale_deaths", replace
 test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
