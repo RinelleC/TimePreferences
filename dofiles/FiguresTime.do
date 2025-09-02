@@ -18,23 +18,20 @@ cd $mainfolder
 * Open JHU Data and set file paths 
 use "$figures/jhu_data_rsa.dta", clear   
 global figures 		"$mainfolder/figures"
-global simple 		"$figures/simplefigures"
 
 sort date                                               // format: mm/dd/yyyy 
 
 * Daily infections and deaths 
 generate confirmed_sa_daily 	= confirmed_sa[_n] - confirmed_sa[_n-1]	
-generate deaths_sa_daily 	= deaths_sa[_n] - deaths_sa[_n-1]
+generate deaths_sa_daily 	    = deaths_sa[_n] - deaths_sa[_n-1]
 
 * Generate smoothed data 
-lowess confirmed_sa_daily date, bwidth(0.2) generate(confirmed_sa_daily_s) nograph
-lowess deaths_sa_daily date, bwidth(0.2) generate(deaths_sa_daily_s) nograph
+lowess confirmed_sa_daily date, bwidth(0.2) generate(confirmed_sa_daily_s)  nograph
+lowess deaths_sa_daily date,    bwidth(0.2) generate(deaths_sa_daily_s)     nograph
 
 * Create deciles
 xtile dec_c_sa = confirmed_sa_daily_s, nq(10)
-tab dec_c_sa
 xtile dec_d_sa = deaths_sa_daily_s, nq(10)
-tab dec_d_sa, m
 
 * Add labels 
 mylabels 0(3000)12000,  myscale(@) format(%7.0fc) local(confirmed_sa)   // cases 
@@ -64,6 +61,12 @@ di r(max)
 
 * Generate a more dense bar
 expand 1000
+
+generate int day = day(date)
+generate int month = month(date)
+
+* Retain months we have experiments for and regenerate
+drop if month<5
 
 * Generate the bar legends
 generate s = uniform()*12000
@@ -104,7 +107,7 @@ graph export "$figures/bar_red.pdf", replace
 
 * Save data for regenerating the bar
 keep s date dec_c_sa dec_d_sa
-save $figures/legend, replace
+//save $figures/legend, replace
 
 
 *********************************************************************************
@@ -115,19 +118,12 @@ save $figures/legend, replace
 local LL "500"
 
 * Set ylabel scaling for all subsequent graphs
-local ylabel "440(10)500"
+local ylabel "400(10)500"
 
 * Reset
-mylabels 440(10)500, myscale(@) prefix(R) format(%4.2f) local(ylabel)
+mylabels 400(10)500, myscale(@) prefix(R) format(%4.2f) local(ylabel)
 
-* Get time preference estimates linked to JHU data
-use $figures/legend, clear
-generate int day = day(date)
-generate int month = month(date)
-
-* Retain months we have experiments for and regenerate
-drop if month<5
-
+* Move to estimations folder 
 cd $estimations 
 
 * Get the combined margins.dta files into the same format as the infection and death bars above
@@ -146,12 +142,12 @@ order _by2, after(_by1)
 sort _by1
 save pvExpQH50margin, replace
 
+* Set graph colours
+local exp_color "black"
+local qh_color  "dkorange"
+local wide      "thick"
 
 * Now plot the combined margins dataset
-local exp_color "black"
-local qh_color "dkorange"
-local wide "thick"
-
 marginsplot using pvExpQH50margin, l1title("Dollars", orientation(horizontal)) ///
 ytitle("") title("") xlabel("", format(%tdm)) xtitle("") ///
 plot1opts(lwidth(`wide') lcolor(`exp_color') mcolor(`exp_color')) ///
