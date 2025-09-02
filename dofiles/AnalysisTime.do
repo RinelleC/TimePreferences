@@ -397,9 +397,13 @@ su llamount if time == 1
 
 * Mean of LL rewards for the principal of R250 is R307.71
 su llamount if ssamount == 250
+su lldelay if ssamount == 250 
 
 * Mean of LL rewards for the principal of R400 is R479.81
 su llamount if ssamount == 400
+	*---> use R500 as the representative amount for graphs 
+su lldelay  if ssamount == 400 
+tab lldelay if ssamount == 400 
 
 
 *******************************************************************************
