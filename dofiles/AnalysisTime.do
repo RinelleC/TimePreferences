@@ -41,7 +41,7 @@ if "$doCRRA" == "power" {
 	ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
 	(phi: $demog) (eta: $demog) (delta: $demog) ///
 	(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-	cluster(id) technique($maxtech) init(0.595 0.611 0.925 0.818 0.146 4.315, copy)
+	cluster(id) technique($maxtech) init(0.351 0.489 0.8839 1.48568 0.1423 6.268, copy)
 	ml maximize, difficult
 
 	estimates store m1, title(Model - Prelec2Exp)
@@ -60,7 +60,7 @@ if "$doCRRA" == "power" {
 	ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
 	(phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
     (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-	cluster(id) technique($maxtech) init(0.596 0.611 0.925 0.978 0.733 0.146 4.094, copy)
+	cluster(id) technique($maxtech) init(0.351 0.489 0.8839 0.978 1.48568 0.1423 6.268, copy)
 	ml maximize, difficult
 
 	estimates store m3, title(Model 3 - Prelec2QHyp)
@@ -86,7 +86,7 @@ else if "$doCRRA" == "crra" {
 	ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
 	(phi: $demog) (eta: $demog) (delta: $demog) ///
 	(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-	cluster(id) technique($maxtech) init(0.4041356 0.6118054 0.9252319 2.268743 0.0372434 1.836531, copy)
+	cluster(id) technique($maxtech) init(0.351 0.489 0.8839 1.48568 0.1423 6.268, copy)
 	ml maximize, difficult
 
 	estimates store m1, title(Model - Prelec2Exp)
@@ -105,7 +105,7 @@ else if "$doCRRA" == "crra" {
 	ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
 	(phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
 	(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-	cluster(id) technique($maxtech) init(0.4034 0.6116 0.9257 0.9789 2.0822 0.0371 1.7374, copy)
+	cluster(id) technique($maxtech) init(0.351 0.489 0.8839 0.978 1.48568 0.1423 6.268, copy)
 	ml maximize, difficult
 
 	estimates store m3, title(Model 3 - Prelec2QHyp)
@@ -355,9 +355,9 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
         }
     }
 
-    * Estimate present value of $50 margins for comparisons across waves and downstream figures
+    * Estimate present value of R500 margins for comparisons across waves and downstream figures
     estimates restore m1hetero
-    margins, over(wave) expression(50*(1/((1+predict(equation(delta)))^(14/365)))) ///
+    margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^(14/365)))) ///
     saving($estimations/pvExp50margin, replace) post
 
     * Test for wave effects
@@ -403,12 +403,12 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
         }
     }
 
-    * Estimate present value of $50 margins for comparisons across waves and downstream figures
+    * Estimate present value of R500 margins for comparisons across waves and downstream figures
     estimates restore m3hetero
 
     local beta "(predict(equation(beta)))"
 
-    margins, over(wave) expression(50*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) ///
+    margins, over(wave) expression(500*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) ///
     saving($estimations/pvQH50margin, replace) post
 
     * Test for wave effects
@@ -433,6 +433,7 @@ legend eqlabels("CRRA function parameter (r)" "PWF parameter (phi)" "PWF paramet
 postfoot("Results account for clustering at the individual level" "Standard errors in parentheses")
 
 
+
 *******************************************************************************
 *** 	8.4 -- Getting metrics for the graphs						        ***
 *******************************************************************************
@@ -452,6 +453,7 @@ su llamount if ssamount == 400
 	*---> use R500 as the representative amount for graphs 
 su lldelay  if ssamount == 400 
 tab lldelay if ssamount == 400 
+
 
 
 *******************************************************************************
