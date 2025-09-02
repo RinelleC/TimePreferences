@@ -17,8 +17,7 @@ cd $mainfolder
 
 * Open JHU Data and set file paths 
 use "$figures/jhu_data_rsa.dta", clear   
-global figures 		"$mainfolder/figures"
-
+global figures "$mainfolder/figures"
 sort date                                               // format: mm/dd/yyyy 
 
 * Daily infections and deaths 
@@ -41,8 +40,8 @@ mylabels 0(70)280,      myscale(@) format(%2.0fc) local(deaths_sa)      // death
 foreach m in jan feb mar apr may jun jul aug sep oct nov dec {
 	di d(1`m'2020') " " _c
 }
-* the full display is: 21915 21946 21975 22006 22036 22067 22097 22128 22159 22189 22220 22250
-* so just hand-pick the months from february on, not january 2021
+* Full display is: 21915 21946 21975 22006 22036 22067 22097 22128 22159 22189 22220 22250
+* Select the months from February onwards
 local months = "21946 21975 22006 22036 22067 22097 22128 22159 22189 22220 22250"
 
 * Max values of infections and deaths 
@@ -150,18 +149,19 @@ legend(order(3 "Exponential" 4 "Quasi-Hyperbolic") size(medlarge) cols(1) ring(0
 yline(50, lcolor(gs14) lwidth(vthick)) saving("$figures/pv_sa", replace)
 //ylabel(`ylabel', angle(horizontal))
 
-* caption
+* Caption
 local caption ""Point estimates represented by the circles. 95% confidence intervals shown above and below each point estimate." "The solid black line shows time preferences under exponential discounting, and the dashed orange line under Quasi-Hyperbolic discounting." "The daily national COVID-19 infection rate (blue) and death rate(red) in South Africa are indicated in the horizontal bars.""
 
+* Move to figures folder 
 cd ../ 
 cd $figures 
 
-*Combine the graphs
+* Combine the graphs and export 
 gr combine pv_sa.gph c_sa_bar.gph d_sa_bar.gph, cols(1) imargin(zero) xcommon ///
 title("Discounting Behavior", size(vlarge)) ///
 subtitle("Based on the present value of a R500 reward received in the future", ///
-	size(medium) margin(medsmall)) caption(`caption', size(vsmall))  saving(discountingbehaviour, replace)
-
+	size(medium) margin(medsmall)) caption(`caption', size(vsmall)) ///
+    saving(discountingbehaviour, replace)
 graph export "discountingbehaviour.pdf", replace 
 
 
