@@ -386,5 +386,22 @@ postfoot("Results account for clustering at the individual level" "Standard erro
 
 
 *******************************************************************************
+*** 	8.4 -- Getting metrics for the graphs						        ***
+*******************************************************************************
+
+tab ssamount, m 			// R250 and R400 principal amounts 
+tab llamount, m 
+
+* Mean of LL rewards across all time choices is R394.11
+su llamount if time == 1 	
+
+* Mean of LL rewards for the principal of R250 is R307.71
+su llamount if ssamount == 250
+
+* Mean of LL rewards for the principal of R400 is R479.81
+su llamount if ssamount == 400
+
+
+*******************************************************************************
 
 di as error "End of Analysis do-file" 
