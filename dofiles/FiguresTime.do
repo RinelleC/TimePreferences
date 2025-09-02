@@ -37,14 +37,6 @@ xtile dec_d_sa = deaths_sa_daily_s, nq(10)
 mylabels 0(3000)12000,  myscale(@) format(%7.0fc) local(confirmed_sa)   // cases 
 mylabels 0(70)280,      myscale(@) format(%2.0fc) local(deaths_sa)      // deaths
 
-* Identify the six waves 
-local wave1 = td(29-05-2020)
-local wave2 = td(30-06-2020)
-local wave3 = td(31-07-2020)
-local wave4 = td(31-08-2020)
-local wave5 = td(29-09-2020)
-local wave6 = td(29-10-2020)
-
 * See what the dates are to get better xlabel values
 foreach m in jan feb mar apr may jun jul aug sep oct nov dec {
 	di d(1`m'2020') " " _c
@@ -62,6 +54,7 @@ di r(max)
 * Generate a more dense bar
 expand 1000
 
+* Generate day and month variables 
 generate int day = day(date)
 generate int month = month(date)
 
@@ -70,44 +63,43 @@ drop if month<5
 
 * Generate the bar legends
 generate s = uniform()*12000
-twoway (bar s date if dec_c_sa == 1, sort fcolor(blue*0.05) lcolor(blue*0.05)) || ///
-(bar s date if dec_c_sa == 2,   sort fcolor(blue*0.15) lcolor(blue*0.15)) || ///
-(bar s date if dec_c_sa == 3,   sort fcolor(blue*0.25) lcolor(blue*0.25)) || ///
-(bar s date if dec_c_sa == 4,   sort fcolor(blue*0.35) lcolor(blue*0.35)) || ///
-(bar s date if dec_c_sa == 5,   sort fcolor(blue*0.45) lcolor(blue*0.45)) || ///
-(bar s date if dec_c_sa == 6,   sort fcolor(blue*0.55) lcolor(blue*0.55)) || ///
-(bar s date if dec_c_sa == 7,   sort fcolor(blue*0.65) lcolor(blue*0.65)) || ///
-(bar s date if dec_c_sa == 8,   sort fcolor(blue*0.75) lcolor(blue*0.75)) || ///
-(bar s date if dec_c_sa == 9,   sort fcolor(blue*0.85) lcolor(blue*0.85)) || ///
-(bar s date if dec_c_sa == 10,  sort fcolor(blue*0.95) lcolor(blue*0.95)), ///
-legend(off) ytitle("") ///
-plotregion(lcolor(black) lwidth(thin)) ///
-ylabel(`confirmed_sa', labcolor(white) angle(horizontal) tlcolor(white)) ///
-xtitle("") xlabel(none, nolabels noticks) fysize(7.5) ///
-saving($figures/c_sa_bar, replace)
+twoway  (bar s date if dec_c_sa == 1, sort fcolor(blue*0.05) lcolor(blue*0.05)) || ///
+        (bar s date if dec_c_sa == 2,   sort fcolor(blue*0.15) lcolor(blue*0.15)) || ///
+        (bar s date if dec_c_sa == 3,   sort fcolor(blue*0.25) lcolor(blue*0.25)) || ///
+        (bar s date if dec_c_sa == 4,   sort fcolor(blue*0.35) lcolor(blue*0.35)) || ///
+        (bar s date if dec_c_sa == 5,   sort fcolor(blue*0.45) lcolor(blue*0.45)) || ///
+        (bar s date if dec_c_sa == 6,   sort fcolor(blue*0.55) lcolor(blue*0.55)) || ///
+        (bar s date if dec_c_sa == 7,   sort fcolor(blue*0.65) lcolor(blue*0.65)) || ///
+        (bar s date if dec_c_sa == 8,   sort fcolor(blue*0.75) lcolor(blue*0.75)) || ///
+        (bar s date if dec_c_sa == 9,   sort fcolor(blue*0.85) lcolor(blue*0.85)) || ///
+        (bar s date if dec_c_sa == 10,  sort fcolor(blue*0.95) lcolor(blue*0.95)), ///
+            legend(off) ytitle("") ///
+            plotregion(lcolor(black) lwidth(thin)) ///
+            ylabel(`confirmed_sa', labcolor(white) angle(horizontal) tlcolor(white)) ///
+            xtitle("") xlabel(none, nolabels noticks) fysize(7.5) ///
+            saving($figures/c_sa_bar, replace)
 graph export "$figures/bar_blue.pdf", replace
  
 replace s = uniform()*250
-twoway (bar s date if dec_d_sa == 1, sort fcolor(red*0.05) lcolor(red*0.05)) || ///
-(bar s date if dec_d_sa == 2,   sort fcolor(red*0.15) lcolor(red*0.15)) || ///
-(bar s date if dec_d_sa == 3,   sort fcolor(red*0.25) lcolor(red*0.25)) || ///
-(bar s date if dec_d_sa == 4,   sort fcolor(red*0.35) lcolor(red*0.35)) || ///
-(bar s date if dec_d_sa == 5,   sort fcolor(red*0.45) lcolor(red*0.45)) || ///
-(bar s date if dec_d_sa == 6,   sort fcolor(red*0.55) lcolor(red*0.55)) || ///
-(bar s date if dec_d_sa == 7,   sort fcolor(red*0.65) lcolor(red*0.65)) || ///
-(bar s date if dec_d_sa == 8,   sort fcolor(red*0.75) lcolor(red*0.75)) || ///
-(bar s date if dec_d_sa == 9,   sort fcolor(red*0.85) lcolor(red*0.85)) || ///
-(bar s date if dec_d_sa == 10,  sort fcolor(red*0.95) lcolor(red*0.95)), ///
-legend(off) ytitle("")  ///
-plotregion(lcolor(black) lwidth(thin)) ///
-ylabel(`deaths_sa', labcolor(white) angle(horizontal) tlcolor(white)) ///
-xtitle("") xlabel(none, nolabels noticks) fysize(7.5) ///
-saving($figures/d_sa_bar, replace)
+twoway  (bar s date if dec_d_sa == 1, sort fcolor(red*0.05) lcolor(red*0.05)) || ///
+        (bar s date if dec_d_sa == 2,   sort fcolor(red*0.15) lcolor(red*0.15)) || ///
+        (bar s date if dec_d_sa == 3,   sort fcolor(red*0.25) lcolor(red*0.25)) || ///
+        (bar s date if dec_d_sa == 4,   sort fcolor(red*0.35) lcolor(red*0.35)) || ///
+        (bar s date if dec_d_sa == 5,   sort fcolor(red*0.45) lcolor(red*0.45)) || ///
+        (bar s date if dec_d_sa == 6,   sort fcolor(red*0.55) lcolor(red*0.55)) || ///
+        (bar s date if dec_d_sa == 7,   sort fcolor(red*0.65) lcolor(red*0.65)) || ///
+        (bar s date if dec_d_sa == 8,   sort fcolor(red*0.75) lcolor(red*0.75)) || ///
+        (bar s date if dec_d_sa == 9,   sort fcolor(red*0.85) lcolor(red*0.85)) || ///
+        (bar s date if dec_d_sa == 10,  sort fcolor(red*0.95) lcolor(red*0.95)), ///
+            legend(off) ytitle("")  ///
+            plotregion(lcolor(black) lwidth(thin)) ///
+            ylabel(`deaths_sa', labcolor(white) angle(horizontal) tlcolor(white)) ///
+            xtitle("") xlabel(none, nolabels noticks) fysize(7.5) ///
+            saving($figures/d_sa_bar, replace)
 graph export "$figures/bar_red.pdf", replace
 
 * Save data for regenerating the bar
 keep s date dec_c_sa dec_d_sa
-//save $figures/legend, replace
 
 
 *********************************************************************************
