@@ -26,7 +26,7 @@ global figures 		"figures"
 
 * Start log file 
 cap log close 
-log using "Log_Time_Analysis.txt", replace 	// text file
+log using "Log_Time_Analysis.txt", text replace 	// text file
 
 * Drop any labels in memory
 capture: label drop _all
@@ -153,4 +153,8 @@ di "Calculations took `secs_' seconds, `mins_' minutes, or `hrs_' hours."
 
 cap log close 
 
+*******************************************************************************
 * END of MAIN.do
+*******************************************************************************
+
+di as error "END of TIME PREFERENCES" 
