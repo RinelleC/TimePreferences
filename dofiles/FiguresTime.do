@@ -63,7 +63,7 @@ drop if month<5
 
 * Generate the bar legends
 generate s = uniform()*12000
-twoway  (bar s date if dec_c_sa == 1, sort fcolor(blue*0.05) lcolor(blue*0.05)) || ///
+twoway  (bar s date if dec_c_sa == 1,   sort fcolor(blue*0.05) lcolor(blue*0.05)) || ///
         (bar s date if dec_c_sa == 2,   sort fcolor(blue*0.15) lcolor(blue*0.15)) || ///
         (bar s date if dec_c_sa == 3,   sort fcolor(blue*0.25) lcolor(blue*0.25)) || ///
         (bar s date if dec_c_sa == 4,   sort fcolor(blue*0.35) lcolor(blue*0.35)) || ///
@@ -75,13 +75,13 @@ twoway  (bar s date if dec_c_sa == 1, sort fcolor(blue*0.05) lcolor(blue*0.05)) 
         (bar s date if dec_c_sa == 10,  sort fcolor(blue*0.95) lcolor(blue*0.95)), ///
             legend(off) ytitle("") ///
             plotregion(lcolor(black) lwidth(thin)) ///
-            ylabel(`confirmed_sa', labcolor(white) angle(horizontal) tlcolor(white)) ///
+            ylabel(none, labcolor(white) angle(horizontal) tlcolor(white)) ///
             xtitle("") xlabel(none, nolabels noticks) fysize(7.5) ///
             saving($figures/c_sa_bar, replace)
 graph export "$figures/bar_blue.pdf", replace
  
 replace s = uniform()*250
-twoway  (bar s date if dec_d_sa == 1, sort fcolor(red*0.05) lcolor(red*0.05)) || ///
+twoway  (bar s date if dec_d_sa == 1,   sort fcolor(red*0.05) lcolor(red*0.05)) || ///
         (bar s date if dec_d_sa == 2,   sort fcolor(red*0.15) lcolor(red*0.15)) || ///
         (bar s date if dec_d_sa == 3,   sort fcolor(red*0.25) lcolor(red*0.25)) || ///
         (bar s date if dec_d_sa == 4,   sort fcolor(red*0.35) lcolor(red*0.35)) || ///
@@ -93,7 +93,7 @@ twoway  (bar s date if dec_d_sa == 1, sort fcolor(red*0.05) lcolor(red*0.05)) ||
         (bar s date if dec_d_sa == 10,  sort fcolor(red*0.95) lcolor(red*0.95)), ///
             legend(off) ytitle("")  ///
             plotregion(lcolor(black) lwidth(thin)) ///
-            ylabel(`deaths_sa', labcolor(white) angle(horizontal) tlcolor(white)) ///
+            ylabel(none, labcolor(white) angle(horizontal) tlcolor(white)) ///
             xtitle("") xlabel(none, nolabels noticks) fysize(7.5) ///
             saving($figures/d_sa_bar, replace)
 graph export "$figures/bar_red.pdf", replace
@@ -124,11 +124,11 @@ append using pvQH50margin, generate(_by2)
 rename _by1 by1
 generate _by1 = date("5/29/2020", "MDY")
 format _by1 %td
-replace _by1 = date("6/30/2020", "MDY") if by1 == 2
-replace _by1 = date("7/31/2020", "MDY") if by1 == 3
-replace _by1 = date("8/31/2020", "MDY") if by1 == 4
-replace _by1 = date("9/29/2020", "MDY") if by1 == 5
-replace _by1 = date("10/29/2020", "MDY") if by1 == 6
+replace _by1 = date("6/30/2020", "MDY")     if by1 == 2
+replace _by1 = date("7/31/2020", "MDY")     if by1 == 3
+replace _by1 = date("8/31/2020", "MDY")     if by1 == 4
+replace _by1 = date("9/29/2020", "MDY")     if by1 == 5
+replace _by1 = date("10/29/2020", "MDY")    if by1 == 6
 drop by1
 order _by2, after(_by1)
 sort _by1
@@ -151,7 +151,7 @@ yline(50, lcolor(gs14) lwidth(vthick)) saving("$figures/pv_sa", replace)
 //ylabel(`ylabel', angle(horizontal))
 
 * caption
-local caption ""Point estimates in circles, and 95% confidence intervals above and below in bars" "Solid black line is for Exponential discounting, and dashed orange line is for Quasi-Hyperbolic discounting" "Daily national infection rate (blue) and death rate (red) indicated in bars at bottom.""
+local caption ""Point estimates represented by the circles. 95% confidence intervals shown above and below each point estimate." "The solid black line shows time preferences under exponential discounting, and the dashed orange line under Quasi-Hyperbolic discounting." "The daily national COVID-19 infection rate (blue) and death rate(red) in South Africa are indicated in the horizontal bars.""
 
 cd ../ 
 cd $figures 
@@ -159,7 +159,7 @@ cd $figures
 *Combine the graphs
 gr combine pv_sa.gph c_sa_bar.gph d_sa_bar.gph, cols(1) imargin(zero) xcommon ///
 title("Discounting Behavior", size(vlarge)) ///
-subtitle("Present value of R500 reward in 2 weeks(?)", ///
+subtitle("Based on the present value of a R500 reward received in the future", ///
 	size(medium) margin(medsmall)) caption(`caption', size(vsmall))  saving(discountingbehaviour, replace)
 
 graph export "discountingbehaviour.pdf", replace 
