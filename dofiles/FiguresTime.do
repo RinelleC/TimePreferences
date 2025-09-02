@@ -11,8 +11,13 @@
 *******************           JHU SA Covid Data             *********************
 *********************************************************************************
 
+* Move to main folder - remove this before sharing 
+global mainfolder "/Volumes/RinellePhD/TimePreferences" 
+cd $mainfolder
+
+* Open JHU Data and set file paths 
 use "$figures/jhu_data_rsa.dta", clear   
-global figures 		"figures"
+global figures 		"$mainfolder/figures"
 global simple 		"$figures/simplefigures"
 
 sort date                                               // format: mm/dd/yyyy 
@@ -123,6 +128,8 @@ generate int month = month(date)
 * Retain months we have experiments for and regenerate
 drop if month<5
 
+cd $estimations 
+
 * Get the combined margins.dta files into the same format as the infection and death bars above
 use pvExp50margin, clear
 append using pvQH50margin, generate(_by2)
@@ -144,6 +151,7 @@ save pvExpQH50margin, replace
 local exp_color "black"
 local qh_color "dkorange"
 local wide "thick"
+
 marginsplot using pvExpQH50margin, l1title("Dollars", orientation(horizontal)) ///
 ytitle("") title("") xlabel("", format(%tdm)) xtitle("") ///
 plot1opts(lwidth(`wide') lcolor(`exp_color') mcolor(`exp_color')) ///
@@ -151,19 +159,25 @@ ci1opts(lcolor(`exp_color')) ///
 plot2opts(lwidth(`wide') lpattern(dash) lcolor(`qh_color') mcolor(`qh_color')) ///
 ci2opts(lcolor(`qh_color')) ///
 legend(order(3 "Exponential" 4 "Quasi-Hyperbolic") size(medlarge) cols(1) ring(0) pos(2) nobox) ///
-yline(50, lcolor(gs14) lwidth(vthick)) ///
-ylabel(`ylabel', angle(horizontal)) saving(pv_us, replace)
+yline(50, lcolor(gs14) lwidth(vthick)) saving("$figures/pv_sa", replace)
+//ylabel(`ylabel', angle(horizontal))
 
 * caption
-local caption ""Point estimates in circles, and 95% confidence intervals above and below in bars" "Solid black line is for Exponential discounting, and dashed orange line is for Quasi-Hyperbolic discounting" "Solid, thick green line is for Exponential pre-pandemic, and dashed, thick green line is for Quasi-Hyperbolic pre-pandemic" "Daily national infection rate (blue) and death rate (red) indicated in bars at bottom: see Figure 1 for legend""
+local caption ""Point estimates in circles, and 95% confidence intervals above and below in bars" "Solid black line is for Exponential discounting, and dashed orange line is for Quasi-Hyperbolic discounting" "Daily national infection rate (blue) and death rate (red) indicated in bars at bottom.""
+
+cd ../ 
+cd $figures 
 
 *Combine the graphs
-gr combine pv_us.gph c_us_bar.gph d_us_bar.gph, cols(1) imargin(zero) xcommon ///
-title("Figure 7: Discounting Behavior", size(vlarge)) ///
-subtitle("Present value of $50 reward in 2 weeks" "Green bars show pre-pandemic estimates from the same population", ///
-	size(medium) margin(medsmall)) caption(`caption', size(vsmall))  saving(figure7, replace)
+gr combine pv_sa.gph c_sa_bar.gph d_sa_bar.gph, cols(1) imargin(zero) xcommon ///
+title("Discounting Behavior", size(vlarge)) ///
+subtitle("Present value of R500 reward in 2 weeks(?)", ///
+	size(medium) margin(medsmall)) caption(`caption', size(vsmall))  saving(discountingbehaviour, replace)
+
+graph export "discountingbehaviour.pdf", replace 
 
 
 *******************************************************************************
 
+pwd 
 di as error "End of Figures do-file" 
