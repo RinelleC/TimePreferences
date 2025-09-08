@@ -23,59 +23,7 @@ global hetero       ""
 
 global error "context"      // contextual error 
 global weigh "prelec2"      // prelec2 weighting function 
-
-* Set to "crra" if you only want CRRA functions with the "1-r" form; otherwise set to "power"
-// global doCRRA "power"
-global doCRRA "crra"
-
-if "$doCRRA" == "power" {
-
-	global ufunc "power"
-
-    ***********************************************************
-    ***       Power utility, exponential discounting        ***
-    ***********************************************************
-
-	set more off
-	global discount "exp"
-	ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
-	(phi: $demog) (eta: $demog) (delta: $demog) ///
-	(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-	cluster(id) technique($maxtech) init(0.351 0.489 0.8839 1.48568 0.1423 6.268, copy)
-	ml maximize, difficult
-
-	estimates store m1, title(Model - Prelec2Exp)
-
-	esttab m1 using "$stata_tables/ml_model_homogenous.rtf" , replace ///
-		label se b(%15.10g) ///
-        mtitle("Homogenous Preferences A") ///
-        title(Power Utility & Exponential Discounting)
-
-    ***********************************************************
-    ***     Power utility, quasi-hyperbolic discounting     ***
-    ***********************************************************
-
-	set more off
-	global discount "qh"
-	ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
-	(phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
-    (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-	cluster(id) technique($maxtech) init(0.351 0.489 0.8839 0.978 1.48568 0.1423 6.268, copy)
-	ml maximize, difficult
-
-	estimates store m3, title(Model 3 - Prelec2QHyp)
-
-	esttab m3 using "$stata_tables/ml_model_homogenous.rtf" , append ///
-		label se b(%15.10g) ///
-        mtitle("Homogenous Preferences B") ///
-        title(Power Utility & Quasi-Hyperbolic Discounting)
-
-	test [beta]_cons == 1
-}
-
-else if "$doCRRA" == "crra" {
-
-	global ufunc "crra"
+global ufunc "crra"
 
     ***********************************************************
     ***        CRRA utility, exponential discounting        ***
@@ -116,7 +64,6 @@ else if "$doCRRA" == "crra" {
         title(CRRA Utility & Quasi-Hyperbolic Discounting)
 
 	test [beta]_cons == 1
-}
 
 
     * Evaluate QH Discount rate at different horizons, specified in days
@@ -170,76 +117,7 @@ global hetero ""
 
 global error "context"
 global weigh "prelec2"
-
-
-if "$doCRRA" == "power" {
-
-	global ufunc "power"
-    
-    ***********************************************************
-    ***       Power utility, exponential discounting        ***
-    ***********************************************************
-
-	set more off
-	global discount "exp"
-
-	forvalues l = 1/2 {
-		
-        if `l' == 1 { 
-			estimates restore m1
-			global demog "i.wave c.age i.male c.anxiety_total c.depression_total i.race i.race#i.wave i.male#i.wave"
-			ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
-			(phi: $demog) (eta: $demog) (delta: ) ///
-			(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-			cluster(id) technique($maxtech) continue
-		}
-		
-        if `l' == 2 { 
-			estimates restore m1hetero
-			ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
-			(phi: $demog) (eta: $demog) (delta: $demog) ///
-			(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-			cluster(id) technique($maxtech) continue
-		}
-		
-        ml maximize, difficult
-		estimates store m1hetero
-
-		esttab m1hetero using "$stata_tables/ml_model_heterogenous.rtf" , replace ///
-		label se b(%15.10g) ///
-        mtitle("Heterogenous Preferences A") ///
-        title(Power Utility & Exponential Discounting)
-
-	}
-
-
-    ***********************************************************
-    ***     Power utility, quasi-hyperbolic discounting     ***
-    ***********************************************************
-
-	set more off
-	global discount "qh"
-
-	ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
-	(phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
-	(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-	cluster(id) technique($maxtech) continue
-	ml maximize, difficult
-
-	estimates store m3hetero, title(Model 3 - Prelec2QHyp)
-
-	esttab m1hetero using "$stata_tables/ml_model_heterogenous.rtf" , append ///
-		label se b(%15.10g) ///
-        mtitle("Heterogenous Preferences B") ///
-        title(Power Utility & Quasi-Hyperbolic Discounting)
-
-	test [beta]_cons == 1
-	
-}
-
-else if "$doCRRA" == "crra" {
-
-	global ufunc "crra"
+global ufunc "crra"
 
     ***********************************************************
     ***        CRRA utility, exponential discounting        ***
@@ -307,7 +185,6 @@ else if "$doCRRA" == "crra" {
 	estimates save "$estimations/time_het_qh", replace
 
 	test [beta]_cons == 1
-}
 		
 
 * Now estimate with simpler demographics and covid_scale
