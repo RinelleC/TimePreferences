@@ -54,8 +54,11 @@ global doCLEAN			"y"
 * Globals for estimations
 global doTIMEANALYSIS	"y"
 
+* Globals for margins commands and present value table
+global doMARGINS		"y"
+
 * Global for figures
-global doFIGURES		"n" 
+global doFIGURES		"y" 
 
 
 *******************************************************************************
@@ -133,6 +136,10 @@ if "$doTIMEANALYSIS" == "y" {
 	do "dofiles/AnalysisTime"
 }
 
+if "$doMARGINS" == "y" {
+	do "dofiles/MarginsTime"
+}
+
 if "$doFIGURES" == "y" {
 	do "dofiles/FiguresTime" 
 }
@@ -152,6 +159,7 @@ local hrs_ = string(`hrs', "%4.2f")
 di "Calculations took `secs_' seconds, `mins_' minutes, or `hrs_' hours."
 
 cap log close 
+
 
 *******************************************************************************
 * END of MAIN.do
