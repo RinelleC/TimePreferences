@@ -222,20 +222,6 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
     estimates restore m1hetero
     margins, over(wave) predict(equation(delta)) post
 
-    * Test for wave effects
-    foreach i in 1 2 3 4 5 6 {
-        foreach j in `ferest()' {
-        test `i'.wave == `j'.wave
-            if r(p) < 0.1 {
-                di as error r(p) 
-            }
-        }
-    }
-
-    * Estimate present value of R500 margins for comparisons across waves and downstream figures
-    estimates restore m1hetero
-    margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^(14/365)))) ///
-    saving($estimations/pvExp50margin, replace) post
 
     * Test for wave effects
     foreach i in 1 2 3 4 5 6 {
@@ -246,6 +232,33 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
             }
         }
     }
+
+
+    * Test for wave effects
+    foreach i in 1 2 3 4 5 6 {
+        foreach j in `ferest()' {
+        test `i'.wave == `j'.wave
+            if r(p) < 0.1 {
+                di as error r(p) 
+            }
+        }
+    }
+
+
+	* Table of Present Values under Exponential Discounting 
+		* R300 in 14 days 
+		estimates restore m1hetero
+		margins, over(wave) expression(300*(1/((1+predict(equation(delta)))^(14/365)))) 
+		* R400 in 14 days 
+		estimates restore m1hetero
+		margins, over(wave) expression(400*(1/((1+predict(equation(delta)))^(14/365))))
+		* R500 in 14 days 
+		estimates restore m1hetero
+		margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^(14/365)))) ///
+			    saving($estimations/pvExp50margin, replace) post
+		* 600 in 14 days 
+		estimates restore m1hetero
+		margins, over(wave) expression(600*(1/((1+predict(equation(delta)))^(14/365))))
 
 
     ****************************************
@@ -256,6 +269,7 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
 	estimates restore m3hetero
 	margins, over(wave) predict(equation(beta)) post
 
+
     * Test for wave effects
     foreach i in 1 2 3 4 5 6 {
         foreach j in `ferest()' {
@@ -265,11 +279,13 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
             }
         }
     }
+
 
     * Delta Equation
     estimates restore m3hetero
     margins, over(wave) predict(equation(delta)) post
 
+
     * Test for wave effects
     foreach i in 1 2 3 4 5 6 {
         foreach j in `ferest()' {
@@ -279,14 +295,29 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
             }
         }
     }
+
 
     * Estimate present value of R500 margins for comparisons across waves and downstream figures
     estimates restore m3hetero
 
     local beta "(predict(equation(beta)))"
 
-    margins, over(wave) expression(500*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) ///
-    saving($estimations/pvQH50margin, replace) post
+
+	* Table of Present Values under Quasi-Hyperbolic Discounting 
+		* R300 in 14 days 
+		estimates restore m1hetero
+		margins, over(wave) expression(500*`beta'*(1/((1+predict(equation(delta)))^(14/365))))
+		* R400 in 14 days 
+		estimates restore m1hetero
+		margins, over(wave) expression(500*`beta'*(1/((1+predict(equation(delta)))^(14/365))))
+		* R500 in 14 days 
+		estimates restore m1hetero
+		margins, over(wave) expression(500*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) ///
+			saving($estimations/pvQH50margin, replace) post
+		* 600 in 14 days 
+		estimates restore m1hetero
+		margins, over(wave) expression(500*`beta'*(1/((1+predict(equation(delta)))^(14/365))))
+
 
     * Test for wave effects
     foreach i in 1 2 3 4 5 6 {
