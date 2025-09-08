@@ -139,15 +139,16 @@ local qh_color  "dkorange"
 local wide      "thick"
 
 * Now plot the combined margins dataset
-marginsplot using pvExpQH50margin, l1title("Dollars", orientation(horizontal)) ///
-ytitle("") title("") xlabel("", format(%tdm)) xtitle("") ///
+marginsplot using pvExpQH50margin, l1title("Rand", orientation(horizontal)) ///
+ytitle("") ylabel(, angle(horizontal)) title("") ///
+xlabel("", format(%tdm)) xtitle("") ///
 plot1opts(lwidth(`wide') lcolor(`exp_color') mcolor(`exp_color')) ///
 ci1opts(lcolor(`exp_color')) ///
 plot2opts(lwidth(`wide') lpattern(dash) lcolor(`qh_color') mcolor(`qh_color')) ///
 ci2opts(lcolor(`qh_color')) ///
 legend(order(3 "Exponential" 4 "Quasi-Hyperbolic") size(medlarge) cols(1) ring(0) pos(2) nobox) ///
 yline(50, lcolor(gs14) lwidth(vthick)) saving("$figures/pv_sa", replace)
-//ylabel(`ylabel', angle(horizontal))
+
 
 * Caption
 local caption ""Point estimates represented by the circles. 95% confidence intervals shown above and below each point estimate." "The solid black line shows time preferences under exponential discounting, and the dashed orange line under Quasi-Hyperbolic discounting." "The daily national COVID-19 infection rate (blue) and death rate(red) in South Africa are indicated in the horizontal bars.""
@@ -159,7 +160,7 @@ cd $figures
 * Combine the graphs and export 
 gr combine pv_sa.gph c_sa_bar.gph d_sa_bar.gph, cols(1) imargin(zero) xcommon ///
 title("Discounting Behavior", size(vlarge)) ///
-subtitle("Based on the present value of a R500 reward received in the future", ///
+subtitle("Based on the present value of a R500 reward received in 14 days", ///
 	size(medium) margin(medsmall)) caption(`caption', size(vsmall)) ///
     saving(discountingbehaviour, replace)
 graph export "discountingbehaviour.pdf", replace 
