@@ -14,24 +14,37 @@
     
 * Delta Equation
 estimates restore m1hetero
-margins, over(wave) predict(equation(delta)) post
+asdoc margins, over(wave) predict(equation(delta)) post ///
+	replace save($stata_tables/Exp_PresentValues) label dec(5) ///
+	title(Delta Estimates)
 
+	*********************************************************
+	* Table of Present Values under Exponential Discounting *
+	*********************************************************
 
-* Table of Present Values under Exponential Discounting 
 	* R300 in 14 days 
 	estimates restore m1hetero
-	margins, over(wave) expression(300*(1/((1+predict(equation(delta)))^(14/365)))) 
+	asdoc margins, over(wave) expression(300*(1/((1+predict(equation(delta)))^(14/365)))) ///
+		append save($stata_tables/Exp_PresentValues) label dec(2) ///
+		title(PV for R300)
+	
 	* R400 in 14 days 
 	estimates restore m1hetero
-	margins, over(wave) expression(400*(1/((1+predict(equation(delta)))^(14/365))))
+	asdoc margins, over(wave) expression(400*(1/((1+predict(equation(delta)))^(14/365)))) ///
+		append save($stata_tables/Exp_PresentValues) label dec(2) ///
+		title(PV for R400)
+
 	* R500 in 14 days 
 	estimates restore m1hetero
-	margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^(14/365)))) ///
-		saving($estimations/pvExp50margin, replace) post
+	asdoc margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^(14/365)))) ///
+		append save($stata_tables/Exp_PresentValues) label dec(2) ///
+		title(PV for R500)
+	
 	* 600 in 14 days 
 	estimates restore m1hetero
-	margins, over(wave) expression(600*(1/((1+predict(equation(delta)))^(14/365))))
-
+	asdoc margins, over(wave) expression(600*(1/((1+predict(equation(delta)))^(14/365)))) ///
+		append save($stata_tables/Exp_PresentValues) label dec(2) ///
+		title(PV for R600)
 
 ****************************************
 ***   Quasi-Hyperbolic Discounting   ***
@@ -39,32 +52,46 @@ margins, over(wave) predict(equation(delta)) post
     
 * Beta Equation 
 estimates restore m3hetero
-margins, over(wave) predict(equation(beta)) post
+asdoc margins, over(wave) predict(equation(beta)) post ///
+	replace save($stata_tables/QH_PresentValues) label dec(5) ///
+	title(Beta Estimates)
 
 * Delta Equation
 estimates restore m3hetero
-margins, over(wave) predict(equation(delta)) post
-
-estimates restore m3hetero
+asdoc margins, over(wave) predict(equation(delta)) post ///
+	append save($stata_tables/QH_PresentValues) label dec(5) ///
+	title(Delta Estimates)
 
 local beta "(predict(equation(beta)))"
 
+	**************************************************************
+	* Table of Present Values under Quasi-Hyperbolic Discounting *
+	**************************************************************
 
-* Table of Present Values under Quasi-Hyperbolic Discounting 
     * R300 in 14 days 
-	estimates restore m1hetero
-	margins, over(wave) expression(300*`beta'*(1/((1+predict(equation(delta)))^(14/365))))
+	estimates restore m3hetero
+	asdoc margins, over(wave) expression(300*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) post ///
+		append save($stata_tables/QH_PresentValues) label dec(2) ///
+		title(PV for R300)
+		
 	* R400 in 14 days 
-	estimates restore m1hetero
-	margins, over(wave) expression(400*`beta'*(1/((1+predict(equation(delta)))^(14/365))))
-	* R500 in 14 days 
-	estimates restore m1hetero
-	margins, over(wave) expression(500*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) ///
-		saving($estimations/pvQH50margin, replace) post
-	* 600 in 14 days 
-	estimates restore m1hetero
-	margins, over(wave) expression(600*`beta'*(1/((1+predict(equation(delta)))^(14/365))))
+	estimates restore m3hetero
+	asdoc margins, over(wave) expression(400*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) post ///
+		append save($stata_tables/QH_PresentValues) label dec(2) ///
+		title(PV for R400)
 
+	* R500 in 14 days 
+	estimates restore m3hetero
+	asdoc margins, over(wave) expression(500*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) post ///
+		saving($estimations/pvQH50margin, replace) ///
+		append save($stata_tables/QH_PresentValues) label dec(2) ///
+		title(PV for R500)
+	
+	* 600 in 14 days 
+	estimates restore m3hetero
+	asdoc margins, over(wave) expression(600*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) post ///
+		append save($stata_tables/QH_PresentValues) label dec(2) ///
+		title(PV for R600)
 
 *******************************************************************************
 
