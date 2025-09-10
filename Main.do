@@ -55,7 +55,7 @@ global doCLEAN			"y"
 global doTIMEANALYSIS	"y"
 
 * Globals for margins commands and present value table
-global doMARGINS		"y"
+global doMARGINS		"n"
 
 * Global for figures
 global doFIGURES		"y" 
