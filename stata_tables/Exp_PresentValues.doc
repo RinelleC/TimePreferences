@@ -1,0 +1,684 @@
+{\rtf1\ansi\deff0 {\fonttbl{\f0\fnil Garamond;}}
+{\info {\author .}{\company .}{\title .}}
+\deflang1033\plain\fs20
+{\footer\pard\qc\plain\f0\fs20\chpgn\par}
+{
+{\b\qc\line Delta Estimates }{\par}
+\fs20 {Predictive margins                                     Number of obs = 102,600}\line
+\fs20 {Model VCE: Robust}\line
+\fs20 {Expression: Linear prediction, predict(equation(delta))}\line
+\fs20 {Over:       wave}\line
+{\par}
+{\trowd\trgaph108\trleft-108
+\cellx3000
+\fs20\pard\intbl\ql { }\cell
+\cellx6400
+\fs20\pard\intbl\ql { Delta-method}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx1500
+\fs20\pard\intbl\ql { }\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx2700
+\fs20\pard\intbl\ql { Margin}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx3900
+\fs20\pard\intbl\ql { std.}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx5100
+\fs20\pard\intbl\ql { err.}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx6300
+\fs20\pard\intbl\ql { z}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx7500
+\fs20\pard\intbl\ql { P>z}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx8700
+\fs20\pard\intbl\ql { [95%}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx9900
+\fs20\pard\intbl\ql { conf.}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx11100
+\fs20\pard\intbl\ql { interval]}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx3000
+\fs20\pard\intbl\ql {wave }\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {1  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {  2.02857}\cell
+\cellx3900
+\fs20\pard\intbl\ql {  0.50496}\cell
+\cellx5100
+\fs20\pard\intbl\ql {4.02}\cell
+\cellx6300
+\fs20\pard\intbl\ql {0}\cell
+\cellx7500
+\fs20\pard\intbl\ql {  1.03886}\cell
+\cellx8700
+\fs20\pard\intbl\ql {  3.01828}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {2  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {  1.55545}\cell
+\cellx3900
+\fs20\pard\intbl\ql {  0.24917}\cell
+\cellx5100
+\fs20\pard\intbl\ql {6.24}\cell
+\cellx6300
+\fs20\pard\intbl\ql {0}\cell
+\cellx7500
+\fs20\pard\intbl\ql {  1.06707}\cell
+\cellx8700
+\fs20\pard\intbl\ql {  2.04382}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {3  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {  1.77934}\cell
+\cellx3900
+\fs20\pard\intbl\ql {  0.28832}\cell
+\cellx5100
+\fs20\pard\intbl\ql {6.17}\cell
+\cellx6300
+\fs20\pard\intbl\ql {0}\cell
+\cellx7500
+\fs20\pard\intbl\ql {  1.21425}\cell
+\cellx8700
+\fs20\pard\intbl\ql {  2.34443}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {4  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {  1.22165}\cell
+\cellx3900
+\fs20\pard\intbl\ql {  0.16560}\cell
+\cellx5100
+\fs20\pard\intbl\ql {7.38}\cell
+\cellx6300
+\fs20\pard\intbl\ql {0}\cell
+\cellx7500
+\fs20\pard\intbl\ql {  0.89709}\cell
+\cellx8700
+\fs20\pard\intbl\ql {  1.54622}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {5  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {  1.96998}\cell
+\cellx3900
+\fs20\pard\intbl\ql {  0.34284}\cell
+\cellx5100
+\fs20\pard\intbl\ql {5.75}\cell
+\cellx6300
+\fs20\pard\intbl\ql {0}\cell
+\cellx7500
+\fs20\pard\intbl\ql {  1.29802}\cell
+\cellx8700
+\fs20\pard\intbl\ql {  2.64193}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {6  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {  2.28508}\cell
+\cellx3900
+\fs20\pard\intbl\ql {  0.74348}\cell
+\cellx5100
+\fs20\pard\intbl\ql {3.07}\cell
+\cellx6300
+\fs20\pard\intbl\ql {.002}\cell
+\cellx7500
+\fs20\pard\intbl\ql {  0.82789}\cell
+\cellx8700
+\fs20\pard\intbl\ql {  3.74227}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\clbrdrb\brdrw15\brdrs\cellx8700\cell
+\row}
+
+{\b\qc\line PV for R300 }{\par}
+\fs20 {Predictive margins                                     Number of obs = 102,600}\line
+\fs20 {Model VCE: Robust}\line
+\fs20 {Over:       wave}\line
+{\par}
+{\trowd\trgaph108\trleft-108
+\cellx3000
+\fs20\pard\intbl\ql { }\cell
+\cellx6400
+\fs20\pard\intbl\ql { Delta-method}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx1500
+\fs20\pard\intbl\ql { }\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx2700
+\fs20\pard\intbl\ql { Margin}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx3900
+\fs20\pard\intbl\ql { std.}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx5100
+\fs20\pard\intbl\ql { err.}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx6300
+\fs20\pard\intbl\ql { z}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx7500
+\fs20\pard\intbl\ql { P>z}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx8700
+\fs20\pard\intbl\ql { [95%}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx9900
+\fs20\pard\intbl\ql { conf.}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx11100
+\fs20\pard\intbl\ql { interval]}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx3000
+\fs20\pard\intbl\ql {wave }\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {1  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   288.23}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     1.42}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   202.78}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   285.44}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   291.01}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {2  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   289.67}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     1.00}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   290.41}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   287.71}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   291.62}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {3  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   288.79}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     1.04}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   276.98}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   286.74}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   290.83}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {4  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   291.23}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     0.79}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   367.48}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   289.67}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   292.78}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {5  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   288.22}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     1.13}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   254.38}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   286.00}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   290.44}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {6  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   287.88}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     1.81}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   158.63}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   284.32}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   291.43}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\clbrdrb\brdrw15\brdrs\cellx8700\cell
+\row}
+
+{\b\qc\line PV for R400 }{\par}
+\fs20 {Predictive margins                                     Number of obs = 102,600}\line
+\fs20 {Model VCE: Robust}\line
+\fs20 {Over:       wave}\line
+{\par}
+{\trowd\trgaph108\trleft-108
+\cellx3000
+\fs20\pard\intbl\ql { }\cell
+\cellx6400
+\fs20\pard\intbl\ql { Delta-method}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx1500
+\fs20\pard\intbl\ql { }\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx2700
+\fs20\pard\intbl\ql { Margin}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx3900
+\fs20\pard\intbl\ql { std.}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx5100
+\fs20\pard\intbl\ql { err.}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx6300
+\fs20\pard\intbl\ql { z}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx7500
+\fs20\pard\intbl\ql { P>z}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx8700
+\fs20\pard\intbl\ql { [95%}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx9900
+\fs20\pard\intbl\ql { conf.}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx11100
+\fs20\pard\intbl\ql { interval]}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx3000
+\fs20\pard\intbl\ql {wave }\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {1  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   384.30}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     1.90}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   202.78}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   380.59}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   388.01}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {2  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   386.23}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     1.33}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   290.41}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   383.62}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   388.83}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {3  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   385.05}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     1.39}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   276.98}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   382.33}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   387.78}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {4  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   388.30}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     1.06}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   367.48}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   386.23}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   390.37}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {5  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   384.30}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     1.51}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   254.38}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   381.34}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   387.26}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {6  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   383.83}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     2.42}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   158.63}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   379.09}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   388.58}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\clbrdrb\brdrw15\brdrs\cellx8700\cell
+\row}
+
+{\b\qc\line PV for R500 }{\par}
+\fs20 {Predictive margins                                     Number of obs = 102,600}\line
+\fs20 {Model VCE: Robust}\line
+\fs20 {Over:       wave}\line
+{\par}
+{\trowd\trgaph108\trleft-108
+\cellx3000
+\fs20\pard\intbl\ql { }\cell
+\cellx6400
+\fs20\pard\intbl\ql { Delta-method}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx1500
+\fs20\pard\intbl\ql { }\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx2700
+\fs20\pard\intbl\ql { Margin}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx3900
+\fs20\pard\intbl\ql { std.}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx5100
+\fs20\pard\intbl\ql { err.}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx6300
+\fs20\pard\intbl\ql { z}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx7500
+\fs20\pard\intbl\ql { P>z}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx8700
+\fs20\pard\intbl\ql { [95%}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx9900
+\fs20\pard\intbl\ql { conf.}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx11100
+\fs20\pard\intbl\ql { interval]}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx3000
+\fs20\pard\intbl\ql {wave }\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {1  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   480.38}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     2.37}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   202.78}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   475.73}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   485.02}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {2  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   482.78}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     1.66}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   290.41}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   479.52}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   486.04}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {3  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   481.31}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     1.74}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   276.98}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   477.91}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   484.72}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {4  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   485.38}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     1.32}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   367.48}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   482.79}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   487.97}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {5  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   480.37}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     1.89}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   254.38}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   476.67}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   484.07}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {6  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   479.79}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     3.02}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   158.63}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   473.87}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   485.72}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\clbrdrb\brdrw15\brdrs\cellx8700\cell
+\row}
+
+{\b\qc\line PV for R600 }{\par}
+\fs20 {Predictive margins                                     Number of obs = 102,600}\line
+\fs20 {Model VCE: Robust}\line
+\fs20 {Over:       wave}\line
+{\par}
+{\trowd\trgaph108\trleft-108
+\cellx3000
+\fs20\pard\intbl\ql { }\cell
+\cellx6400
+\fs20\pard\intbl\ql { Delta-method}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx1500
+\fs20\pard\intbl\ql { }\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx2700
+\fs20\pard\intbl\ql { Margin}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx3900
+\fs20\pard\intbl\ql { std.}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx5100
+\fs20\pard\intbl\ql { err.}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx6300
+\fs20\pard\intbl\ql { z}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx7500
+\fs20\pard\intbl\ql { P>z}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx8700
+\fs20\pard\intbl\ql { [95%}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx9900
+\fs20\pard\intbl\ql { conf.}\cell
+\clbrdrt\brdrw10\brdrs \clbrdrb\brdrw25\brdrs \cellx11100
+\fs20\pard\intbl\ql { interval]}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx3000
+\fs20\pard\intbl\ql {wave }\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {1  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   576.45}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     2.84}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   202.78}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   570.88}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   582.02}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {2  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   579.34}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     1.99}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   290.41}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   575.43}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   583.25}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {3  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   577.58}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     2.09}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   276.98}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   573.49}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   581.66}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {4  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   582.45}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     1.59}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   367.48}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   579.35}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   585.56}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {5  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   576.44}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     2.27}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   254.38}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   572.00}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   580.89}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\cellx1500
+\fs20\pard\intbl\ql {6  }\cell
+\cellx2700
+\fs20\pard\intbl\ql {   575.75}\cell
+\cellx3900
+\fs20\pard\intbl\ql {     3.63}\cell
+\cellx5100
+\fs20\pard\intbl\ql {   158.63}\cell
+\cellx6300
+\fs20\pard\intbl\ql {     0.00}\cell
+\cellx7500
+\fs20\pard\intbl\ql {   568.64}\cell
+\cellx8700
+\fs20\pard\intbl\ql {   582.87}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\clbrdrb\brdrw15\brdrs\cellx8700\cell
+\row}
+
+
+\writepositionforappend
+}}
