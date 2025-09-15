@@ -1,0 +1,24 @@
+Table
+Discounting Function ML Estimates
+Concave Utility, Homogenous Preferences
+	Model - Prelec2Exp	Model 3 - Prelec2QHyp
+	Estimate/Std Error	Estimate/Std Error
+CRRA function parameter (r)	0.351***	0.351***
+	="(0.018)"	="(0.018)"
+PWF parameter (phi)	0.489***	0.489***
+	="(0.014)"	="(0.014)"
+PWF parameter (eta)	0.884***	0.884***
+	="(0.017)"	="(0.017)"
+Discounting parameter (delta)	1.486***	1.484***
+	="(0.106)"	="(0.102)"
+Risk error (mu)	0.142***	0.142***
+	="(0.004)"	="(0.004)"
+Time error (nu)	6.269***	6.265***
+	="(0.662)"	="(0.660)"
+Discounting parameter (beta)		1.000***
+		="(0.003)"
+N	103360	103360
+log-likelihood	-64573.604	-64573.590
+Results account for clustering at the individual level
+Standard errors in parentheses
+* p<0.10, ** p<0.05, *** p<0.01
