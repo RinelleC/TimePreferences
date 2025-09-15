@@ -220,7 +220,8 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
     
     * Delta Equation
     estimates restore m1hetero
-    margins, over(wave) predict(equation(delta)) post
+    margins, over(wave) predict(equation(delta)) post ///
+        saving($estimations/Exponential_Delta, replace)
 
     * Test for wave effects
     foreach i in 1 2 3 4 5 6 {
@@ -249,7 +250,8 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
     
     * Beta Equation 
 	estimates restore m3hetero
-	margins, over(wave) predict(equation(beta)) post
+	margins, over(wave) predict(equation(beta)) post ///
+        saving($estimations/Quasi_Beta, replace)
 
     * Test for wave effects
     foreach i in 1 2 3 4 5 6 {
@@ -263,7 +265,8 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
 
     * Delta Equation
     estimates restore m3hetero
-    margins, over(wave) predict(equation(delta)) post
+    margins, over(wave) predict(equation(delta)) post /// 
+        saving($estimations/Quasi_Delta, replace)
 
     * Test for wave effects
     foreach i in 1 2 3 4 5 6 {
