@@ -1,40 +1,39 @@
-{smcl}
-{txt}{sf}{ul off}{.-}
-      name:  {res}<unnamed>
-       {txt}log:  {res}/Volumes/RinellePhD/TimePreferences/Log_Time_Analysis.txt
-  {txt}log type:  {res}smcl
- {txt}opened on:  {res} 1 Sep 2025, 11:12:53
-{txt}
-{com}. 
+---------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Volumes/RinellePhD/TimePreferences/Log_Time_Analysis.txt
+  log type:  text
+ opened on:  15 Sep 2025, 09:29:52
+
+. 
 . * Drop any labels in memory
 . capture: label drop _all
-{txt}
-{com}. 
+
+. 
 . * Specify version
 . capture: version 17
-{txt}
-{com}. set more off
-{txt}
-{com}. 
+
+. set more off
+
+. 
 . * Document what ran
 . about
 
-{txt}Stata/MP 17.0 for Mac (Apple Silicon)
+Stata/MP 17.0 for Mac (Apple Silicon)
 Revision 21 May 2024
 Copyright 1985-2021 StataCorp LLC
 
-Total physical memory: {res}8.01 GB
+Total physical memory: 8.01 GB
 
-{txt}Stata license: {res}Single-user 4-core  perpetual
-{txt}Serial number: {res}501706317819
-  {txt}Licensed to: {res}Rinelle Chetty
+Stata license: Single-user 4-core  perpetual
+Serial number: 501706317819
+  Licensed to: Rinelle Chetty
                University of Cape Town
-{txt}
-{com}. capture: timer clear
-{txt}
-{com}. timer on 1
-{txt}
-{com}. 
+
+. capture: timer clear
+
+. timer on 1
+
+. 
 . 
 . *******************************************************************************
 . ***     2. Set up globals for running separate do files or analyses later       ***
@@ -42,55 +41,58 @@ Total physical memory: {res}8.01 GB
 . 
 . * Global for installing packages
 . global doPACKAGES               "n"
-{txt}
-{com}. 
-. * Global calculate covid deaths scale 
-. global doDEATHS                 "y"
-{txt}
-{com}. 
+
+. 
 . * Globals for cleaning & relabelling data
 . global doCLEAN                  "y"
-{txt}
-{com}. 
+
+. 
 . * Globals for estimations
 . global doTIMEANALYSIS   "y"
-{txt}
-{com}. 
+
+. 
+. * Globals for margins commands and present value table
+. global doMARGINS                "n"
+
+. 
 . * Global for figures
 . global doFIGURES                "n" 
-{txt}
-{com}. 
+
+. 
 . 
 . *******************************************************************************
-. ***     3. Configurations, fonts and graph colours                                                      ***
+. ***     3. Configurations, fonts and graph colours                                               
+>        ***
 . *******************************************************************************
 . 
-. * Allow big machines to process (needs capture so SE can run; comment out if you want to avoid too many processors)
+. * Allow big machines to process (needs capture so SE can run; comment out if you want to avoid to
+> o many processors)
 . capture: set processors 2
-{txt}
-{com}. capture: set processors 4
-{txt}
-{com}. capture: set processors 32
-{txt}
-{com}. 
+
+. capture: set processors 4
+
+. capture: set processors 32
+
+. 
 . * Need to ensure replications across computers with multiple processors
 . set seed 1234
-{txt}
-{com}. 
+
+. 
 . * Graphics font
 . graph set window fontface "Garamond"
-{txt}
-{com}. 
+
+. 
 . * Graphics scheme
 . set scheme s1color
-{txt}
-{com}. 
+
+. 
 . 
 . *******************************************************************************
-. ***     4. Install all packages                                                                                         ***
+. ***     4. Install all packages                                                                  
+>                        ***
 . *******************************************************************************
 . 
-. if "$doPACKAGES" == "y"         {c -(}
+. if "$doPACKAGES" == "y"         {
 .         cap net install asdoc.pkg
 .         cap net install st0085_2.pkg
 .         cap net install gr0092.pkg
@@ -100,101 +102,44 @@ Total physical memory: {res}8.01 GB
 .         cap ssc install estout
 .         cap ssc install outreg2
 .         cap net install tabout.pkg
-. {c )-}
-{txt}
-{com}. 
+. }
+
+. 
 . 
 . *******************************************************************************
-. ***     5. Run code to define programs                                                                          ***
+. ***     5. Run code to define programs                                                           
+>                ***
 . *******************************************************************************
 . 
 . * Get the ML functions for Risk and Time installed
-. qui {c -(}
-{txt}
-{com}. 
+. qui {
+
+. 
 . 
 . *******************************************************************************
-. ***     6. Open the data, drop other tasks, calculate deaths scale                      ***
+. ***     6. Open the data, calculate deaths, clean and relabel, drop vars        ***
 . *******************************************************************************
 . 
 . * Unzip the data file
 . unzipfile ExpData.zip, replace
-{res}{text:    inflating: ExpData.dta}
+    inflating: ExpData.dta
 
-{text:successfully unzipped ExpData.zip to current directory}
-{text:total processed:  1}
-{text:        skipped:  0}
-{text:      extracted:  1}
-{txt}
-{com}. 
+successfully unzipped ExpData.zip to current directory
+total processed:  1
+        skipped:  0
+      extracted:  1
+
+. 
 . * Open original data file 
 . use ExpData.dta                                                                             
-{txt}
-{com}. 
-. * Calculate covid deaths 
-. if "$doDEATHS" == "y" {c -(}
-.         do "dofiles/CovidDeathsScale"
-{txt}
-{com}. * Generate Covid cumulative deaths scale for complementary analyses 
-. capture: generate covid_scale_deaths = 0
-{txt}
-{com}. replace covid_scale_deaths = 106031 if wave == 1
-{txt}(48,552 real changes made)
 
-{com}. replace covid_scale_deaths = 127787 if wave == 2
-{txt}(53,074 real changes made)
-
-{com}. replace covid_scale_deaths = 154093 if wave == 3
-{txt}(51,646 real changes made)
-
-{com}. replace covid_scale_deaths = 183684 if wave == 4
-{txt}(47,162 real changes made)
-
-{com}. replace covid_scale_deaths = 206257 if wave == 5
-{txt}(38,147 real changes made)
-
-{com}. replace covid_scale_deaths = 229214 if wave == 6
-{txt}(32,213 real changes made)
-
-{com}. 
-. * Normalize
-. summ covid_scale_deaths
-
-{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
-{hline 13}{c +}{hline 57}
-covid_scal~s {c |}{res}    270,794    161758.1    41208.79     106031     229214
-{txt}
-{com}. local max = r(max)
-{txt}
-{com}. replace covid_scale_deaths = covid_scale_deaths/`max'
-{txt}(270,794 real changes made)
-
-{com}. summ covid_scale_deaths
-
-{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
-{hline 13}{c +}{hline 57}
-covid_scal~s {c |}{res}    270,794    .7057079     .179783   .4625852          1
-{txt}
-{com}. 
-. * Add the squared term
-. capture: generate covid_scale_deaths_sq = covid_scale_deaths * covid_scale_deaths
-{txt}
-{com}. 
-{txt}end of do-file
-{com}.         {c )-}
-{txt}
-{com}. 
-. 
-. *******************************************************************************
-. ***     7. Clean and relabel the data, drop and rename variables                        ***
-. *******************************************************************************
 . 
 . * Clean and prepare the data 
 . do "dofiles/CleanTime"
-{txt}
-{com}. *****************************************************************************
+
+. *****************************************************************************
 . * This is the Cleaning do file to clean and generate relevant variables     *
-. * for the Time Preference Task in South Africa. This fits in section 7      *
+. * for the Time Preference Task in South Africa. This fits in section 6      *
 . * of the Main do file titled Main.do.                                       *
 . *                                                                           *
 . * Date first generated:             28 August 2025                          *
@@ -203,50 +148,51 @@ covid_scal~s {c |}{res}    270,794    .7057079     .179783   .4625852          1
 . 
 . 
 . *******************************************************************************
-. ***             7.1 -- Drop USA & unnecessary variables, drop other tasks           ***
+. ***             6.1 -- Drop USA & unnecessary variables, drop other tasks           ***
 . *******************************************************************************
 . 
 . * Keep only Risk and Time task observations 
 . drop if task == 3 | task == 4 // drop CA data and beliefs data 
-{txt}(53,814 observations deleted)
+(53,814 observations deleted)
 
-{com}. 
+. 
 . * Drop some USA- and SA-specific variables and other unnecessary variables
 . drop expenditure_daily expenditure_daily_cat
-{txt}
-{com}. drop prize4* prob4*
-{txt}
-{com}. drop residence_type rsa_home_type 
-{txt}
-{com}. drop rsa_householdN
-{txt}
-{com}. drop rsa_covid_info_* rsa_covid_information rsa_information_confidence 
-{txt}
-{com}. drop rsa_experts_confidence rsa_covid_one_month rsa_covid_peak_capetown rsa_covid_situation_one_month 
-{txt}
-{com}. drop covid_*     
-{txt}
-{com}. drop hyp_risk BIS2Attimpulse BIS2Motorimpulse 
-{txt}
-{com}. drop householdN-BIS2Nonplanimpulse
-{txt}
-{com}. drop race location_completed relationship financial_situation 
-{txt}
-{com}. drop rsa_covid_personal_* 
-{txt}
-{com}. 
+
+. drop prize4* prob4*
+
+. drop residence_type rsa_home_type 
+
+. drop rsa_householdN
+
+. drop rsa_covid_info_* rsa_covid_information rsa_information_confidence 
+
+. drop rsa_experts_confidence rsa_covid_one_month rsa_covid_peak_capetown rsa_covid_situation_one_m
+> onth 
+
+. drop covid_*     
+
+. drop hyp_risk BIS2Attimpulse BIS2Motorimpulse 
+
+. drop householdN-BIS2Nonplanimpulse
+
+. drop race location_completed relationship financial_situation 
+
+. drop rsa_covid_personal_* 
+
+. 
 . * Drop depression and anxiety line items 
 . drop depression_pleasure depression_hopeless depression_sleep depression_energy 
-{txt}
-{com}. drop depression_appetite depression_failure depression_concentration 
-{txt}
-{com}. drop depression_movement depression_dead
-{txt}
-{com}. drop anxiety_nervous anxiety_worry_uncontrolled anxiety_worry_multiple 
-{txt}
-{com}. drop anxiety_relax anxiety_restless anxiety_irritable anxiety_afraid
-{txt}
-{com}. 
+
+. drop depression_appetite depression_failure depression_concentration 
+
+. drop depression_movement depression_dead
+
+. drop anxiety_nervous anxiety_worry_uncontrolled anxiety_worry_multiple 
+
+. drop anxiety_relax anxiety_restless anxiety_irritable anxiety_afraid
+
+. 
 . * Keep the variables for SA analyses
 . /*keep subjectid wave taskorder showupfee period age male rsa_* ///
 > work anxiety_total anxiety_difficulty depression_total depression_difficulty ///
@@ -254,115 +200,2357 @@ covid_scal~s {c |}{res}    270,794    .7057079     .179783   .4625852          1
 . 
 . * Drop beliefs and CA task variables 
 . drop beliefs gid alpha beta text bin* token_allocation_bin* 
-{txt}
-{com}. drop ca cashorterdays calongerdays camoneysmaller camoneylarger calsprob
-{txt}
-{com}. 
+
+. drop ca cashorterdays calongerdays camoneysmaller camoneylarger calsprob
+
+. 
 . * Drop all USA data
 . drop usa_*
-{txt}
-{com}. drop if usa == 1
-{txt}(113,620 observations deleted)
 
-{com}. drop usa
-{txt}
-{com}. 
+. drop if usa == 1
+(113,620 observations deleted)
+
+. drop usa
+
+. 
 . 
 . *******************************************************************************
-. ***             7.2 -- Generate, relabel, and rename variables                          ***
+. ***             6.2 -- Generate, relabel, and rename variables                          ***
 . *******************************************************************************
 . 
 . rename rsa_race race 
-{res}{txt}
-{com}. 
+
+. rename subjectid id 
+
+. 
+. 
+. *******************************************************************************
+. ***             6.3 -- Calculate Covid Deaths                                           ***
+. *******************************************************************************
+. 
+. * Generate Covid cumulative deaths scale for complementary analyses 
+. capture: generate covid_scale_deaths = 0
+
+. replace covid_scale_deaths = 106031 if wave == 1
+(17,480 real changes made)
+
+. replace covid_scale_deaths = 127787 if wave == 2
+(17,670 real changes made)
+
+. replace covid_scale_deaths = 154093 if wave == 3
+(19,000 real changes made)
+
+. replace covid_scale_deaths = 183684 if wave == 4
+(19,000 real changes made)
+
+. replace covid_scale_deaths = 206257 if wave == 5
+(15,200 real changes made)
+
+. replace covid_scale_deaths = 229214 if wave == 6
+(15,010 real changes made)
+
+. 
+. * Normalize
+. summ covid_scale_deaths
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+covid_scal~s |    103,360    165487.5    41949.52     106031     229214
+
+. local max = r(max)
+
+. replace covid_scale_deaths = covid_scale_deaths/`max'
+(103,360 real changes made)
+
+. summ covid_scale_deaths
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+covid_scal~s |    103,360    .7219782    .1830147   .4625852          1
+
+. 
+. * Add the squared term
+. capture: generate covid_scale_deaths_sq = covid_scale_deaths * covid_scale_deaths
+
+. 
 . 
 . *******************************************************************************
 . 
 . di as error "End of Cleaning do-file" 
-{res}{err}End of Cleaning do-file
-{txt}
-{com}. 
-{txt}end of do-file
+End of Cleaning do-file
 
-{com}. 
+. 
+end of do-file
+
+. 
 . * Save final dataset 
 . save "timedata.dta", replace 
-{txt}{p 0 4 2}
-file {bf}
-timedata.dta{rm}
-saved
-{p_end}
+file timedata.dta saved
 
-{com}. 
+. 
 . * Delete un-zipped version of original data 
 . erase "ExpData.dta"
-{txt}
-{com}. 
+
+. 
 . 
 . *******************************************************************************
-. ***     8. Conduct Time Analyses and Generate Figures                                           ***
+. ***     7. Conduct Time Analyses and Generate Figures                                           *
+> **
 . *******************************************************************************
 . 
-. if "$doTIMEANALYSIS" == "y" {c -(}
+. if "$doTIMEANALYSIS" == "y" {
 .         do "dofiles/AnalysisTime"
-{txt}
-{com}. *****************************************************************************
+
+. *****************************************************************************
 . * This is the Analysis do file to analyse Time Preferences in South Africa  *
-. * and fits within section 8 of the Main do-file.                            * 
+. * and fits within section 8 of the Main do-file. Analysis assumes RDU.      * 
 . *                                                                           *
 . * Date first generated:             28 August 2025                          *
 . * Created by:                       Rinelle Chetty                          * 
 . *****************************************************************************
 . 
 . 
-. ************************        RDU Discounting        ************************
+. *******************************************************************************
+. ***     8.1 -- Homogenous Preferences                                                           *
+> **
+. *******************************************************************************
+. 
+. estimates clear
+
+. set more off
+
+. 
+. global cdf          "invlogit"
+
+. global maxtech      "nr"
+
+. global riskvars     "prob1L prob2L prob3L prob1R prob2R prob3R prize1L prize2L prize3L prize1R pr
+> ize2R prize3R uMax uMin"
+
+. global timevars     "risk ssamount ssdelay llamount lldelay"
+
+. global demog        ""
+
+. global hetero       ""
+
+. 
+. global error "context"      // contextual error 
+
+. global weigh "prelec2"      // prelec2 weighting function 
+
+. global ufunc "crra"
+
+. 
+.     ***********************************************************
+.     ***        CRRA utility, exponential discounting        ***
+.     ***********************************************************
+. 
+.         set more off
+
+.         global discount "exp"
+
+.         ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
+>         (phi: $demog) (eta: $demog) (delta: $demog) ///
+>         (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+>         cluster(id) technique($maxtech) init(0.351 0.489 0.8839 1.48568 0.1423 6.268, copy)
+
+.         ml maximize, difficult
+
+initial:       log pseudolikelihood = -64573.643
+rescale:       log pseudolikelihood = -64573.643
+rescale eq:    log pseudolikelihood = -64573.643
+Iteration 0:   log pseudolikelihood = -64573.643  
+Iteration 1:   log pseudolikelihood = -64573.604  
+Iteration 2:   log pseudolikelihood = -64573.604  
+
+                                                       Number of obs = 103,360
+                                                       Wald chi2(0)  =       .
+Log pseudolikelihood = -64573.604                      Prob > chi2   =       .
+
+                                   (Std. err. adjusted for 544 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+             | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+r            |
+       _cons |   .3514852   .0176583    19.90   0.000     .3168757    .3860948
+-------------+----------------------------------------------------------------
+phi          |
+       _cons |   .4892791   .0143353    34.13   0.000     .4611824    .5173758
+-------------+----------------------------------------------------------------
+eta          |
+       _cons |   .8839316   .0172399    51.27   0.000     .8501421    .9177211
+-------------+----------------------------------------------------------------
+delta        |
+       _cons |   1.485668   .1060355    14.01   0.000     1.277842    1.693493
+-------------+----------------------------------------------------------------
+noiseRA      |
+       _cons |    .142377   .0035229    40.41   0.000     .1354722    .1492818
+-------------+----------------------------------------------------------------
+noiseDR      |
+       _cons |   6.268615   .6618111     9.47   0.000     4.971489    7.565741
+------------------------------------------------------------------------------
+
+. 
+.         estimates store m1, title(Model - Prelec2Exp)
+
+. 
+.         esttab m1 using "$stata_tables/ml_model_homogenous.rtf" , replace ///
+>                 label se b(%15.10g) ///
+>         mtitle("Homogenous Preferences A") ///
+>         title(CRRA Utility & Exponential Discounting)
+(output written to stata_tables/ml_model_homogenous.rtf)
+
+. 
+.     ***********************************************************
+.     ***     CRRA utility, quasi-hyperbolic discounting      ***
+.     ***********************************************************
+.     
+.         set more off
+
+.         global discount "qh"
+
+.         ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
+>         (phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
+>         (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+>         cluster(id) technique($maxtech) init(0.351 0.489 0.8839 0.978 1.48568 0.1423 6.268, copy)
+
+.         ml maximize, difficult
+
+initial:       log pseudolikelihood = -64679.889
+rescale:       log pseudolikelihood = -64679.889
+rescale eq:    log pseudolikelihood = -64679.889
+Iteration 0:   log pseudolikelihood = -64679.889  (not concave)
+Iteration 1:   log pseudolikelihood = -64575.143  
+Iteration 2:   log pseudolikelihood =  -64573.59  
+Iteration 3:   log pseudolikelihood =  -64573.59  
+
+                                                       Number of obs = 103,360
+                                                       Wald chi2(0)  =       .
+Log pseudolikelihood = -64573.59                       Prob > chi2   =       .
+
+                                   (Std. err. adjusted for 544 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+             | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+r            |
+       _cons |   .3514676    .017655    19.91   0.000     .3168645    .3860708
+-------------+----------------------------------------------------------------
+phi          |
+       _cons |   .4892757   .0143365    34.13   0.000     .4611767    .5173747
+-------------+----------------------------------------------------------------
+eta          |
+       _cons |   .8839429   .0172444    51.26   0.000     .8501445    .9177414
+-------------+----------------------------------------------------------------
+beta         |
+       _cons |   .9996996   .0031767   314.70   0.000     .9934735    1.005926
+-------------+----------------------------------------------------------------
+delta        |
+       _cons |   1.484232   .1023505    14.50   0.000     1.283629    1.684835
+-------------+----------------------------------------------------------------
+noiseRA      |
+       _cons |   .1423771    .003523    40.41   0.000     .1354722    .1492821
+-------------+----------------------------------------------------------------
+noiseDR      |
+       _cons |   6.264717   .6603234     9.49   0.000     4.970507    7.558927
+------------------------------------------------------------------------------
+
+. 
+.         estimates store m3, title(Model 3 - Prelec2QHyp)
+
+. 
+.         esttab m3 using "$stata_tables/ml_model_homogenous.rtf" , append ///
+>                 label se b(%15.10g) ///
+>         mtitle("Homogenous Preferences B") ///
+>         title(CRRA Utility & Quasi-Hyperbolic Discounting)
+(output written to stata_tables/ml_model_homogenous.rtf)
+
+. 
+.         test [beta]_cons == 1
+
+ ( 1)  [beta]_cons = 1
+
+           chi2(  1) =    0.01
+         Prob > chi2 =    0.9247
+
+. 
+. 
+.     * Evaluate QH Discount rate at different horizons, specified in days
+.     foreach x of numlist 7 14 42 84 {
+  2.         di as error "QH discount rate evaluated at `x' day horizon"
+  3.         nlcom (QHDiscountRate : ([beta]_cons/(1+[delta]_cons)^(`x'/365))^(-1/(`x'/365)) - 1)
+  4.     }   
+QH discount rate evaluated at 7 day horizon
+
+QHDiscount~e: ([beta]_cons/(1+[delta]_cons)^(7/365))^(-1/(7/365)) - 1
+
+--------------------------------------------------------------------------------
+               | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+QHDiscountRate |   1.523453   .4473867     3.41   0.001     .6465912    2.400315
+--------------------------------------------------------------------------------
+QH discount rate evaluated at 14 day horizon
+
+QHDiscount~e: ([beta]_cons/(1+[delta]_cons)^(14/365))^(-1/(14/365)) - 1
+
+--------------------------------------------------------------------------------
+               | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+QHDiscountRate |   1.503766   .2466128     6.10   0.000     1.020413    1.987118
+--------------------------------------------------------------------------------
+QH discount rate evaluated at 42 day horizon
+
+QHDiscount~e: ([beta]_cons/(1+[delta]_cons)^(42/365))^(-1/(42/365)) - 1
+
+--------------------------------------------------------------------------------
+               | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+QHDiscountRate |   1.490726   .1327427    11.23   0.000     1.230555    1.750897
+--------------------------------------------------------------------------------
+QH discount rate evaluated at 84 day horizon
+
+QHDiscount~e: ([beta]_cons/(1+[delta]_cons)^(84/365))^(-1/(84/365)) - 1
+
+--------------------------------------------------------------------------------
+               | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+QHDiscountRate |   1.487477   .1133985    13.12   0.000      1.26522    1.709734
+--------------------------------------------------------------------------------
+
+. 
+. 
+. * Homogeneous preferences across waves to test whether all waves are best characterised by QH
+. forvalues w = 1/6 {
+  2.         estimates restore m3
+  3.         di "" ""        
+  4.         di as error "Estimates for Wave #`w'"
+  5.         global discount "qh"
+  6.                 
+.     ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
+>         (phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
+>             (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+>             cluster(id) technique($maxtech) continue
+  7.         ml maximize, difficult
+  8. 
+.         * test for QH
+.         di as error "Test for QH in wave #`w'"
+  9.         test [beta]_cons == 1
+ 10. }
+(results m3 are active now)
+
+Estimates for Wave #1
+
+initial:       log pseudolikelihood =  -64573.59
+rescale:       log pseudolikelihood =  -64573.59
+rescale eq:    log pseudolikelihood =  -64573.59
+Iteration 0:   log pseudolikelihood =  -64573.59  
+Iteration 1:   log pseudolikelihood =  -64573.59  (backed up)
+
+                                                       Number of obs = 103,360
+                                                       Wald chi2(0)  =       .
+Log pseudolikelihood = -64573.59                       Prob > chi2   =       .
+
+                                   (Std. err. adjusted for 544 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+             | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+r            |
+       _cons |   .3514676   .0176543    19.91   0.000     .3168658    .3860695
+-------------+----------------------------------------------------------------
+phi          |
+       _cons |   .4892757   .0143365    34.13   0.000     .4611767    .5173747
+-------------+----------------------------------------------------------------
+eta          |
+       _cons |   .8839429   .0172442    51.26   0.000     .8501449     .917741
+-------------+----------------------------------------------------------------
+beta         |
+       _cons |   .9996996   .0031767   314.70   0.000     .9934735    1.005926
+-------------+----------------------------------------------------------------
+delta        |
+       _cons |   1.484232   .1023483    14.50   0.000     1.283633    1.684831
+-------------+----------------------------------------------------------------
+noiseRA      |
+       _cons |   .1423771    .003523    40.41   0.000     .1354722    .1492821
+-------------+----------------------------------------------------------------
+noiseDR      |
+       _cons |   6.264717   .6602972     9.49   0.000     4.970558    7.558875
+------------------------------------------------------------------------------
+Test for QH in wave #1
+
+ ( 1)  [beta]_cons = 1
+
+           chi2(  1) =    0.01
+         Prob > chi2 =    0.9247
+(results m3 are active now)
+
+Estimates for Wave #2
+
+initial:       log pseudolikelihood =  -64573.59
+rescale:       log pseudolikelihood =  -64573.59
+rescale eq:    log pseudolikelihood =  -64573.59
+Iteration 0:   log pseudolikelihood =  -64573.59  
+Iteration 1:   log pseudolikelihood =  -64573.59  (backed up)
+
+                                                       Number of obs = 103,360
+                                                       Wald chi2(0)  =       .
+Log pseudolikelihood = -64573.59                       Prob > chi2   =       .
+
+                                   (Std. err. adjusted for 544 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+             | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+r            |
+       _cons |   .3514676   .0176543    19.91   0.000     .3168658    .3860695
+-------------+----------------------------------------------------------------
+phi          |
+       _cons |   .4892757   .0143365    34.13   0.000     .4611767    .5173747
+-------------+----------------------------------------------------------------
+eta          |
+       _cons |   .8839429   .0172442    51.26   0.000     .8501449     .917741
+-------------+----------------------------------------------------------------
+beta         |
+       _cons |   .9996996   .0031767   314.70   0.000     .9934735    1.005926
+-------------+----------------------------------------------------------------
+delta        |
+       _cons |   1.484232   .1023483    14.50   0.000     1.283633    1.684831
+-------------+----------------------------------------------------------------
+noiseRA      |
+       _cons |   .1423771    .003523    40.41   0.000     .1354722    .1492821
+-------------+----------------------------------------------------------------
+noiseDR      |
+       _cons |   6.264717   .6602972     9.49   0.000     4.970558    7.558875
+------------------------------------------------------------------------------
+Test for QH in wave #2
+
+ ( 1)  [beta]_cons = 1
+
+           chi2(  1) =    0.01
+         Prob > chi2 =    0.9247
+(results m3 are active now)
+
+Estimates for Wave #3
+
+initial:       log pseudolikelihood =  -64573.59
+rescale:       log pseudolikelihood =  -64573.59
+rescale eq:    log pseudolikelihood =  -64573.59
+Iteration 0:   log pseudolikelihood =  -64573.59  
+Iteration 1:   log pseudolikelihood =  -64573.59  (backed up)
+
+                                                       Number of obs = 103,360
+                                                       Wald chi2(0)  =       .
+Log pseudolikelihood = -64573.59                       Prob > chi2   =       .
+
+                                   (Std. err. adjusted for 544 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+             | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+r            |
+       _cons |   .3514676   .0176543    19.91   0.000     .3168658    .3860695
+-------------+----------------------------------------------------------------
+phi          |
+       _cons |   .4892757   .0143365    34.13   0.000     .4611767    .5173747
+-------------+----------------------------------------------------------------
+eta          |
+       _cons |   .8839429   .0172442    51.26   0.000     .8501449     .917741
+-------------+----------------------------------------------------------------
+beta         |
+       _cons |   .9996996   .0031767   314.70   0.000     .9934735    1.005926
+-------------+----------------------------------------------------------------
+delta        |
+       _cons |   1.484232   .1023483    14.50   0.000     1.283633    1.684831
+-------------+----------------------------------------------------------------
+noiseRA      |
+       _cons |   .1423771    .003523    40.41   0.000     .1354722    .1492821
+-------------+----------------------------------------------------------------
+noiseDR      |
+       _cons |   6.264717   .6602972     9.49   0.000     4.970558    7.558875
+------------------------------------------------------------------------------
+Test for QH in wave #3
+
+ ( 1)  [beta]_cons = 1
+
+           chi2(  1) =    0.01
+         Prob > chi2 =    0.9247
+(results m3 are active now)
+
+Estimates for Wave #4
+
+initial:       log pseudolikelihood =  -64573.59
+rescale:       log pseudolikelihood =  -64573.59
+rescale eq:    log pseudolikelihood =  -64573.59
+Iteration 0:   log pseudolikelihood =  -64573.59  
+Iteration 1:   log pseudolikelihood =  -64573.59  (backed up)
+
+                                                       Number of obs = 103,360
+                                                       Wald chi2(0)  =       .
+Log pseudolikelihood = -64573.59                       Prob > chi2   =       .
+
+                                   (Std. err. adjusted for 544 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+             | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+r            |
+       _cons |   .3514676   .0176543    19.91   0.000     .3168658    .3860695
+-------------+----------------------------------------------------------------
+phi          |
+       _cons |   .4892757   .0143365    34.13   0.000     .4611767    .5173747
+-------------+----------------------------------------------------------------
+eta          |
+       _cons |   .8839429   .0172442    51.26   0.000     .8501449     .917741
+-------------+----------------------------------------------------------------
+beta         |
+       _cons |   .9996996   .0031767   314.70   0.000     .9934735    1.005926
+-------------+----------------------------------------------------------------
+delta        |
+       _cons |   1.484232   .1023483    14.50   0.000     1.283633    1.684831
+-------------+----------------------------------------------------------------
+noiseRA      |
+       _cons |   .1423771    .003523    40.41   0.000     .1354722    .1492821
+-------------+----------------------------------------------------------------
+noiseDR      |
+       _cons |   6.264717   .6602972     9.49   0.000     4.970558    7.558875
+------------------------------------------------------------------------------
+Test for QH in wave #4
+
+ ( 1)  [beta]_cons = 1
+
+           chi2(  1) =    0.01
+         Prob > chi2 =    0.9247
+(results m3 are active now)
+
+Estimates for Wave #5
+
+initial:       log pseudolikelihood =  -64573.59
+rescale:       log pseudolikelihood =  -64573.59
+rescale eq:    log pseudolikelihood =  -64573.59
+Iteration 0:   log pseudolikelihood =  -64573.59  
+Iteration 1:   log pseudolikelihood =  -64573.59  (backed up)
+
+                                                       Number of obs = 103,360
+                                                       Wald chi2(0)  =       .
+Log pseudolikelihood = -64573.59                       Prob > chi2   =       .
+
+                                   (Std. err. adjusted for 544 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+             | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+r            |
+       _cons |   .3514676   .0176543    19.91   0.000     .3168658    .3860695
+-------------+----------------------------------------------------------------
+phi          |
+       _cons |   .4892757   .0143365    34.13   0.000     .4611767    .5173747
+-------------+----------------------------------------------------------------
+eta          |
+       _cons |   .8839429   .0172442    51.26   0.000     .8501449     .917741
+-------------+----------------------------------------------------------------
+beta         |
+       _cons |   .9996996   .0031767   314.70   0.000     .9934735    1.005926
+-------------+----------------------------------------------------------------
+delta        |
+       _cons |   1.484232   .1023483    14.50   0.000     1.283633    1.684831
+-------------+----------------------------------------------------------------
+noiseRA      |
+       _cons |   .1423771    .003523    40.41   0.000     .1354722    .1492821
+-------------+----------------------------------------------------------------
+noiseDR      |
+       _cons |   6.264717   .6602972     9.49   0.000     4.970558    7.558875
+------------------------------------------------------------------------------
+Test for QH in wave #5
+
+ ( 1)  [beta]_cons = 1
+
+           chi2(  1) =    0.01
+         Prob > chi2 =    0.9247
+(results m3 are active now)
+
+Estimates for Wave #6
+
+initial:       log pseudolikelihood =  -64573.59
+rescale:       log pseudolikelihood =  -64573.59
+rescale eq:    log pseudolikelihood =  -64573.59
+Iteration 0:   log pseudolikelihood =  -64573.59  
+Iteration 1:   log pseudolikelihood =  -64573.59  (backed up)
+
+                                                       Number of obs = 103,360
+                                                       Wald chi2(0)  =       .
+Log pseudolikelihood = -64573.59                       Prob > chi2   =       .
+
+                                   (Std. err. adjusted for 544 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+             | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+r            |
+       _cons |   .3514676   .0176543    19.91   0.000     .3168658    .3860695
+-------------+----------------------------------------------------------------
+phi          |
+       _cons |   .4892757   .0143365    34.13   0.000     .4611767    .5173747
+-------------+----------------------------------------------------------------
+eta          |
+       _cons |   .8839429   .0172442    51.26   0.000     .8501449     .917741
+-------------+----------------------------------------------------------------
+beta         |
+       _cons |   .9996996   .0031767   314.70   0.000     .9934735    1.005926
+-------------+----------------------------------------------------------------
+delta        |
+       _cons |   1.484232   .1023483    14.50   0.000     1.283633    1.684831
+-------------+----------------------------------------------------------------
+noiseRA      |
+       _cons |   .1423771    .003523    40.41   0.000     .1354722    .1492821
+-------------+----------------------------------------------------------------
+noiseDR      |
+       _cons |   6.264717   .6602972     9.49   0.000     4.970558    7.558875
+------------------------------------------------------------------------------
+Test for QH in wave #6
+
+ ( 1)  [beta]_cons = 1
+
+           chi2(  1) =    0.01
+         Prob > chi2 =    0.9247
+
+. 
+. 
+. * Export the estimates to .TSV for easy import in Excel
+. estout * using "$estimations/RDUDiscEstimates_Homogenous.tsv", ///
+> replace starlevels(* 0.10 ** 0.05 *** 0.01) cells( b(star label("Estimate") fmt(3)) se(label("Std
+>  Error") par(`"="("' `")""') fmt(3))  ) ///
+> stats(N ll, fmt(%5.0f %10.3f) labels(N "log-likelihood")) nobaselevels ///
+> varlabels(r:_cons "CRRA function parameter (r)" phi:_cons "PWF parameter (phi)" eta:_cons "PWF pa
+> rameter (eta)" beta:_cons "Discounting parameter (beta)" delta:_cons "Discounting parameter (delt
+> a)" noiseRA:_cons "Risk error (mu)" noiseDR:_cons "Time error (nu)") ///
+> prehead("Table" "Discounting Function ML Estimates" @title) ///
+> title("Concave Utility, Homogenous Preferences") ///
+> legend eqlabels(none) mlabels(,titles) /// ///
+> postfoot("Results account for clustering at the individual level" "Standard errors in parentheses
+> ")
+(output written to estimates/RDUDiscEstimates_Homogenous.tsv)
+
+.         
+. 
+. 
+. *******************************************************************************
+. ***     8.2 -- Heterogenous Preferences                                                         *
+> **
+. *******************************************************************************
+. 
+. set more off
+
+. global cdf "invlogit"
+
+. global maxtech "nr"
+
+. global riskvars "prob1L prob2L prob3L prob1R prob2R prob3R prize1L prize2L prize3L prize1R prize2
+> R prize3R uMax uMin"
+
+. global timevars "risk ssamount ssdelay llamount lldelay"
+
+. global hetero ""
+
+. 
+. global error "context"
+
+. global weigh "prelec2"
+
+. global ufunc "crra"
+
+. 
+.     ***********************************************************
+.     ***        CRRA utility, exponential discounting        ***
+.     ***********************************************************
+. 
+.         set more off
+
+.         global discount "exp"
+
+. 
+.         forvalues l = 1/2 {
+  2.         
+.         if `l' == 1 { 
+  3.                         estimates restore m1
+  4.                         global demog "i.wave c.age i.male c.anxiety_total c.depression_total i
+> .race i.race#i.wave i.male#i.wave"
+  5.                         ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $dem
+> og) ///
+>                         (phi: $demog) (eta: $demog) (delta: ) ///
+>                         (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+>                         cluster(id) technique($maxtech) continue
+  6.                 }
+  7. 
+.                 if `l' == 2 { 
+  8.                         estimates restore m1hetero
+  9.                         ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $dem
+> og) ///
+>                         (phi: $demog) (eta: $demog) (delta: $demog) ///
+>                         (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+>                         cluster(id) technique($maxtech) continue
+ 10.                 }
+ 11. 
+.                 ml maximize, difficult tolerance(1e-04) ltolerance(0) nrtolerance(1e-05)
+ 12.                 
+.                 estimates store m1hetero
+ 13.         
+.                 esttab m1hetero using "$stata_tables/ml_model_heterogenous.rtf" , replace ///
+>                 label se b(%15.10g) ///
+>         mtitle("Heterogenous Preferences A") ///
+>         title(CRRA Utility & Exponential Discounting)
+ 14. 
+.     }
+(results m1 are active now)
+
+initial:       log pseudolikelihood = -64087.387
+rescale:       log pseudolikelihood = -64087.387
+rescale eq:    log pseudolikelihood = -64087.387
+Iteration 0:   log pseudolikelihood = -64087.387  (not concave)
+Iteration 1:   log pseudolikelihood = -63343.072  
+Iteration 2:   log pseudolikelihood = -62623.493  
+Iteration 3:   log pseudolikelihood = -62547.684  
+Iteration 4:   log pseudolikelihood = -62541.383  
+Iteration 5:   log pseudolikelihood =  -62541.14  
+Iteration 6:   log pseudolikelihood =  -62541.14  
+Iteration 7:   log pseudolikelihood =  -62541.14  
+
+                                                       Number of obs = 102,600
+                                                       Wald chi2(32) =  139.37
+Log pseudolikelihood = -62541.14                       Prob > chi2   =  0.0000
+
+                                         (Std. err. adjusted for 540 clusters in id)
+------------------------------------------------------------------------------------
+                   |               Robust
+                   | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------+----------------------------------------------------------------
+r                  |
+              wave |
+                2  |  -.0711727   .0650758    -1.09   0.274    -.1987188    .0563735
+                3  |  -.0393354   .0648803    -0.61   0.544    -.1664984    .0878275
+                4  |  -.1064334   .0634269    -1.68   0.093    -.2307479    .0178811
+                5  |  -.0343126   .0650833    -0.53   0.598    -.1618734    .0932483
+                6  |   .0120172   .0757803     0.16   0.874    -.1365095     .160544
+                   |
+               age |   .0005107   .0019744     0.26   0.796    -.0033591    .0043806
+                   |
+              male |
+          1. Male  |  -.0119088   .0439269    -0.27   0.786     -.098004    .0741864
+     anxiety_total |   .0030541   .0022605     1.35   0.177    -.0013763    .0074845
+  depression_total |  -.0015156   .0020528    -0.74   0.460    -.0055389    .0025078
+                   |
+              race |
+  1. Asian/Indian  |  -.2750632   .0664924    -4.14   0.000    -.4053859   -.1447404
+      2. Coloured  |   -.099126   .0657835    -1.51   0.132    -.2280592    .0298072
+         3. White  |  -.2285176   .0512457    -4.46   0.000    -.3289573   -.1280779
+                   |
+         race#wave |
+1. Asian/Indian#2  |   .1572311   .1008054     1.56   0.119    -.0403438    .3548059
+1. Asian/Indian#3  |   .1643665   .0847155     1.94   0.052    -.0016728    .3304057
+1. Asian/Indian#4  |    .288617   .1145549     2.52   0.012     .0640936    .5131405
+1. Asian/Indian#5  |   .1187997     .08989     1.32   0.186    -.0573814    .2949808
+1. Asian/Indian#6  |   .0761348    .102658     0.74   0.458    -.1250712    .2773409
+    2. Coloured#2  |   .0290923   .1026785     0.28   0.777    -.1721538    .2303384
+    2. Coloured#3  |   .0318384   .0932951     0.34   0.733    -.1510166    .2146934
+    2. Coloured#4  |   .0822671   .0808342     1.02   0.309     -.076165    .2406992
+    2. Coloured#5  |   .0737177   .1148743     0.64   0.521    -.1514319    .2988673
+    2. Coloured#6  |  -.0115075   .0872553    -0.13   0.895    -.1825246    .1595097
+       3. White#2  |    .094369   .0712243     1.32   0.185    -.0452281    .2339661
+       3. White#3  |    .046766   .0705897     0.66   0.508    -.0915872    .1851193
+       3. White#4  |   .0858458    .066373     1.29   0.196    -.0442429    .2159344
+       3. White#5  |   .0342745   .0671505     0.51   0.610    -.0973381    .1658871
+       3. White#6  |   .0288952   .0840039     0.34   0.731    -.1357494    .1935398
+                   |
+         male#wave |
+        1. Male#2  |   .0238556   .0657348     0.36   0.717    -.1049823    .1526935
+        1. Male#3  |   .0544151   .0606169     0.90   0.369     -.064392    .1732221
+        1. Male#4  |   .0327281   .0566113     0.58   0.563    -.0782281    .1436843
+        1. Male#5  |  -.0035011   .0583286    -0.06   0.952    -.1178231    .1108209
+        1. Male#6  |   .0862061   .0758329     1.14   0.256    -.0624237    .2348359
+                   |
+             _cons |   .5393591   .0798406     6.76   0.000     .3828745    .6958438
+-------------------+----------------------------------------------------------------
+phi                |
+              wave |
+                2  |   .0112685   .0823838     0.14   0.891    -.1502007    .1727377
+                3  |   .0655678   .0854302     0.77   0.443    -.1018723    .2330079
+                4  |  -.0102641   .0751592    -0.14   0.891    -.1575734    .1370451
+                5  |   .0902877   .0836959     1.08   0.281    -.0737533    .2543287
+                6  |  -.0551668   .1086443    -0.51   0.612    -.2681056    .1577721
+                   |
+               age |   .0012912   .0027768     0.47   0.642    -.0041511    .0067336
+                   |
+              male |
+          1. Male  |   .0887355   .0659596     1.35   0.179    -.0405429     .218014
+     anxiety_total |   .0035389   .0039619     0.89   0.372    -.0042262     .011304
+  depression_total |   .0043846   .0035251     1.24   0.214    -.0025245    .0112938
+                   |
+              race |
+  1. Asian/Indian  |    .394172   .1152762     3.42   0.001     .1682348    .6201092
+      2. Coloured  |   .0657626   .0816432     0.81   0.421    -.0942552    .2257804
+         3. White  |   .2613519   .0780012     3.35   0.001     .1084724    .4142315
+                   |
+         race#wave |
+1. Asian/Indian#2  |  -.3752304   .1729565    -2.17   0.030     -.714219   -.0362419
+1. Asian/Indian#3  |  -.3113418   .1578142    -1.97   0.049    -.6206519   -.0020316
+1. Asian/Indian#4  |  -.1575994    .213092    -0.74   0.460     -.575252    .2600533
+1. Asian/Indian#5  |  -.1478799   .2218014    -0.67   0.505    -.5826026    .2868428
+1. Asian/Indian#6  |   -.279802   .1554609    -1.80   0.072    -.5844998    .0248957
+    2. Coloured#2  |   .0636529   .1367829     0.47   0.642    -.2044366    .3317425
+    2. Coloured#3  |  -.0320339   .1292175    -0.25   0.804    -.2852956    .2212277
+    2. Coloured#4  |   .1339006   .1228951     1.09   0.276    -.1069694    .3747707
+    2. Coloured#5  |  -.0809726   .1502985    -0.54   0.590    -.3755522     .213607
+    2. Coloured#6  |   .1702914   .1342703     1.27   0.205    -.0928735    .4334563
+       3. White#2  |  -.0690251   .1102707    -0.63   0.531    -.2851516    .1471014
+       3. White#3  |    -.18112   .1057336    -1.71   0.087    -.3883541     .026114
+       3. White#4  |  -.1521893   .1037889    -1.47   0.143    -.3556119    .0512333
+       3. White#5  |  -.2055688   .1165597    -1.76   0.078    -.4340216     .022884
+       3. White#6  |   .0323378   .1258582     0.26   0.797    -.2143397    .2790153
+                   |
+         male#wave |
+        1. Male#2  |   .1619174   .1009566     1.60   0.109    -.0359538    .3597886
+        1. Male#3  |  -.0140447   .0937748    -0.15   0.881      -.19784    .1697506
+        1. Male#4  |   .0167687   .0922514     0.18   0.856    -.1640407    .1975782
+        1. Male#5  |   .0660442   .1018271     0.65   0.517    -.1335332    .2656216
+        1. Male#6  |   .1195778   .1077325     1.11   0.267    -.0915739    .3307295
+                   |
+             _cons |    .251519   .0942304     2.67   0.008     .0668308    .4362072
+-------------------+----------------------------------------------------------------
+eta                |
+              wave |
+                2  |   .0201632   .0819145     0.25   0.806    -.1403863    .1807128
+                3  |   .0077036   .0984439     0.08   0.938    -.1852429    .2006501
+                4  |   .0576538   .0935473     0.62   0.538    -.1256954    .2410031
+                5  |   .1332476   .0993323     1.34   0.180    -.0614402    .3279354
+                6  |  -.1083363   .1108163    -0.98   0.328    -.3255323    .1088597
+                   |
+               age |   .0035892   .0034379     1.04   0.296     -.003149    .0103274
+                   |
+              male |
+          1. Male  |  -.0100826   .0791557    -0.13   0.899     -.165225    .1450599
+     anxiety_total |   .0072493   .0043342     1.67   0.094    -.0012455    .0157442
+  depression_total |  -.0081284    .003905    -2.08   0.037    -.0157821   -.0004747
+                   |
+              race |
+  1. Asian/Indian  |   .0461402   .1854818     0.25   0.804    -.3173976    .4096779
+      2. Coloured  |   .1367912   .0951862     1.44   0.151    -.0497703    .3233526
+         3. White  |   .0893107   .0840563     1.06   0.288    -.0754366     .254058
+                   |
+         race#wave |
+1. Asian/Indian#2  |    .322472   .2605333     1.24   0.216    -.1881639     .833108
+1. Asian/Indian#3  |   .2112994   .2150799     0.98   0.326    -.2102495    .6328483
+1. Asian/Indian#4  |   .0230847   .2301595     0.10   0.920    -.4280195     .474189
+1. Asian/Indian#5  |   .1736435   .2714489     0.64   0.522    -.3583866    .7056735
+1. Asian/Indian#6  |   .5305649   .2756011     1.93   0.054    -.0096033    1.070733
+    2. Coloured#2  |    .284302   .1831061     1.55   0.121    -.0745794    .6431833
+    2. Coloured#3  |   .0372123   .1665891     0.22   0.823    -.2892964     .363721
+    2. Coloured#4  |  -.0132878   .1466368    -0.09   0.928    -.3006907     .274115
+    2. Coloured#5  |  -.0396328   .1614881    -0.25   0.806    -.3561436    .2768781
+    2. Coloured#6  |   .2007796   .1657463     1.21   0.226    -.1240772    .5256363
+       3. White#2  |   .1345151    .116099     1.16   0.247    -.0930348    .3620651
+       3. White#3  |    .152521   .1221646     1.25   0.212    -.0869171    .3919591
+       3. White#4  |   .0751275    .117777     0.64   0.524    -.1557112    .3059663
+       3. White#5  |    .010371   .1351198     0.08   0.939    -.2544591     .275201
+       3. White#6  |   .2510074   .1450924     1.73   0.084    -.0333685    .5353833
+                   |
+         male#wave |
+        1. Male#2  |   .0438404   .1023288     0.43   0.668    -.1567203    .2444011
+        1. Male#3  |   .0936774   .1136116     0.82   0.410    -.1289973    .3163521
+        1. Male#4  |  -.0143968   .1059634    -0.14   0.892    -.2220813    .1932876
+        1. Male#5  |   .1096575    .125014     0.88   0.380    -.1353655    .3546804
+        1. Male#6  |    .151767   .1319435     1.15   0.250    -.1068375    .4103715
+                   |
+             _cons |   .6065183   .1108028     5.47   0.000     .3893488    .8236878
+-------------------+----------------------------------------------------------------
+delta              |
+             _cons |   1.092916   .0954671    11.45   0.000     .9058037    1.280028
+-------------------+----------------------------------------------------------------
+noiseRA            |
+             _cons |    .143798   .0044198    32.53   0.000     .1351354    .1524606
+-------------------+----------------------------------------------------------------
+noiseDR            |
+             _cons |   3.625127    .597778     6.06   0.000     2.453504    4.796751
+------------------------------------------------------------------------------------
+(output written to stata_tables/ml_model_heterogenous.rtf)
+(results m1hetero are active now)
+
+initial:       log pseudolikelihood =  -62541.14
+rescale:       log pseudolikelihood =  -62541.14
+rescale eq:    log pseudolikelihood =  -62541.14
+Iteration 0:   log pseudolikelihood =  -62541.14  (not concave)
+Iteration 1:   log pseudolikelihood = -61953.733  
+Iteration 2:   log pseudolikelihood = -61803.237  
+Iteration 3:   log pseudolikelihood = -61780.057  
+Iteration 4:   log pseudolikelihood = -61771.523  
+Iteration 5:   log pseudolikelihood = -61770.934  
+Iteration 6:   log pseudolikelihood = -61770.914  
+Iteration 7:   log pseudolikelihood = -61770.914  
+Iteration 8:   log pseudolikelihood = -61770.914  
+
+                                                       Number of obs = 102,600
+                                                       Wald chi2(32) =  114.22
+Log pseudolikelihood = -61770.914                      Prob > chi2   =  0.0000
+
+                                         (Std. err. adjusted for 540 clusters in id)
+------------------------------------------------------------------------------------
+                   |               Robust
+                   | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------+----------------------------------------------------------------
+r                  |
+              wave |
+                2  |  -.0405716   .0573799    -0.71   0.480    -.1530342     .071891
+                3  |  -.0078037    .055136    -0.14   0.887    -.1158682    .1002607
+                4  |  -.0465288   .0547258    -0.85   0.395    -.1537893    .0607317
+                5  |  -.0344996   .0552474    -0.62   0.532    -.1427826    .0737833
+                6  |   .0273791   .0762218     0.36   0.719    -.1220129    .1767711
+                   |
+               age |   .0004362   .0016857     0.26   0.796    -.0028676      .00374
+                   |
+              male |
+          1. Male  |  -.0084338   .0374034    -0.23   0.822    -.0817431    .0648755
+     anxiety_total |   .0024205   .0018336     1.32   0.187    -.0011732    .0060143
+  depression_total |  -.0016969   .0016381    -1.04   0.300    -.0049074    .0015137
+                   |
+              race |
+  1. Asian/Indian  |  -.2159107   .0522642    -4.13   0.000    -.3183467   -.1134748
+      2. Coloured  |  -.0459654   .0522063    -0.88   0.379    -.1482878     .056357
+         3. White  |  -.1630683    .044649    -3.65   0.000    -.2505787   -.0755579
+                   |
+         race#wave |
+1. Asian/Indian#2  |   .1641887   .0901386     1.82   0.069    -.0124797    .3408571
+1. Asian/Indian#3  |   .0978942   .0624993     1.57   0.117    -.0246022    .2203907
+1. Asian/Indian#4  |   .1958058   .0862413     2.27   0.023      .026776    .3648356
+1. Asian/Indian#5  |   .1480852   .0750633     1.97   0.049     .0009638    .2952066
+1. Asian/Indian#6  |   .1247232   .1034067     1.21   0.228    -.0779502    .3273966
+    2. Coloured#2  |   .0144585   .0811028     0.18   0.859    -.1445001    .1734171
+    2. Coloured#3  |   .0099568    .075737     0.13   0.895    -.1384851    .1583986
+    2. Coloured#4  |   .0117259   .0652841     0.18   0.857    -.1162285    .1396804
+    2. Coloured#5  |   .0802138   .0941527     0.85   0.394    -.1043222    .2647497
+    2. Coloured#6  |  -.0729292    .074971    -0.97   0.331    -.2198696    .0740112
+       3. White#2  |   .0713815    .061094     1.17   0.243    -.0483606    .1911235
+       3. White#3  |   .0214624   .0606652     0.35   0.724    -.0974393     .140364
+       3. White#4  |   .0546051   .0565671     0.97   0.334    -.0562643    .1654745
+       3. White#5  |   .0317932   .0566303     0.56   0.575    -.0792003    .1427866
+       3. White#6  |   .0466602   .0804152     0.58   0.562    -.1109507    .2042711
+                   |
+         male#wave |
+        1. Male#2  |   -.004821   .0567458    -0.08   0.932    -.1160407    .1063987
+        1. Male#3  |    .017896   .0492758     0.36   0.716    -.0786828    .1144748
+        1. Male#4  |   .0089175   .0478165     0.19   0.852    -.0848011    .1026361
+        1. Male#5  |  -.0146878   .0487039    -0.30   0.763    -.1101457    .0807702
+        1. Male#6  |   .0108318   .0643989     0.17   0.866    -.1153877    .1370514
+                   |
+             _cons |   .4181456    .062529     6.69   0.000     .2955909    .5407003
+-------------------+----------------------------------------------------------------
+phi                |
+              wave |
+                2  |   .0122291   .0763196     0.16   0.873    -.1373545    .1618127
+                3  |   .0675732   .0791001     0.85   0.393    -.0874601    .2226065
+                4  |  -.0083364   .0696532    -0.12   0.905    -.1448542    .1281815
+                5  |   .0830249   .0774774     1.07   0.284    -.0688281    .2348779
+                6  |  -.0371108   .0967253    -0.38   0.701    -.2266888    .1524673
+                   |
+               age |   .0012788   .0026209     0.49   0.626    -.0038581    .0064156
+                   |
+              male |
+          1. Male  |   .0865005   .0612053     1.41   0.158    -.0334596    .2064607
+     anxiety_total |   .0035731    .003689     0.97   0.333    -.0036571    .0108034
+  depression_total |   .0036674   .0032613     1.12   0.261    -.0027246    .0100595
+                   |
+              race |
+  1. Asian/Indian  |   .3669315   .1084266     3.38   0.001     .1544193    .5794436
+      2. Coloured  |   .0651199    .075449     0.86   0.388    -.0827574    .2129973
+         3. White  |   .2499025   .0723639     3.45   0.001     .1080718    .3917332
+                   |
+         race#wave |
+1. Asian/Indian#2  |   -.342343   .1663877    -2.06   0.040    -.6684569   -.0162291
+1. Asian/Indian#3  |  -.2984504   .1477548    -2.02   0.043    -.5880445   -.0088563
+1. Asian/Indian#4  |  -.1518173   .1981718    -0.77   0.444    -.5402269    .2365923
+1. Asian/Indian#5  |  -.1205571   .2089873    -0.58   0.564    -.5301646    .2890505
+1. Asian/Indian#6  |  -.2654069   .1460014    -1.82   0.069    -.5515645    .0207506
+    2. Coloured#2  |   .0625832   .1290039     0.49   0.628    -.1902597    .3154261
+    2. Coloured#3  |  -.0332462   .1214819    -0.27   0.784    -.2713463     .204854
+    2. Coloured#4  |   .1229528   .1146515     1.07   0.284      -.10176    .3476656
+    2. Coloured#5  |  -.0741942   .1392111    -0.53   0.594    -.3470429    .1986546
+    2. Coloured#6  |   .1467955    .121092     1.21   0.225    -.0905406    .3841315
+       3. White#2  |  -.0645692   .1032543    -0.63   0.532    -.2669438    .1378055
+       3. White#3  |  -.1768005   .0988625    -1.79   0.074    -.3705674    .0169665
+       3. White#4  |  -.1452512   .0974301    -1.49   0.136    -.3362107    .0457084
+       3. White#5  |  -.1898224   .1094536    -1.73   0.083    -.4043475    .0247027
+       3. White#6  |   .0243602    .115095     0.21   0.832    -.2012219    .2499423
+                   |
+         male#wave |
+        1. Male#2  |   .1419131   .0934082     1.52   0.129    -.0411635    .3249898
+        1. Male#3  |  -.0208908   .0872128    -0.24   0.811    -.1918248    .1500432
+        1. Male#4  |   .0153745   .0862606     0.18   0.859    -.1536932    .1844423
+        1. Male#5  |   .0537792   .0936192     0.57   0.566    -.1297112    .2372695
+        1. Male#6  |    .088241   .0979373     0.90   0.368    -.1037125    .2801945
+                   |
+             _cons |   .2601968   .0874544     2.98   0.003     .0887894    .4316042
+-------------------+----------------------------------------------------------------
+eta                |
+              wave |
+                2  |  -.0026515   .0875802    -0.03   0.976    -.1743056    .1690025
+                3  |  -.0135805   .1012107    -0.13   0.893    -.2119499    .1847889
+                4  |   .0130204   .0981043     0.13   0.894    -.1792605    .2053013
+                5  |   .1394028   .1037313     1.34   0.179    -.0639069    .3427125
+                6  |  -.1161335   .1162964    -1.00   0.318    -.3440703    .1118034
+                   |
+               age |   .0038466   .0035862     1.07   0.283    -.0031822    .0108754
+                   |
+              male |
+          1. Male  |  -.0144857   .0811626    -0.18   0.858    -.1735615    .1445901
+     anxiety_total |   .0082378   .0044017     1.87   0.061    -.0003893     .016865
+  depression_total |  -.0086474   .0039565    -2.19   0.029    -.0164021   -.0008927
+                   |
+              race |
+  1. Asian/Indian  |   .0009245   .1880396     0.00   0.996    -.3676264    .3694754
+      2. Coloured  |    .100943   .0950524     1.06   0.288    -.0853562    .2872422
+         3. White  |   .0404224   .0882931     0.46   0.647    -.1326288    .2134736
+                   |
+         race#wave |
+1. Asian/Indian#2  |   .3231196   .2663826     1.21   0.225    -.1989807    .8452198
+1. Asian/Indian#3  |   .2649223   .2192839     1.21   0.227    -.1648662    .6947107
+1. Asian/Indian#4  |   .0906933   .2357295     0.38   0.700     -.371328    .5527147
+1. Asian/Indian#5  |   .1501559   .2643746     0.57   0.570    -.3680087    .6683205
+1. Asian/Indian#6  |   .4906442   .2748387     1.79   0.074    -.0480298    1.029318
+    2. Coloured#2  |   .3008323   .1882326     1.60   0.110    -.0680969    .6697615
+    2. Coloured#3  |   .0530926   .1709641     0.31   0.756     -.281991    .3881761
+    2. Coloured#4  |   .0389189   .1505482     0.26   0.796    -.2561501    .3339879
+    2. Coloured#5  |  -.0491912   .1572423    -0.31   0.754    -.3573803     .258998
+    2. Coloured#6  |   .2545639   .1670593     1.52   0.128    -.0728663    .5819941
+       3. White#2  |   .1528281   .1201422     1.27   0.203    -.0826462    .3883024
+       3. White#3  |   .1694615   .1238095     1.37   0.171    -.0732006    .4121237
+       3. White#4  |   .0994049   .1207911     0.82   0.411    -.1373412    .3361511
+       3. White#5  |   .0055426     .13821     0.04   0.968     -.265344    .2764291
+       3. White#6  |    .240269   .1483553     1.62   0.105    -.0505021    .5310401
+                   |
+         male#wave |
+        1. Male#2  |   .0650261   .1051427     0.62   0.536    -.1410499     .271102
+        1. Male#3  |   .1249687   .1174017     1.06   0.287    -.1051344    .3550719
+        1. Male#4  |   .0058038   .1073947     0.05   0.957     -.204686    .2162936
+        1. Male#5  |   .1200274   .1276231     0.94   0.347    -.1301093    .3701641
+        1. Male#6  |   .2123137   .1352751     1.57   0.117    -.0528207    .4774481
+                   |
+             _cons |   .6892786   .1161824     5.93   0.000     .4615654    .9169919
+-------------------+----------------------------------------------------------------
+delta              |
+              wave |
+                2  |  -1.429557   1.228215    -1.16   0.244    -3.836815    .9777012
+                3  |  -1.482742   1.260219    -1.18   0.239    -3.952726    .9872411
+                4  |   -2.13287   1.179695    -1.81   0.071     -4.44503    .1792896
+                5  |  -.7741025   1.257975    -0.62   0.538    -3.239688    1.691483
+                6  |  -.1907845   2.267484    -0.08   0.933    -4.634971    4.253402
+                   |
+               age |  -.0042134   .0136647    -0.31   0.758    -.0309957    .0225688
+                   |
+              male |
+          1. Male  |  -.3892779   .3877464    -1.00   0.315    -1.149247    .3706911
+     anxiety_total |   .0303852   .0246961     1.23   0.219    -.0180183    .0787886
+  depression_total |  -.0061543   .0225917    -0.27   0.785    -.0504333    .0381246
+                   |
+              race |
+  1. Asian/Indian  |  -2.186273   1.146829    -1.91   0.057    -4.434016    .0614704
+      2. Coloured  |  -1.913182   1.175957    -1.63   0.104    -4.218016    .3916512
+         3. White  |  -2.173329   1.134434    -1.92   0.055    -4.396779     .050122
+                   |
+         race#wave |
+1. Asian/Indian#2  |   1.016171   1.287465     0.79   0.430    -1.507213    3.539555
+1. Asian/Indian#3  |   2.012798   1.309301     1.54   0.124    -.5533848     4.57898
+1. Asian/Indian#4  |    2.77463   1.426052     1.95   0.052    -.0203798     5.56964
+1. Asian/Indian#5  |   .1092847   1.316822     0.08   0.934    -2.471639    2.690208
+1. Asian/Indian#6  |  -.7275237   2.291725    -0.32   0.751    -5.219223    3.764176
+    2. Coloured#2  |   1.046666   1.305268     0.80   0.423    -1.511612    3.604944
+    2. Coloured#3  |    1.38709   1.391747     1.00   0.319    -1.340683    4.114864
+    2. Coloured#4  |   2.264896   1.299205     1.74   0.081    -.2814998    4.811292
+    2. Coloured#5  |   .5666239   1.478244     0.38   0.701    -2.330682    3.463929
+    2. Coloured#6  |   1.202446   2.328378     0.52   0.606     -3.36109    5.765983
+       3. White#2  |   1.186677   1.216357     0.98   0.329    -1.197339    3.570694
+       3. White#3  |   1.144027   1.236186     0.93   0.355    -1.278854    3.566907
+       3. White#4  |      1.493   1.153451     1.29   0.196    -.7677227    3.753722
+       3. White#5  |   .6490678   1.256972     0.52   0.606    -1.814552    3.112687
+       3. White#6  |  -.2783309   2.255335    -0.12   0.902    -4.698706    4.142044
+                   |
+         male#wave |
+        1. Male#2  |   .6301132   .6467239     0.97   0.330    -.6374422    1.897669
+        1. Male#3  |   1.272097   .6526729     1.95   0.051    -.0071187    2.551312
+        1. Male#4  |   .6789961   .4789988     1.42   0.156    -.2598244    1.617817
+        1. Male#5  |   .5771897   .5601206     1.03   0.303    -.5206264    1.675006
+        1. Male#6  |   1.326518   .8512443     1.56   0.119    -.3418899    2.994926
+                   |
+             _cons |   3.282281   1.282383     2.56   0.010     .7688563    5.795706
+-------------------+----------------------------------------------------------------
+noiseRA            |
+             _cons |   .1396591    .003546    39.38   0.000     .1327091    .1466092
+-------------------+----------------------------------------------------------------
+noiseDR            |
+             _cons |   5.717021   .7501991     7.62   0.000     4.246657    7.187384
+------------------------------------------------------------------------------------
+(output written to stata_tables/ml_model_heterogenous.rtf)
+
+. 
+.         estimates save "$estimations/time_het_exp", replace
+file estimates/time_het_exp.ster saved
+
+. 
+. 
+.     ***********************************************************
+.     ***     CRRA utility, quasi-hyperbolic discounting      ***
+.     ***********************************************************
+.     
+.         set more off
+
+.         global discount "qh"
+
+.         estimates restore m3
+(results m3 are active now)
+
+. 
+.         global demog "i.wave c.age i.male c.anxiety_total c.depression_total i.race i.race#i.wave
+>  i.male#i.wave"
+
+. 
+.         ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
+>         (phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
+>         (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+>         cluster(id) technique($maxtech) continue
+
+.         ml maximize, difficult          
+
+initial:       log pseudolikelihood = -64087.339
+rescale:       log pseudolikelihood = -64087.339
+rescale eq:    log pseudolikelihood = -64087.339
+Iteration 0:   log pseudolikelihood = -64087.339  (not concave)
+Iteration 1:   log pseudolikelihood = -63073.236  
+Iteration 2:   log pseudolikelihood = -62688.414  
+Iteration 3:   log pseudolikelihood =  -61876.05  
+Iteration 4:   log pseudolikelihood = -61700.996  
+Iteration 5:   log pseudolikelihood =  -61683.12  
+Iteration 6:   log pseudolikelihood = -61677.437  
+Iteration 7:   log pseudolikelihood = -61677.049  
+Iteration 8:   log pseudolikelihood = -61677.046  
+
+                                                       Number of obs = 102,600
+                                                       Wald chi2(32) =   96.67
+Log pseudolikelihood = -61677.046                      Prob > chi2   =  0.0000
+
+                                         (Std. err. adjusted for 540 clusters in id)
+------------------------------------------------------------------------------------
+                   |               Robust
+                   | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------+----------------------------------------------------------------
+r                  |
+              wave |
+                2  |  -.0424683   .0578032    -0.73   0.463    -.1557605    .0708238
+                3  |  -.0179189   .0543997    -0.33   0.742    -.1245404    .0887026
+                4  |  -.0506814   .0544625    -0.93   0.352    -.1574258    .0560631
+                5  |  -.0309589   .0561188    -0.55   0.581    -.1409498     .079032
+                6  |    .023028   .0726474     0.32   0.751    -.1193583    .1654143
+                   |
+               age |  -.0004707    .001631    -0.29   0.773    -.0036675    .0027261
+                   |
+              male |
+          1. Male  |  -.0165397   .0366461    -0.45   0.652    -.0883647    .0552853
+     anxiety_total |   .0025515   .0018333     1.39   0.164    -.0010417    .0061448
+  depression_total |  -.0021985   .0016538    -1.33   0.184    -.0054398    .0010429
+                   |
+              race |
+  1. Asian/Indian  |  -.1932072   .0544518    -3.55   0.000    -.2999307   -.0864837
+      2. Coloured  |  -.0424017   .0509697    -0.83   0.405    -.1423004    .0574971
+         3. White  |  -.1570079   .0437503    -3.59   0.000    -.2427569    -.071259
+                   |
+         race#wave |
+1. Asian/Indian#2  |   .1522635   .0872236     1.75   0.081    -.0186915    .3232185
+1. Asian/Indian#3  |   .0661435   .0634296     1.04   0.297    -.0581761    .1904632
+1. Asian/Indian#4  |   .1793402   .0826985     2.17   0.030      .017254    .3414263
+1. Asian/Indian#5  |   .1280371   .0804049     1.59   0.111    -.0295537    .2856278
+1. Asian/Indian#6  |    .099322   .0939344     1.06   0.290    -.0847861      .28343
+    2. Coloured#2  |   .0303621   .0836543     0.36   0.717    -.1335973    .1943215
+    2. Coloured#3  |   .0178284   .0730532     0.24   0.807    -.1253534    .1610101
+    2. Coloured#4  |   .0236246   .0642142     0.37   0.713    -.1022329     .149482
+    2. Coloured#5  |   .0622178   .0913013     0.68   0.496    -.1167294     .241165
+    2. Coloured#6  |  -.0596746   .0708394    -0.84   0.400    -.1985172     .079168
+       3. White#2  |   .0832322     .06101     1.36   0.172    -.0363452    .2028096
+       3. White#3  |   .0252352   .0597718     0.42   0.673    -.0919154    .1423858
+       3. White#4  |   .0579186   .0549907     1.05   0.292    -.0498611    .1656983
+       3. White#5  |   .0239428   .0569018     0.42   0.674    -.0875827    .1354683
+       3. White#6  |   .0674225   .0781604     0.86   0.388    -.0857691    .2206141
+                   |
+         male#wave |
+        1. Male#2  |  -.0054147   .0570141    -0.09   0.924    -.1171603    .1063309
+        1. Male#3  |   .0313612   .0484753     0.65   0.518    -.0636487     .126371
+        1. Male#4  |   .0132356   .0460036     0.29   0.774    -.0769298     .103401
+        1. Male#5  |  -.0018376   .0487605    -0.04   0.970    -.0974065    .0937313
+        1. Male#6  |  -.0039234   .0625032    -0.06   0.950    -.1264274    .1185806
+                   |
+             _cons |   .4390847   .0622044     7.06   0.000     .3171664    .5610031
+-------------------+----------------------------------------------------------------
+phi                |
+              wave |
+                2  |   .0122575   .0761545     0.16   0.872    -.1370026    .1615176
+                3  |   .0665811   .0787779     0.85   0.398    -.0878207    .2209829
+                4  |  -.0086567   .0695237    -0.12   0.901    -.1449207    .1276074
+                5  |    .083393    .077385     1.08   0.281    -.0682789    .2350648
+                6  |  -.0369393   .0961575    -0.38   0.701    -.2254045    .1515259
+                   |
+               age |   .0011418   .0025986     0.44   0.660    -.0039513    .0062348
+                   |
+              male |
+          1. Male  |   .0850202   .0611352     1.39   0.164    -.0348025    .2048429
+     anxiety_total |   .0035866   .0036815     0.97   0.330    -.0036289    .0108021
+  depression_total |   .0035499   .0032514     1.09   0.275    -.0028228    .0099226
+                   |
+              race |
+  1. Asian/Indian  |   .3739883   .1082722     3.45   0.001     .1617786    .5861979
+      2. Coloured  |   .0651071   .0753201     0.86   0.387    -.0825176    .2127317
+         3. White  |   .2506799   .0721468     3.47   0.001     .1092748     .392085
+                   |
+         race#wave |
+1. Asian/Indian#2  |  -.3481545   .1660369    -2.10   0.036    -.6735807   -.0227282
+1. Asian/Indian#3  |  -.3094488   .1468001    -2.11   0.035    -.5971717   -.0217259
+1. Asian/Indian#4  |  -.1600877   .1973819    -0.81   0.417    -.5469492    .2267737
+1. Asian/Indian#5  |  -.1268665   .2102488    -0.60   0.546    -.5389466    .2852136
+1. Asian/Indian#6  |  -.2743076   .1449757    -1.89   0.058    -.5584548    .0098396
+    2. Coloured#2  |   .0658451   .1288323     0.51   0.609    -.1866616    .3183518
+    2. Coloured#3  |  -.0325152   .1211627    -0.27   0.788    -.2699897    .2049593
+    2. Coloured#4  |   .1248879   .1147234     1.09   0.276    -.0999659    .3497416
+    2. Coloured#5  |  -.0764753   .1400256    -0.55   0.585    -.3509205    .1979699
+    2. Coloured#6  |   .1507795   .1207024     1.25   0.212    -.0857929    .3873518
+       3. White#2  |  -.0617042   .1030036    -0.60   0.549    -.2635875     .140179
+       3. White#3  |  -.1768449   .0985885    -1.79   0.073    -.3700748     .016385
+       3. White#4  |  -.1455009   .0971141    -1.50   0.134    -.3358411    .0448393
+       3. White#5  |    -.19117   .1091979    -1.75   0.080    -.4051939     .022854
+       3. White#6  |   .0291759   .1145577     0.25   0.799     -.195353    .2537049
+                   |
+         male#wave |
+        1. Male#2  |   .1398397   .0931505     1.50   0.133    -.0427319    .3224114
+        1. Male#3  |  -.0193627   .0868165    -0.22   0.824    -.1895199    .1507945
+        1. Male#4  |   .0157458   .0860626     0.18   0.855    -.1529337    .1844253
+        1. Male#5  |   .0555654   .0935787     0.59   0.553    -.1278455    .2389764
+        1. Male#6  |   .0826084    .097263     0.85   0.396    -.1080235    .2732404
+                   |
+             _cons |   .2647083   .0871909     3.04   0.002     .0938173    .4355994
+-------------------+----------------------------------------------------------------
+eta                |
+              wave |
+                2  |  -.0011039   .0884249    -0.01   0.990    -.1744134    .1722057
+                3  |  -.0066669   .1015753    -0.07   0.948    -.2057509    .1924171
+                4  |   .0157681   .0993059     0.16   0.874    -.1788679    .2104041
+                5  |   .1370823   .1040474     1.32   0.188    -.0668469    .3410116
+                6  |  -.1133597   .1159838    -0.98   0.328    -.3406837    .1139643
+                   |
+               age |   .0044835   .0036259     1.24   0.216    -.0026231    .0115901
+                   |
+              male |
+          1. Male  |  -.0096558   .0818227    -0.12   0.906    -.1700252    .1507137
+     anxiety_total |   .0081525   .0044154     1.85   0.065    -.0005016    .0168066
+  depression_total |  -.0083482   .0039708    -2.10   0.036    -.0161308   -.0005656
+                   |
+              race |
+  1. Asian/Indian  |  -.0105498   .1868274    -0.06   0.955    -.3767247    .3556251
+      2. Coloured  |   .0985554   .0950046     1.04   0.300    -.0876503    .2847611
+         3. White  |   .0371964   .0890738     0.42   0.676     -.137385    .2117778
+                   |
+         race#wave |
+1. Asian/Indian#2  |   .3268272    .266806     1.22   0.221     -.196103    .8497574
+1. Asian/Indian#3  |   .2819747   .2195775     1.28   0.199    -.1483893    .7123387
+1. Asian/Indian#4  |    .096976   .2346862     0.41   0.679    -.3630004    .5569525
+1. Asian/Indian#5  |   .1589011   .2627914     0.60   0.545    -.3561606    .6739628
+1. Asian/Indian#6  |   .5050339   .2717393     1.86   0.063    -.0275653    1.037633
+    2. Coloured#2  |   .2886424   .1876899     1.54   0.124     -.079223    .6565079
+    2. Coloured#3  |   .0472594   .1716722     0.28   0.783    -.2892119    .3837308
+    2. Coloured#4  |   .0307915   .1486088     0.21   0.836    -.2604764    .3220594
+    2. Coloured#5  |  -.0362691   .1538854    -0.24   0.814    -.3378788    .2653407
+    2. Coloured#6  |   .2476327   .1663875     1.49   0.137    -.0784808    .5737462
+       3. White#2  |   .1449753   .1210517     1.20   0.231    -.0922816    .3822323
+       3. White#3  |   .1659864   .1242567     1.34   0.182    -.0775521     .409525
+       3. White#4  |   .0962535   .1215715     0.79   0.429    -.1420223    .3345294
+       3. White#5  |   .0098556   .1385376     0.07   0.943     -.261673    .2813843
+       3. White#6  |   .2271598   .1491868     1.52   0.128    -.0652409    .5195605
+                   |
+         male#wave |
+        1. Male#2  |    .064562   .1060446     0.61   0.543    -.1432816    .2724057
+        1. Male#3  |   .1162312   .1184077     0.98   0.326    -.1158436    .3483059
+        1. Male#4  |   .0033083   .1077762     0.03   0.976    -.2079291    .2145457
+        1. Male#5  |   .1112082   .1279723     0.87   0.385    -.1396129    .3620293
+        1. Male#6  |   .2218497    .136327     1.63   0.104    -.0453464    .4890458
+                   |
+             _cons |    .675098    .117207     5.76   0.000     .4453765    .9048194
+-------------------+----------------------------------------------------------------
+beta               |
+              wave |
+                2  |  -.0035083   .0214369    -0.16   0.870    -.0455238    .0385073
+                3  |  -.0231659   .0222882    -1.04   0.299    -.0668499    .0205182
+                4  |  -.0096934   .0203343    -0.48   0.634     -.049548    .0301612
+                5  |   .0007441   .0231639     0.03   0.974    -.0446564    .0461446
+                6  |  -.0104733   .0248786    -0.42   0.674    -.0592346    .0382879
+                   |
+               age |  -.0018226   .0007948    -2.29   0.022    -.0033803   -.0002649
+                   |
+              male |
+          1. Male  |  -.0177043   .0178322    -0.99   0.321    -.0526549    .0172462
+     anxiety_total |    .000212   .0009651     0.22   0.826    -.0016796    .0021036
+  depression_total |  -.0011233   .0008332    -1.35   0.178    -.0027563    .0005096
+                   |
+              race |
+  1. Asian/Indian  |   .0623637   .0208012     3.00   0.003     .0215941    .1031332
+      2. Coloured  |   .0061082   .0249289     0.25   0.806    -.0427516     .054968
+         3. White  |   .0084947   .0177136     0.48   0.632    -.0262232    .0432127
+                   |
+         race#wave |
+1. Asian/Indian#2  |  -.0408041   .0319698    -1.28   0.202    -.1034637    .0218555
+1. Asian/Indian#3  |  -.0721409   .0290028    -2.49   0.013    -.1289854   -.0152964
+1. Asian/Indian#4  |  -.0452083   .0305882    -1.48   0.139    -.1051602    .0147435
+1. Asian/Indian#5  |  -.0496377   .0356276    -1.39   0.164    -.1194665    .0201911
+1. Asian/Indian#6  |  -.0649493   .0405277    -1.60   0.109    -.1443821    .0144836
+    2. Coloured#2  |    .039439    .035389     1.11   0.265    -.0299221       .1088
+    2. Coloured#3  |    .015204   .0371887     0.41   0.683    -.0576845    .0880925
+    2. Coloured#4  |   .0368572   .0389512     0.95   0.344    -.0394857    .1132001
+    2. Coloured#5  |  -.0310334   .0500311    -0.62   0.535    -.1290926    .0670259
+    2. Coloured#6  |   .0285493   .0346229     0.82   0.410    -.0393103    .0964089
+       3. White#2  |   .0308664   .0253783     1.22   0.224    -.0188742    .0806069
+       3. White#3  |   .0165115   .0248807     0.66   0.507    -.0322537    .0652768
+       3. White#4  |    .013872   .0230781     0.60   0.548    -.0313602    .0591042
+       3. White#5  |  -.0059689   .0247228    -0.24   0.809    -.0544246    .0424868
+       3. White#6  |   .0433465   .0281643     1.54   0.124    -.0118545    .0985476
+                   |
+         male#wave |
+        1. Male#2  |   .0022129    .024652     0.09   0.928    -.0461041      .05053
+        1. Male#3  |    .019698   .0245296     0.80   0.422    -.0283791    .0677751
+        1. Male#4  |   .0073003    .023669     0.31   0.758    -.0390901    .0536907
+        1. Male#5  |   .0308706   .0257074     1.20   0.230    -.0195149    .0812562
+        1. Male#6  |  -.0320859   .0266027    -1.21   0.228    -.0842263    .0200544
+                   |
+             _cons |   1.047775   .0257605    40.67   0.000     .9972855    1.098265
+-------------------+----------------------------------------------------------------
+delta              |
+              wave |
+                2  |  -1.425188   1.183345    -1.20   0.228    -3.744502    .8941261
+                3  |  -1.558538   1.184802    -1.32   0.188    -3.880708    .7636307
+                4  |  -2.104392   1.122015    -1.88   0.061      -4.3035    .0947161
+                5  |  -.6969089   1.209917    -0.58   0.565    -3.068302    1.674485
+                6  |  -.3697531     1.9906    -0.19   0.853    -4.271258    3.531752
+                   |
+               age |  -.0086912   .0128654    -0.68   0.499     -.033907    .0165245
+                   |
+              male |
+          1. Male  |  -.4307474   .3912603    -1.10   0.271    -1.197603    .3361086
+     anxiety_total |    .032816   .0242897     1.35   0.177     -.014791     .080423
+  depression_total |  -.0117041   .0222729    -0.53   0.599    -.0553581      .03195
+                   |
+              race |
+  1. Asian/Indian  |  -1.991725   1.092216    -1.82   0.068    -4.132428    .1489786
+      2. Coloured  |   -1.84434   1.108169    -1.66   0.096    -4.016311    .3276308
+         3. White  |  -2.095143   1.073179    -1.95   0.051    -4.198535      .00825
+                   |
+         race#wave |
+1. Asian/Indian#2  |   .8784297    1.23427     0.71   0.477    -1.540695    3.297554
+1. Asian/Indian#3  |   1.817151   1.223207     1.49   0.137    -.5802902    4.214592
+1. Asian/Indian#4  |   2.636241   1.349316     1.95   0.051    -.0083697    5.280853
+1. Asian/Indian#5  |  -.0969303   1.272935    -0.08   0.939    -2.591838    2.397977
+1. Asian/Indian#6  |  -.6945504   1.997454    -0.35   0.728    -4.609488    3.220387
+    2. Coloured#2  |   1.149163   1.274033     0.90   0.367    -1.347895    3.646222
+    2. Coloured#3  |   1.446191   1.297235     1.11   0.265    -1.096342    3.988725
+    2. Coloured#4  |   2.357796   1.275476     1.85   0.065    -.1420902    4.857682
+    2. Coloured#5  |   .4327216   1.368778     0.32   0.752    -2.250033    3.115476
+    2. Coloured#6  |   1.488695   2.077064     0.72   0.474    -2.582276    5.559667
+       3. White#2  |   1.235115   1.172754     1.05   0.292    -1.063441     3.53367
+       3. White#3  |   1.218003   1.155811     1.05   0.292    -1.047345    3.483351
+       3. White#4  |   1.461901   1.089744     1.34   0.180    -.6739574     3.59776
+       3. White#5  |    .562896   1.203168     0.47   0.640     -1.79527    2.921062
+       3. White#6  |  -.0968207   1.975195    -0.05   0.961    -3.968132     3.77449
+                   |
+         male#wave |
+        1. Male#2  |   .7030733   .7138994     0.98   0.325    -.6961438     2.10229
+        1. Male#3  |   1.326489   .6367446     2.08   0.037     .0784926    2.574486
+        1. Male#4  |   .7048908   .4780334     1.47   0.140    -.2320374    1.641819
+        1. Male#5  |   .6653629   .5726454     1.16   0.245    -.4570014    1.787727
+        1. Male#6  |   1.289674   .8298006     1.55   0.120    -.3367056    2.916053
+                   |
+             _cons |   3.352361    1.23001     2.73   0.006     .9415857    5.763136
+-------------------+----------------------------------------------------------------
+noiseRA            |
+             _cons |   .1394127   .0035298    39.50   0.000     .1324944     .146331
+-------------------+----------------------------------------------------------------
+noiseDR            |
+             _cons |   5.760931   .7372999     7.81   0.000     4.315849    7.206012
+------------------------------------------------------------------------------------
+
+. 
+.         estimates store m3hetero, title(Model 3 - Prelec2QHyp)
+
+.         
+.         esttab m3hetero using "$stata_tables/ml_model_heterogenous.rtf" , append ///
+>                 label se b(%15.10g) ///
+>         mtitle("Heterogenous Preferences B") ///
+>         title(CRRA Utility & Quasi-Hyperbolic Discounting)
+(output written to stata_tables/ml_model_heterogenous.rtf)
+
+. 
+.         estimates save "$estimations/time_het_qh", replace
+file estimates/time_het_qh.ster saved
+
+. 
+.         test [beta]_cons == 1
+
+ ( 1)  [beta]_cons = 1
+
+           chi2(  1) =    3.44
+         Prob > chi2 =    0.0637
+
+.                 
+. 
+. * Now estimate with simpler demographics and covid_scale
+. * Specify stripped down demographics
+. global demogX "i.wave c.age i.male i.race c.anxiety_total c.depression_total covid_scale_deaths c
+> ovid_scale_deaths_sq"
+
+. 
+. estimates restore m3
+(results m3 are active now)
+
+. ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demogX) ///
+>     (phi: $demogX) (eta: $demogX) (beta: $demogX) (delta: $demogX) ///
+>     (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+>     cluster(id) technique($maxtech) continue
+note: covid_scale_deaths omitted because of collinearity.
+note: covid_scale_deaths_sq omitted because of collinearity.
+note: covid_scale_deaths omitted because of collinearity.
+note: covid_scale_deaths_sq omitted because of collinearity.
+note: covid_scale_deaths omitted because of collinearity.
+note: covid_scale_deaths_sq omitted because of collinearity.
+note: covid_scale_deaths omitted because of collinearity.
+note: covid_scale_deaths_sq omitted because of collinearity.
+note: covid_scale_deaths omitted because of collinearity.
+note: covid_scale_deaths_sq omitted because of collinearity.
+
+. ml maximize, difficult
+
+initial:       log pseudolikelihood = -64087.339
+rescale:       log pseudolikelihood = -64087.339
+rescale eq:    log pseudolikelihood = -64087.339
+Iteration 0:   log pseudolikelihood = -64087.339  (not concave)
+Iteration 1:   log pseudolikelihood = -63145.278  
+Iteration 2:   log pseudolikelihood = -62316.846  
+Iteration 3:   log pseudolikelihood = -62224.948  
+Iteration 4:   log pseudolikelihood = -62223.647  
+Iteration 5:   log pseudolikelihood = -62223.623  
+Iteration 6:   log pseudolikelihood = -62223.623  
+
+                                                       Number of obs = 102,600
+                                                       Wald chi2(12) =   69.63
+Log pseudolikelihood = -62223.623                      Prob > chi2   =  0.0000
+
+                                            (Std. err. adjusted for 540 clusters in id)
+---------------------------------------------------------------------------------------
+                      |               Robust
+                      | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+----------------------+----------------------------------------------------------------
+r                     |
+                 wave |
+                   2  |   .0133787   .0216381     0.62   0.536    -.0290313    .0557887
+                   3  |   .0133038   .0209448     0.64   0.525    -.0277472    .0543549
+                   4  |   .0105875   .0208814     0.51   0.612    -.0303394    .0515144
+                   5  |  -.0010035   .0212256    -0.05   0.962    -.0426049    .0405979
+                   6  |   .0458633   .0250987     1.83   0.068    -.0033293    .0950559
+                      |
+                  age |    .000266    .001444     0.18   0.854    -.0025642    .0030961
+                      |
+                 male |
+             1. Male  |   -.009658   .0142594    -0.68   0.498     -.037606      .01829
+                      |
+                 race |
+     1. Asian/Indian  |  -.0599808   .0270001    -2.22   0.026    -.1129001   -.0070615
+         2. Coloured  |  -.0225859   .0210784    -1.07   0.284    -.0638989    .0187271
+            3. White  |  -.1116281   .0155543    -7.18   0.000    -.1421141   -.0811422
+                      |
+        anxiety_total |   .0020648   .0016949     1.22   0.223    -.0012572    .0053868
+     depression_total |  -.0018717   .0015891    -1.18   0.239    -.0049863    .0012429
+   covid_scale_deaths |          0  (omitted)
+covid_scale_deaths_sq |          0  (omitted)
+                _cons |   .3945627   .0414493     9.52   0.000     .3133236    .4758019
+----------------------+----------------------------------------------------------------
+phi                   |
+                 wave |
+                   2  |   .0233166   .0440698     0.53   0.597    -.0630586    .1096917
+                   3  |  -.0146698   .0430185    -0.34   0.733    -.0989845    .0696449
+                   4  |    -.03251   .0434381    -0.75   0.454     -.117647    .0526271
+                   5  |   .0385333   .0471541     0.82   0.414    -.0538871    .1309537
+                   6  |   .0123059   .0448926     0.27   0.784     -.075682    .1002937
+                      |
+                  age |   .0008377   .0026478     0.32   0.752    -.0043519    .0060273
+                      |
+                 male |
+             1. Male  |   .1286479    .028839     4.46   0.000     .0721245    .1851712
+                      |
+                 race |
+     1. Asian/Indian  |   .1347218   .0533845     2.52   0.012       .03009    .2393536
+         2. Coloured  |   .0910977    .039186     2.32   0.020     .0142946    .1679008
+            3. White  |   .1512064   .0304802     4.96   0.000     .0914662    .2109466
+                      |
+        anxiety_total |    .003062   .0036827     0.83   0.406    -.0041559      .01028
+     depression_total |   .0048611   .0033127     1.47   0.142    -.0016316    .0113538
+   covid_scale_deaths |          0  (omitted)
+covid_scale_deaths_sq |          0  (omitted)
+                _cons |   .2861151    .074781     3.83   0.000     .1395471    .4326831
+----------------------+----------------------------------------------------------------
+eta                   |
+                 wave |
+                   2  |   .0929825    .051461     1.81   0.071    -.0078793    .1938443
+                   3  |   .0935489   .0527431     1.77   0.076    -.0098257    .1969235
+                   4  |   .0399711   .0520572     0.77   0.443    -.0620592    .1420014
+                   5  |   .1883648   .0587819     3.20   0.001     .0731544    .3035753
+                   6  |   .0991206   .0625617     1.58   0.113     -.023498    .2217392
+                      |
+                  age |   .0041813   .0035962     1.16   0.245    -.0028671    .0112297
+                      |
+                 male |
+             1. Male  |   .0605438   .0361064     1.68   0.094    -.0102234     .131311
+                      |
+                 race |
+     1. Asian/Indian  |   .1863708    .066475     2.80   0.005     .0560823    .3166594
+         2. Coloured  |   .1693636   .0512593     3.30   0.001     .0688973      .26983
+            3. White  |   .1382407   .0388885     3.55   0.000     .0620206    .2144608
+                      |
+        anxiety_total |   .0080627   .0044432     1.81   0.070    -.0006458    .0167712
+     depression_total |  -.0084905   .0039521    -2.15   0.032    -.0162365   -.0007445
+   covid_scale_deaths |          0  (omitted)
+covid_scale_deaths_sq |          0  (omitted)
+                _cons |    .611103    .099923     6.12   0.000     .4152575    .8069485
+----------------------+----------------------------------------------------------------
+beta                  |
+                 wave |
+                   2  |   .0150654   .0114051     1.32   0.187    -.0072882    .0374191
+                   3  |  -.0115888   .0113043    -1.03   0.305    -.0337448    .0105672
+                   4  |   .0079501   .0115757     0.69   0.492    -.0147379     .030638
+                   5  |   .0067343   .0124145     0.54   0.588    -.0175977    .0310663
+                   6  |  -.0131045   .0113656    -1.15   0.249    -.0353807    .0091717
+                      |
+                  age |  -.0018289   .0007537    -2.43   0.015    -.0033061   -.0003517
+                      |
+                 male |
+             1. Male  |  -.0089568   .0072189    -1.24   0.215    -.0231055    .0051919
+                      |
+                 race |
+     1. Asian/Indian  |   .0256706   .0115484     2.22   0.026     .0030362     .048305
+         2. Coloured  |   .0215304   .0118683     1.81   0.070    -.0017311    .0447919
+            3. White  |   .0241296   .0068899     3.50   0.000     .0106257    .0376336
+                      |
+        anxiety_total |  -.0002581   .0009604    -0.27   0.788    -.0021405    .0016244
+     depression_total |  -.0005843   .0008359    -0.70   0.485    -.0022227    .0010541
+   covid_scale_deaths |          0  (omitted)
+covid_scale_deaths_sq |          0  (omitted)
+                _cons |   1.035245   .0195644    52.91   0.000     .9968993     1.07359
+----------------------+----------------------------------------------------------------
+delta                 |
+                 wave |
+                   2  |  -.0458145   .2283749    -0.20   0.841    -.4934212    .4017921
+                   3  |   .0504295   .2317631     0.22   0.828    -.4038178    .5046768
+                   4  |  -.3261868   .2138823    -1.53   0.127    -.7453885    .0930149
+                   5  |   .0201466   .2463173     0.08   0.935    -.4626265    .5029197
+                   6  |   .0142039    .274548     0.05   0.959    -.5239003    .5523081
+                      |
+                  age |  -.0017192   .0147398    -0.12   0.907    -.0306087    .0271702
+                      |
+                 male |
+             1. Male  |   .2970718   .1580953     1.88   0.060    -.0127893    .6069329
+                      |
+                 race |
+     1. Asian/Indian  |  -.9568925   .3010577    -3.18   0.001    -1.546955   -.3668304
+         2. Coloured  |  -.5627542   .3096713    -1.82   0.069    -1.169699    .0441903
+            3. White  |  -1.059233   .2348896    -4.51   0.000    -1.519609   -.5988582
+                      |
+        anxiety_total |   .0232116   .0216374     1.07   0.283    -.0191969    .0656201
+     depression_total |   .0058585   .0191372     0.31   0.760    -.0316497    .0433667
+   covid_scale_deaths |          0  (omitted)
+covid_scale_deaths_sq |          0  (omitted)
+                _cons |   1.818733    .462474     3.93   0.000     .9123005    2.725165
+----------------------+----------------------------------------------------------------
+noiseRA               |
+                _cons |   .1400387    .003531    39.66   0.000     .1331182    .1469593
+----------------------+----------------------------------------------------------------
+noiseDR               |
+                _cons |   5.446951   .6368036     8.55   0.000     4.198839    6.695063
+---------------------------------------------------------------------------------------
+
+. 
+. estimates store mX 
+
+. 
+. esttab mX using "$stata_tables/ml_model_coviddeaths.rtf" , replace ///
+>                 label se b(%15.10g) ///
+>         mtitle("Heterogenous Preferences with Covid Deaths") ///
+>         title(? Utility & ? Discounting)
+(output written to stata_tables/ml_model_coviddeaths.rtf)
+
+. 
+. estimates save "$estimations/time_covid_scale_deaths", replace
+file estimates/time_covid_scale_deaths.ster saved
+
+. test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
+
+ ( 1)  [r]o.covid_scale_deaths = 0
+ ( 2)  [phi]o.covid_scale_deaths = 0
+ ( 3)  [eta]o.covid_scale_deaths = 0
+ ( 4)  [beta]o.covid_scale_deaths = 0
+ ( 5)  [delta]o.covid_scale_deaths = 0
+ ( 6)  [r]o.covid_scale_deaths_sq = 0
+ ( 7)  [phi]o.covid_scale_deaths_sq = 0
+ ( 8)  [eta]o.covid_scale_deaths_sq = 0
+ ( 9)  [beta]o.covid_scale_deaths_sq = 0
+ (10)  [delta]o.covid_scale_deaths_sq = 0
+       Constraint 1 dropped
+       Constraint 2 dropped
+       Constraint 3 dropped
+       Constraint 4 dropped
+       Constraint 5 dropped
+       Constraint 6 dropped
+       Constraint 7 dropped
+       Constraint 8 dropped
+       Constraint 9 dropped
+       Constraint 10 dropped
+
+--------------------------------------
+       |        chi2     df   p > chi2
+-------+------------------------------
+   (1) |           .      1          .*
+   (2) |           .      1          .*
+   (3) |           .      1          .*
+   (4) |           .      1          .*
+   (5) |           .      1          .*
+   (6) |           .      1          .*
+   (7) |           .      1          .*
+   (8) |           .      1          .*
+   (9) |           .      1          .*
+   (10) |          .      1          .*
+-------+------------------------------
+   All |           .      0          .
+--------------------------------------
+* Unadjusted p-values
+
 . 
 . 
 . 
+. *******************************************************************************
+. ***     8.3 -- Margins for Exponential & Quasi-Hyperbolic Discounting       ***
+. *******************************************************************************
 . 
+.     ****************************************
+.     ***     Exponential Discounting      ***
+.     ****************************************
+.     
+.     * Delta Equation
+.     estimates restore m1hetero
+(results m1hetero are active now)
+
+.     margins, over(wave) predict(equation(delta)) post ///
+>         saving($estimations/Exponential_Delta, replace)
+
+Predictive margins                                     Number of obs = 102,600
+Model VCE: Robust
+
+Expression: Linear prediction, predict(equation(delta))
+Over:       wave
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+        wave |
+          1  |    2.02857   .5049622     4.02   0.000     1.038863    3.018278
+          2  |   1.555447   .2491744     6.24   0.000     1.067074    2.043819
+          3  |    1.77934   .2883174     6.17   0.000     1.214249    2.344432
+          4  |   1.221655   .1655968     7.38   0.000     .8970917    1.546219
+          5  |   1.969979   .3428403     5.75   0.000     1.298024    2.641934
+          6  |   2.285081   .7434762     3.07   0.002     .8278941    3.742267
+------------------------------------------------------------------------------
+
+. 
+.     * Test for wave effects
+.     foreach i in 1 2 3 4 5 6 {
+  2.         foreach j in `ferest()' {
+  3.         test `i'.wave == `j'.wave
+  4.             if r(p) < 0.1 {
+  5.                 di as error r(p) 
+  6.             }
+  7.         }
+  8.     }
+
+ ( 1)  1bn.wave - 2.wave = 0
+
+           chi2(  1) =    0.85
+         Prob > chi2 =    0.3566
+
+ ( 1)  1bn.wave - 3.wave = 0
+
+           chi2(  1) =    0.21
+         Prob > chi2 =    0.6452
+
+ ( 1)  1bn.wave - 4.wave = 0
+
+           chi2(  1) =    2.60
+         Prob > chi2 =    0.1071
+
+ ( 1)  1bn.wave - 5.wave = 0
+
+           chi2(  1) =    0.01
+         Prob > chi2 =    0.9169
+
+ ( 1)  1bn.wave - 6.wave = 0
+
+           chi2(  1) =    0.09
+         Prob > chi2 =    0.7583
+
+ ( 1)  2.wave - 3.wave = 0
+
+           chi2(  1) =    0.41
+         Prob > chi2 =    0.5213
+
+ ( 1)  2.wave - 4.wave = 0
+
+           chi2(  1) =    1.53
+         Prob > chi2 =    0.2165
+
+ ( 1)  2.wave - 5.wave = 0
+
+           chi2(  1) =    1.16
+         Prob > chi2 =    0.2823
+
+ ( 1)  2.wave - 6.wave = 0
+
+           chi2(  1) =    0.96
+         Prob > chi2 =    0.3275
+
+ ( 1)  3.wave - 4.wave = 0
+
+           chi2(  1) =    3.24
+         Prob > chi2 =    0.0718
+.07182117
+
+ ( 1)  3.wave - 5.wave = 0
+
+           chi2(  1) =    0.21
+         Prob > chi2 =    0.6455
+
+ ( 1)  3.wave - 6.wave = 0
+
+           chi2(  1) =    0.44
+         Prob > chi2 =    0.5078
+
+ ( 1)  4.wave - 5.wave = 0
+
+           chi2(  1) =    4.44
+         Prob > chi2 =    0.0351
+.03505644
+
+ ( 1)  4.wave - 6.wave = 0
+
+           chi2(  1) =    2.09
+         Prob > chi2 =    0.1480
+
+ ( 1)  5.wave - 6.wave = 0
+
+           chi2(  1) =    0.16
+         Prob > chi2 =    0.6862
+
+. 
+.     * Test for wave effects
+.     foreach i in 1 2 3 4 5 6 {
+  2.         foreach j in `ferest()' {
+  3.         test `i'.wave == `j'.wave
+  4.             if r(p) < 0.1 {
+  5.                 di as error r(p) 
+  6.             }
+  7.         }
+  8.     }
+
+ ( 1)  1bn.wave - 2.wave = 0
+
+           chi2(  1) =    0.85
+         Prob > chi2 =    0.3566
+
+ ( 1)  1bn.wave - 3.wave = 0
+
+           chi2(  1) =    0.21
+         Prob > chi2 =    0.6452
+
+ ( 1)  1bn.wave - 4.wave = 0
+
+           chi2(  1) =    2.60
+         Prob > chi2 =    0.1071
+
+ ( 1)  1bn.wave - 5.wave = 0
+
+           chi2(  1) =    0.01
+         Prob > chi2 =    0.9169
+
+ ( 1)  1bn.wave - 6.wave = 0
+
+           chi2(  1) =    0.09
+         Prob > chi2 =    0.7583
+
+ ( 1)  2.wave - 3.wave = 0
+
+           chi2(  1) =    0.41
+         Prob > chi2 =    0.5213
+
+ ( 1)  2.wave - 4.wave = 0
+
+           chi2(  1) =    1.53
+         Prob > chi2 =    0.2165
+
+ ( 1)  2.wave - 5.wave = 0
+
+           chi2(  1) =    1.16
+         Prob > chi2 =    0.2823
+
+ ( 1)  2.wave - 6.wave = 0
+
+           chi2(  1) =    0.96
+         Prob > chi2 =    0.3275
+
+ ( 1)  3.wave - 4.wave = 0
+
+           chi2(  1) =    3.24
+         Prob > chi2 =    0.0718
+.07182117
+
+ ( 1)  3.wave - 5.wave = 0
+
+           chi2(  1) =    0.21
+         Prob > chi2 =    0.6455
+
+ ( 1)  3.wave - 6.wave = 0
+
+           chi2(  1) =    0.44
+         Prob > chi2 =    0.5078
+
+ ( 1)  4.wave - 5.wave = 0
+
+           chi2(  1) =    4.44
+         Prob > chi2 =    0.0351
+.03505644
+
+ ( 1)  4.wave - 6.wave = 0
+
+           chi2(  1) =    2.09
+         Prob > chi2 =    0.1480
+
+ ( 1)  5.wave - 6.wave = 0
+
+           chi2(  1) =    0.16
+         Prob > chi2 =    0.6862
+
+. 
+. 
+.     ****************************************
+.     ***   Quasi-Hyperbolic Discounting   ***
+.     ****************************************
+.     
+.     * Beta Equation 
+.         estimates restore m3hetero
+(results m3hetero are active now)
+
+.         margins, over(wave) predict(equation(beta)) post ///
+>         saving($estimations/Quasi_Beta, replace)
+
+Predictive margins                                     Number of obs = 102,600
+Model VCE: Robust
+
+Expression: Linear prediction, predict(equation(beta))
+Over:       wave
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+        wave |
+          1  |   .9990486   .0081924   121.95   0.000     .9829918    1.015105
+          2  |   1.007702   .0073568   136.97   0.000     .9932827    1.022121
+          3  |   .9836271   .0078264   125.68   0.000     .9682877    .9989665
+          4  |   .9997314   .0070816   141.17   0.000     .9858517    1.013611
+          5  |     1.0039   .0093899   106.91   0.000     .9854963    1.022304
+          6  |   .9908604   .0088803   111.58   0.000     .9734552    1.008266
+------------------------------------------------------------------------------
+
+. 
+.     * Test for wave effects
+.     foreach i in 1 2 3 4 5 6 {
+  2.         foreach j in `ferest()' {
+  3.         test `i'.wave == `j'.wave
+  4.             if r(p) < 0.1 {
+  5.                 di as error r(p) 
+  6.             }
+  7.         }
+  8.     }
+
+ ( 1)  1bn.wave - 2.wave = 0
+
+           chi2(  1) =    0.62
+         Prob > chi2 =    0.4315
+
+ ( 1)  1bn.wave - 3.wave = 0
+
+           chi2(  1) =    1.87
+         Prob > chi2 =    0.1720
+
+ ( 1)  1bn.wave - 4.wave = 0
+
+           chi2(  1) =    0.00
+         Prob > chi2 =    0.9495
+
+ ( 1)  1bn.wave - 5.wave = 0
+
+           chi2(  1) =    0.15
+         Prob > chi2 =    0.6989
+
+ ( 1)  1bn.wave - 6.wave = 0
+
+           chi2(  1) =    0.46
+         Prob > chi2 =    0.4978
+
+ ( 1)  2.wave - 3.wave = 0
+
+           chi2(  1) =    5.03
+         Prob > chi2 =    0.0250
+.02496715
+
+ ( 1)  2.wave - 4.wave = 0
+
+           chi2(  1) =    0.61
+         Prob > chi2 =    0.4360
+
+ ( 1)  2.wave - 5.wave = 0
+
+           chi2(  1) =    0.10
+         Prob > chi2 =    0.7500
+
+ ( 1)  2.wave - 6.wave = 0
+
+           chi2(  1) =    2.15
+         Prob > chi2 =    0.1421
+
+ ( 1)  3.wave - 4.wave = 0
+
+           chi2(  1) =    2.30
+         Prob > chi2 =    0.1291
+
+ ( 1)  3.wave - 5.wave = 0
+
+           chi2(  1) =    2.74
+         Prob > chi2 =    0.0978
+.09782293
+
+ ( 1)  3.wave - 6.wave = 0
+
+           chi2(  1) =    0.37
+         Prob > chi2 =    0.5416
+
+ ( 1)  4.wave - 5.wave = 0
+
+           chi2(  1) =    0.13
+         Prob > chi2 =    0.7236
+
+ ( 1)  4.wave - 6.wave = 0
+
+           chi2(  1) =    0.60
+         Prob > chi2 =    0.4371
+
+ ( 1)  5.wave - 6.wave = 0
+
+           chi2(  1) =    1.02
+         Prob > chi2 =    0.3121
+
+. 
+.     * Delta Equation
+.     estimates restore m3hetero
+(results m3hetero are active now)
+
+.     margins, over(wave) predict(equation(delta)) post /// 
+>         saving($estimations/Quasi_Delta, replace)
+
+Predictive margins                                     Number of obs = 102,600
+Model VCE: Robust
+
+Expression: Linear prediction, predict(equation(delta))
+Over:       wave
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+        wave |
+          1  |   1.999176   .4810454     4.16   0.000     1.056344    2.942007
+          2  |   1.568721   .2350756     6.67   0.000     1.107981    2.029461
+          3  |   1.705053   .2578016     6.61   0.000     1.199772    2.210335
+          4  |   1.226137   .1607764     7.63   0.000     .9110214    1.541253
+          5  |   1.994896   .3425516     5.82   0.000     1.323507    2.666285
+          6  |    2.18351   .6268172     3.48   0.000     .9549705    3.412049
+------------------------------------------------------------------------------
+
+. 
+.     * Test for wave effects
+.     foreach i in 1 2 3 4 5 6 {
+  2.         foreach j in `ferest()' {
+  3.         test `i'.wave == `j'.wave
+  4.             if r(p) < 0.1 {
+  5.                 di as error r(p) 
+  6.             }
+  7.         }
+  8.     }
+
+ ( 1)  1bn.wave - 2.wave = 0
+
+           chi2(  1) =    0.79
+         Prob > chi2 =    0.3752
+
+ ( 1)  1bn.wave - 3.wave = 0
+
+           chi2(  1) =    0.34
+         Prob > chi2 =    0.5615
+
+ ( 1)  1bn.wave - 4.wave = 0
+
+           chi2(  1) =    2.65
+         Prob > chi2 =    0.1039
+
+ ( 1)  1bn.wave - 5.wave = 0
+
+           chi2(  1) =    0.00
+         Prob > chi2 =    0.9937
+
+ ( 1)  1bn.wave - 6.wave = 0
+
+           chi2(  1) =    0.06
+         Prob > chi2 =    0.8015
+
+ ( 1)  2.wave - 3.wave = 0
+
+           chi2(  1) =    0.18
+         Prob > chi2 =    0.6687
+
+ ( 1)  2.wave - 4.wave = 0
+
+           chi2(  1) =    1.80
+         Prob > chi2 =    0.1799
+
+ ( 1)  2.wave - 5.wave = 0
+
+           chi2(  1) =    1.27
+         Prob > chi2 =    0.2595
+
+ ( 1)  2.wave - 6.wave = 0
+
+           chi2(  1) =    0.94
+         Prob > chi2 =    0.3335
+
+ ( 1)  3.wave - 4.wave = 0
+
+           chi2(  1) =    2.91
+         Prob > chi2 =    0.0882
+.08820516
+
+ ( 1)  3.wave - 5.wave = 0
+
+           chi2(  1) =    0.54
+         Prob > chi2 =    0.4638
+
+ ( 1)  3.wave - 6.wave = 0
+
+           chi2(  1) =    0.54
+         Prob > chi2 =    0.4625
+
+ ( 1)  4.wave - 5.wave = 0
+
+           chi2(  1) =    4.78
+         Prob > chi2 =    0.0289
+.0288734
+
+ ( 1)  4.wave - 6.wave = 0
+
+           chi2(  1) =    2.36
+         Prob > chi2 =    0.1246
+
+ ( 1)  5.wave - 6.wave = 0
+
+           chi2(  1) =    0.08
+         Prob > chi2 =    0.7816
+
+. 
+.     * Estimate present value of R500 margins for comparisons across waves and downstream figures
+.     estimates restore m3hetero
+(results m3hetero are active now)
+
+. 
+.     local beta "(predict(equation(beta)))"
+
+. 
+.     * Test for wave effects
+.     foreach i in 1 2 3 4 5 6 {
+  2.         foreach j in `ferest()' {
+  3.         test `i'.wave == `j'.wave
+  4.             if r(p) < 0.1 {
+  5.                 di as error r(p) 
+  6.             }
+  7.         }
+  8.     }
+
+ ( 1)  [r]1b.wave - [r]2.wave = 0
+
+           chi2(  1) =    0.54
+         Prob > chi2 =    0.4625
+
+ ( 1)  [r]1b.wave - [r]3.wave = 0
+
+           chi2(  1) =    0.11
+         Prob > chi2 =    0.7419
+
+ ( 1)  [r]1b.wave - [r]4.wave = 0
+
+           chi2(  1) =    0.87
+         Prob > chi2 =    0.3521
+
+ ( 1)  [r]1b.wave - [r]5.wave = 0
+
+           chi2(  1) =    0.30
+         Prob > chi2 =    0.5812
+
+ ( 1)  [r]1b.wave - [r]6.wave = 0
+
+           chi2(  1) =    0.10
+         Prob > chi2 =    0.7513
+
+ ( 1)  [r]2.wave - [r]3.wave = 0
+
+           chi2(  1) =    0.24
+         Prob > chi2 =    0.6220
+
+ ( 1)  [r]2.wave - [r]4.wave = 0
+
+           chi2(  1) =    0.03
+         Prob > chi2 =    0.8684
+
+ ( 1)  [r]2.wave - [r]5.wave = 0
+
+           chi2(  1) =    0.05
+         Prob > chi2 =    0.8223
+
+ ( 1)  [r]2.wave - [r]6.wave = 0
+
+           chi2(  1) =    0.86
+         Prob > chi2 =    0.3528
+
+ ( 1)  [r]3.wave - [r]4.wave = 0
+
+           chi2(  1) =    0.53
+         Prob > chi2 =    0.4658
+
+ ( 1)  [r]3.wave - [r]5.wave = 0
+
+           chi2(  1) =    0.08
+         Prob > chi2 =    0.7796
+
+ ( 1)  [r]3.wave - [r]6.wave = 0
+
+           chi2(  1) =    0.37
+         Prob > chi2 =    0.5421
+
+ ( 1)  [r]4.wave - [r]5.wave = 0
+
+           chi2(  1) =    0.18
+         Prob > chi2 =    0.6687
+
+ ( 1)  [r]4.wave - [r]6.wave = 0
+
+           chi2(  1) =    1.17
+         Prob > chi2 =    0.2798
+
+ ( 1)  [r]5.wave - [r]6.wave = 0
+
+           chi2(  1) =    0.59
+         Prob > chi2 =    0.4417
+
+. 
+. 
+. * Export the estimates to .TSV 
+. estout m1hetero m3hetero using "$estimations/RDUDiscEstimates_Heterogenous.tsv", ///
+> replace starlevels(* 0.10 ** 0.05 *** 0.01) cells( (b(star label("Estimate") fmt(3)) se(label("St
+> d error") fmt(3)) )) ///
+> stats(N ll, fmt(%5.0f %10.3f) labels(N "log-likelihood")) nobaselevels ///
+> varlabels("$varlabels") ///
+> prehead("Table" "Discounting Function ML Estimates" @title) ///
+> title("Concave Utility, Heterogenous(?) Preferences") ///
+> legend eqlabels("CRRA function parameter (r)" "PWF parameter (phi)" "PWF parameter (eta)" "Discou
+> nting parameter (delta)" "Risk error (mu)" "Time error (nu)" "Discounting parameter (beta)") mlab
+> els(,titles) ///
+> postfoot("Results account for clustering at the individual level" "Standard errors in parentheses
+> ")
+(output written to estimates/RDUDiscEstimates_Heterogenous.tsv)
+
+. 
+. 
+. 
+. *******************************************************************************
+. ***     8.4 -- Getting metrics for the graphs                                                   *
+> **
+. *******************************************************************************
+. 
+. tab ssamount, m                         // R250 and R400 principal amounts 
+
+    Lamount |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     48,960       47.37       47.37
+        250 |     27,090       26.21       73.58
+        400 |     27,310       26.42      100.00
+------------+-----------------------------------
+      Total |    103,360      100.00
+
+. tab llamount, m 
+
+    Ramount |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     48,960       47.37       47.37
+        260 |      3,051        2.95       50.32
+        270 |      3,054        2.95       53.27
+        280 |      3,062        2.96       56.24
+        290 |      3,081        2.98       59.22
+        300 |      3,059        2.96       62.18
+        310 |      1,757        1.70       63.88
+        320 |      1,701        1.65       65.52
+        330 |      1,693        1.64       67.16
+        340 |      1,760        1.70       68.86
+        350 |        956        0.92       69.79
+        360 |        970        0.94       70.73
+        370 |        980        0.95       71.68
+        380 |        987        0.95       72.63
+        390 |        979        0.95       73.58
+        410 |      2,108        2.04       75.62
+        420 |      2,149        2.08       77.70
+        430 |      2,105        2.04       79.73
+        440 |      2,131        2.06       81.79
+        450 |      2,118        2.05       83.84
+        460 |      2,074        2.01       85.85
+        470 |      2,107        2.04       87.89
+        480 |      2,174        2.10       89.99
+        490 |      1,223        1.18       91.18
+        500 |      1,247        1.21       92.38
+        510 |      1,247        1.21       93.59
+        520 |      1,239        1.20       94.79
+        530 |      1,331        1.29       96.07
+        540 |      1,240        1.20       97.27
+        550 |        301        0.29       97.57
+        560 |        280        0.27       97.84
+        570 |        287        0.28       98.11
+        580 |        296        0.29       98.40
+        590 |        271        0.26       98.66
+        600 |        282        0.27       98.94
+        610 |        245        0.24       99.17
+        620 |        271        0.26       99.43
+        630 |        295        0.29       99.72
+        640 |        289        0.28      100.00
+------------+-----------------------------------
+      Total |    103,360      100.00
+
+. 
+. * Mean of LL rewards across all time choices is R394.11
+. su llamount if time == 1        
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+    llamount |     54,400    394.1062    97.87268        260        640
+
+. 
+. * Mean of LL rewards for the principal of R250 is R307.71
+. su llamount if ssamount == 250
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+    llamount |     27,090    307.7054     37.2963        260        390
+
+. su lldelay if ssamount == 250 
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     lldelay |     27,090    43.95607    30.79036          7         98
+
+. 
+. * Mean of LL rewards for the principal of R400 is R479.81
+. su llamount if ssamount == 400
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+    llamount |     27,310    479.8111    54.32013        410        640
+
+.         *---> use R500 as the representative amount for graphs 
+. su lldelay  if ssamount == 400 
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     lldelay |     27,310    43.66349    30.68986          7         98
+
+. tab lldelay if ssamount == 400 
+
+      Rdays |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          7 |      2,280        8.35        8.35
+         14 |      4,430       16.22       24.57
+         21 |      4,625       16.94       41.50
+         28 |      2,365        8.66       50.16
+         42 |      2,265        8.29       58.46
+         49 |      2,265        8.29       66.75
+         56 |      2,335        8.55       75.30
+         84 |      2,210        8.09       83.39
+         91 |      2,260        8.28       91.67
+         98 |      2,275        8.33      100.00
+------------+-----------------------------------
+      Total |     27,310      100.00
+
 . 
 . 
 . 
 . *******************************************************************************
 . 
 . di as error "End of Analysis do-file" 
-{res}{err}End of Analysis do-file
-{txt}
-{com}. 
-{txt}end of do-file
-{com}. {c )-}
-{txt}
-{com}. 
-. if "$doFIGURES" == "y" {c -(}
+End of Analysis do-file
+
+. 
+end of do-file
+. }
+
+. 
+. if "$doMARGINS" == "y" {
+.         do "dofiles/MarginsTime"
+. }
+
+. 
+. if "$doFIGURES" == "y" {
 .         do "dofiles/FiguresTime" 
-. {c )-}
-{txt}
-{com}. 
+. }
+
+. 
 . 
 . *********************************************************************************
 . 
 . * End Timer
 . timer off 1
-{txt}
-{com}. timer list
-{res}   1:      6.11 /        1 =       6.1060
-{txt}
-{com}. local secs = r(t1)
-{txt}
-{com}. local mins = `secs'/60
-{txt}
-{com}. local hrs = `mins'/60
-{txt}
-{com}. local secs_ = string(`secs', "%10.0f")
-{txt}
-{com}. local mins_ = string(`mins', "%4.1f")
-{txt}
-{com}. local hrs_ = string(`hrs', "%4.2f")
-{txt}
-{com}. di "Calculations took `secs_' seconds, `mins_' minutes, or `hrs_' hours."
-{res}Calculations took 6 seconds, 0.1 minutes, or 0.00 hours.
-{txt}
-{com}. 
+
+. timer list
+   1:    690.04 /        1 =     690.0370
+
+. local secs = r(t1)
+
+. local mins = `secs'/60
+
+. local hrs = `mins'/60
+
+. local secs_ = string(`secs', "%10.0f")
+
+. local mins_ = string(`mins', "%4.1f")
+
+. local hrs_ = string(`hrs', "%4.2f")
+
+. di "Calculations took `secs_' seconds, `mins_' minutes, or `hrs_' hours."
+Calculations took 690 seconds, 11.5 minutes, or 0.19 hours.
+
+. 
 . cap log close 
-{smcl}
-{com}{sf}{ul off}
