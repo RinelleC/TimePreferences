@@ -12,12 +12,12 @@
 *********************************************************************************
 
 * Move to main folder - remove this before sharing 
-global mainfolder "/Volumes/RinellePhD/TimePreferences" 
+global mainfolder   "/Volumes/RinellePhD/TimePreferences" 
+global figures      "$mainfolder/figures"
 cd $mainfolder
 
 * Open JHU Data and set file paths 
 use "$figures/jhu_data_rsa.dta", clear   
-global figures "$mainfolder/figures"
 sort date                                               // format: mm/dd/yyyy 
 
 * Daily infections and deaths 
@@ -102,7 +102,7 @@ keep s date dec_c_sa dec_d_sa
 
 
 *********************************************************************************
-**************           South African Time Preferences            **************
+************           South African Time - Present Values           ************
 *********************************************************************************
 
 * Set size of LL reward
@@ -164,6 +164,48 @@ subtitle("Based on the present value of a R500 reward received in 14 days", ///
 	size(medium) margin(medsmall)) caption(`caption', size(vsmall)) ///
     saving(discountingbehaviour, replace)
 graph export "discountingbehaviour.pdf", replace 
+
+
+*********************************************************************************
+************           South African Time - Discount Rates           ************
+*********************************************************************************
+
+* Move back to estimations folder 
+cd ../ 
+cd $estimations 
+
+* Get the combined margins.dta files into the same format as the infection and death bars above
+use Exponential_Delta, clear
+append using Quasi_Delta, generate(_by2)
+rename _by1 by1
+generate _by1 = date("5/29/2020", "MDY")
+format _by1 %td
+replace _by1 = date("6/30/2020", "MDY")     if by1 == 2
+replace _by1 = date("7/31/2020", "MDY")     if by1 == 3
+replace _by1 = date("8/31/2020", "MDY")     if by1 == 4
+replace _by1 = date("9/29/2020", "MDY")     if by1 == 5
+replace _by1 = date("10/29/2020", "MDY")    if by1 == 6
+drop by1
+order _by2, after(_by1)
+sort _by1
+save deltaestimates, replace 
+
+* Set graph colours
+local exp_color "black"
+local qh_color  "dkorange"
+
+* Generate plot 
+marginsplot using deltaestimates, l1title("Discount Rate", orientation(horizontal)) ///
+ytitle("") ylabel(, angle(horizontal)) title("") ///
+xlabel("", format(%tdm)) xtitle("") ///
+plot1opts(lwidth(thick) lcolor(`exp_color') mcolor(`exp_color')) ///
+ci1opts(lcolor(`exp_color')) ///
+plot2opts(lwidth(thick) lpattern(dash) lcolor(`qh_color') mcolor(`qh_color')) ///
+ci2opts(lcolor(`qh_color')) ///
+legend(order(3 "Exponential" 4 "Quasi-Hyperbolic") size(medlarge) cols(1) ring(0) pos(2) nobox) ///
+yline(50, lcolor(gs14) lwidth(vthick)) saving("$figures/deltaestimates", replace)
+* 
+graph export "$figures/deltaestimates.pdf", replace 
 
 
 *******************************************************************************
