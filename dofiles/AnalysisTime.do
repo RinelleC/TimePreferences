@@ -40,9 +40,16 @@ global ufunc "crra"
 	estimates store m1, title(Model - Prelec2Exp)
 
 	esttab m1 using "$stata_tables/ml_model_homogenous.rtf" , replace ///
-		label se b(%15.10g) ///
+		label se b(%15.3g) ///
         mtitle("Homogenous Preferences A") ///
         title(CRRA Utility & Exponential Discounting)
+
+
+    * Evaluate EXP Discount rate at different horizons, specified in days
+    foreach x of numlist 7 14 42 84 {
+        di as error "EXP discount rate evaluated at `x' day horizon"
+        nlcom (EXPDiscountRate : (1/(1+[delta]_cons)^(`x'/365))^(-1/(`x'/365)) - 1)
+    }	
 
     ***********************************************************
     ***     CRRA utility, quasi-hyperbolic discounting      ***
@@ -59,7 +66,7 @@ global ufunc "crra"
 	estimates store m3, title(Model 3 - Prelec2QHyp)
 
 	esttab m3 using "$stata_tables/ml_model_homogenous.rtf" , append ///
-		label se b(%15.10g) ///
+		label se b(%15.3g) ///
         mtitle("Homogenous Preferences B") ///
         title(CRRA Utility & Quasi-Hyperbolic Discounting)
 
@@ -94,7 +101,7 @@ forvalues w = 1/6 {
 
 * Export the estimates to .TSV for easy import in Excel
 estout * using "$estimations/RDUDiscEstimates_Homogenous.tsv", ///
-replace starlevels(* 0.10 ** 0.05 *** 0.01) cells( b(star label("Estimate") fmt(3)) se(label("Std Error") par(`"="("' `")""') fmt(3))  ) ///
+replace starlevels(* 0.10 ** 0.05 *** 0.01) cells( b(star label("Estimate") fmt(3)) se(label("Std Error") fmt(3))  ) ///
 stats(N ll, fmt(%5.0f %10.3f) labels(N "log-likelihood")) nobaselevels ///
 varlabels(r:_cons "CRRA function parameter (r)" phi:_cons "PWF parameter (phi)" eta:_cons "PWF parameter (eta)" beta:_cons "Discounting parameter (beta)" delta:_cons "Discounting parameter (delta)" noiseRA:_cons "Risk error (mu)" noiseDR:_cons "Time error (nu)") ///
 prehead("Table" "Discounting Function ML Estimates" @title) ///
@@ -150,7 +157,7 @@ global ufunc "crra"
 		estimates store m1hetero
 	
 		esttab m1hetero using "$stata_tables/ml_model_heterogenous.rtf" , replace ///
-		label se b(%15.10g) ///
+		label se b(%15.3g) ///
         mtitle("Heterogenous Preferences A") ///
         title(CRRA Utility & Exponential Discounting)
 
@@ -178,7 +185,7 @@ global ufunc "crra"
 	estimates store m3hetero, title(Model 3 - Prelec2QHyp)
 	
 	esttab m3hetero using "$stata_tables/ml_model_heterogenous.rtf" , append ///
-		label se b(%15.10g) ///
+		label se b(%15.3g) ///
         mtitle("Heterogenous Preferences B") ///
         title(CRRA Utility & Quasi-Hyperbolic Discounting)
 
@@ -201,7 +208,7 @@ ml maximize, difficult
 estimates store mX 
 
 esttab mX using "$stata_tables/ml_model_coviddeaths.rtf" , replace ///
-		label se b(%15.10g) ///
+		label se b(%15.3g) ///
         mtitle("Heterogenous Preferences with Covid Deaths") ///
         title(? Utility & ? Discounting)
 
@@ -300,7 +307,7 @@ replace starlevels(* 0.10 ** 0.05 *** 0.01) cells( (b(star label("Estimate") fmt
 stats(N ll, fmt(%5.0f %10.3f) labels(N "log-likelihood")) nobaselevels ///
 varlabels("$varlabels") ///
 prehead("Table" "Discounting Function ML Estimates" @title) ///
-title("Concave Utility, Heterogenous(?) Preferences") ///
+title("Concave Utility, Heterogenous Preferences") ///
 legend eqlabels("CRRA function parameter (r)" "PWF parameter (phi)" "PWF parameter (eta)" "Discounting parameter (delta)" "Risk error (mu)" "Time error (nu)" "Discounting parameter (beta)") mlabels(,titles) ///
 postfoot("Results account for clustering at the individual level" "Standard errors in parentheses")
 
