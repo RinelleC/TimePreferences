@@ -2,7 +2,7 @@
       name:  <unnamed>
        log:  /Volumes/RinellePhD/TimePreferences/Log_Time_Analysis.txt
   log type:  text
- opened on:  15 Sep 2025, 09:29:52
+ opened on:  16 Sep 2025, 11:34:03
 
 . 
 . * Drop any labels in memory
@@ -52,7 +52,7 @@ Serial number: 501706317819
 
 . 
 . * Globals for margins commands and present value table
-. global doMARGINS                "n"
+. global doMARGINS                "y"
 
 . 
 . * Global for figures
@@ -396,10 +396,54 @@ noiseDR      |
 
 . 
 .         esttab m1 using "$stata_tables/ml_model_homogenous.rtf" , replace ///
->                 label se b(%15.10g) ///
+>                 label se b(%15.3g) ///
 >         mtitle("Homogenous Preferences A") ///
 >         title(CRRA Utility & Exponential Discounting)
 (output written to stata_tables/ml_model_homogenous.rtf)
+
+. 
+. 
+.     * Evaluate EXP Discount rate at different horizons, specified in days
+.     foreach x of numlist 7 14 42 84 {
+  2.         di as error "EXP discount rate evaluated at `x' day horizon"
+  3.         nlcom (EXPDiscountRate : (1/(1+[delta]_cons)^(`x'/365))^(-1/(`x'/365)) - 1)
+  4.     }   
+EXP discount rate evaluated at 7 day horizon
+
+EXPDiscoun~e: (1/(1+[delta]_cons)^(7/365))^(-1/(7/365)) - 1
+
+---------------------------------------------------------------------------------
+                | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+EXPDiscountRate |   1.485668   .1060355    14.01   0.000     1.277842    1.693493
+---------------------------------------------------------------------------------
+EXP discount rate evaluated at 14 day horizon
+
+EXPDiscoun~e: (1/(1+[delta]_cons)^(14/365))^(-1/(14/365)) - 1
+
+---------------------------------------------------------------------------------
+                | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+EXPDiscountRate |   1.485668   .1060355    14.01   0.000     1.277842    1.693493
+---------------------------------------------------------------------------------
+EXP discount rate evaluated at 42 day horizon
+
+EXPDiscoun~e: (1/(1+[delta]_cons)^(42/365))^(-1/(42/365)) - 1
+
+---------------------------------------------------------------------------------
+                | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+EXPDiscountRate |   1.485668   .1060355    14.01   0.000     1.277842    1.693493
+---------------------------------------------------------------------------------
+EXP discount rate evaluated at 84 day horizon
+
+EXPDiscoun~e: (1/(1+[delta]_cons)^(84/365))^(-1/(84/365)) - 1
+
+---------------------------------------------------------------------------------
+                | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+EXPDiscountRate |   1.485668   .1060355    14.01   0.000     1.277842    1.693493
+---------------------------------------------------------------------------------
 
 . 
 .     ***********************************************************
@@ -461,7 +505,7 @@ noiseDR      |
 
 . 
 .         esttab m3 using "$stata_tables/ml_model_homogenous.rtf" , append ///
->                 label se b(%15.10g) ///
+>                 label se b(%15.3g) ///
 >         mtitle("Homogenous Preferences B") ///
 >         title(CRRA Utility & Quasi-Hyperbolic Discounting)
 (output written to stata_tables/ml_model_homogenous.rtf)
@@ -819,7 +863,7 @@ Test for QH in wave #6
 . * Export the estimates to .TSV for easy import in Excel
 . estout * using "$estimations/RDUDiscEstimates_Homogenous.tsv", ///
 > replace starlevels(* 0.10 ** 0.05 *** 0.01) cells( b(star label("Estimate") fmt(3)) se(label("Std
->  Error") par(`"="("' `")""') fmt(3))  ) ///
+>  Error") fmt(3))  ) ///
 > stats(N ll, fmt(%5.0f %10.3f) labels(N "log-likelihood")) nobaselevels ///
 > varlabels(r:_cons "CRRA function parameter (r)" phi:_cons "PWF parameter (phi)" eta:_cons "PWF pa
 > rameter (eta)" beta:_cons "Discounting parameter (beta)" delta:_cons "Discounting parameter (delt
@@ -896,7 +940,7 @@ Test for QH in wave #6
 .                 estimates store m1hetero
  13.         
 .                 esttab m1hetero using "$stata_tables/ml_model_heterogenous.rtf" , replace ///
->                 label se b(%15.10g) ///
+>                 label se b(%15.3g) ///
 >         mtitle("Heterogenous Preferences A") ///
 >         title(CRRA Utility & Exponential Discounting)
  14. 
@@ -1581,7 +1625,7 @@ noiseDR            |
 
 .         
 .         esttab m3hetero using "$stata_tables/ml_model_heterogenous.rtf" , append ///
->                 label se b(%15.10g) ///
+>                 label se b(%15.3g) ///
 >         mtitle("Heterogenous Preferences B") ///
 >         title(CRRA Utility & Quasi-Hyperbolic Discounting)
 (output written to stata_tables/ml_model_heterogenous.rtf)
@@ -1778,7 +1822,7 @@ noiseDR               |
 
 . 
 . esttab mX using "$stata_tables/ml_model_coviddeaths.rtf" , replace ///
->                 label se b(%15.10g) ///
+>                 label se b(%15.3g) ///
 >         mtitle("Heterogenous Preferences with Covid Deaths") ///
 >         title(? Utility & ? Discounting)
 (output written to stata_tables/ml_model_coviddeaths.rtf)
@@ -2379,7 +2423,7 @@ Over:       wave
 > stats(N ll, fmt(%5.0f %10.3f) labels(N "log-likelihood")) nobaselevels ///
 > varlabels("$varlabels") ///
 > prehead("Table" "Discounting Function ML Estimates" @title) ///
-> title("Concave Utility, Heterogenous(?) Preferences") ///
+> title("Concave Utility, Heterogenous Preferences") ///
 > legend eqlabels("CRRA function parameter (r)" "PWF parameter (phi)" "PWF parameter (eta)" "Discou
 > nting parameter (delta)" "Risk error (mu)" "Time error (nu)" "Discounting parameter (beta)") mlab
 > els(,titles) ///
@@ -2520,37 +2564,25 @@ end of do-file
 . 
 . if "$doMARGINS" == "y" {
 .         do "dofiles/MarginsTime"
-. }
 
+. *****************************************************************************
+. * This do file builds on the analysis of Time Preferences in South Africa.  *
+. * It fits within section 8 of the Main do-file. Analysis assumes RDU.       * 
+. * This do file only conducts margins commands and are kept separate         *
+. * because of how long the estimations take.                                 * 
+. *                                                                           *
+. * Date first generated:             8 September 2025                        *
+. * Created by:                       Rinelle Chetty                          * 
+. *****************************************************************************
 . 
-. if "$doFIGURES" == "y" {
-.         do "dofiles/FiguresTime" 
-. }
+. ****************************************
+. ***     Exponential Discounting      ***
+. ****************************************
+.     
+. * Delta Equation
+. estimates restore m1hetero
+(results m1hetero are active now)
 
-. 
-. 
-. *********************************************************************************
-. 
-. * End Timer
-. timer off 1
-
-. timer list
-   1:    690.04 /        1 =     690.0370
-
-. local secs = r(t1)
-
-. local mins = `secs'/60
-
-. local hrs = `mins'/60
-
-. local secs_ = string(`secs', "%10.0f")
-
-. local mins_ = string(`mins', "%4.1f")
-
-. local hrs_ = string(`hrs', "%4.2f")
-
-. di "Calculations took `secs_' seconds, `mins_' minutes, or `hrs_' hours."
-Calculations took 690 seconds, 11.5 minutes, or 0.19 hours.
-
-. 
-. cap log close 
+. asdoc margins, over(wave) predict(equation(delta)) post ///
+>         replace save($stata_tables/Exp_PresentValues) label dec(5) ///
+>         title(Delta Estimates)
