@@ -147,7 +147,7 @@ ci1opts(lcolor(`exp_color')) ///
 plot2opts(lwidth(`wide') lpattern(dash) lcolor(`qh_color') mcolor(`qh_color')) ///
 ci2opts(lcolor(`qh_color')) ///
 legend(order(3 "Exponential" 4 "Quasi-Hyperbolic") size(medlarge) cols(1) ring(0) pos(2) nobox) ///
-yline(50, lcolor(gs14) lwidth(vthick)) saving("$figures/pv_sa", replace)
+saving("$figures/pv_sa", replace)
 
 
 * Caption
@@ -195,16 +195,22 @@ local exp_color "black"
 local qh_color  "dkorange"
 
 * Generate plot 
-marginsplot using deltaestimates, l1title("Discount Rate", orientation(horizontal)) ///
-ytitle("") ylabel(, angle(horizontal)) title("") ///
-xlabel("", format(%tdm)) xtitle("") ///
-plot1opts(lwidth(thick) lcolor(`exp_color') mcolor(`exp_color')) ///
-ci1opts(lcolor(`exp_color')) ///
-plot2opts(lwidth(thick) lpattern(dash) lcolor(`qh_color') mcolor(`qh_color')) ///
-ci2opts(lcolor(`qh_color')) ///
-legend(order(3 "Exponential" 4 "Quasi-Hyperbolic") size(medlarge) cols(1) ring(0) pos(2) nobox) ///
-yline(50, lcolor(gs14) lwidth(vthick)) saving("$figures/deltaestimates", replace)
-* 
+marginsplot using deltaestimates, ///
+    xlabel(, format(%tdm)) xtitle("") title("") /// 
+    ytitle("") ylabel(, angle(horizontal)) ///
+    plot1opts(lwidth(thick) lcolor(`exp_color') mcolor(`exp_color')) ///
+    ci1opts(lcolor(`exp_color')) ///
+    plot2opts(lwidth(thick) lpattern(dash) lcolor(`qh_color') mcolor(`qh_color')) ///
+    ci2opts(lcolor(`qh_color')) ///
+    legend(order(3 "Exponential" 4 "Quasi-Hyperbolic") size(medlarge) cols(1) ring(0) pos(2) nobox) ///
+    saving("$figures/deltaestimates", replace)
+//graph export "$figures/deltaestimates.pdf", replace 
+
+gr combine $figures/deltaestimates.gph, cols(1) imargin(zero) xcommon ///
+    title("Discount Rates", size(vlarge)) ///
+    subtitle("Under Exponential and Quasi-Hyperbolic Discounting", ///
+	size(medium) margin(medsmall)) ///
+    saving(deltaestimatescombined, replace)
 graph export "$figures/deltaestimates.pdf", replace 
 
 
