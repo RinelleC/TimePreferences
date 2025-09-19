@@ -240,16 +240,6 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
         }
     }
 
-    * Test for wave effects
-    foreach i in 1 2 3 4 5 6 {
-        foreach j in `ferest()' {
-        test `i'.wave == `j'.wave
-            if r(p) < 0.1 {
-                di as error r(p) 
-            }
-        }
-    }
-
 
     ****************************************
     ***   Quasi-Hyperbolic Discounting   ***
@@ -314,7 +304,25 @@ postfoot("Results account for clustering at the individual level" "Standard erro
 
 
 *******************************************************************************
-*** 	8.4 -- Getting metrics for the graphs						        ***
+*** 	8.4 -- Tests on present value       						        ***
+*******************************************************************************
+
+estimates restore m1hetero
+margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^(14/365)))) post
+
+   * Test for wave effects
+    foreach i in 1 2 3 4 5 6 {
+        foreach j in `ferest()' {
+        test `i'.wave == `j'.wave
+            if r(p) < 0.1 {
+                di as error r(p) 
+            }
+        }
+    }
+
+
+*******************************************************************************
+*** 	8.5 -- Getting metrics for the graphs						        ***
 *******************************************************************************
 
 tab ssamount, m 			// R250 and R400 principal amounts 
