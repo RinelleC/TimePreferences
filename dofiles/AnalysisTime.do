@@ -333,6 +333,11 @@ su llamount if ssamount == 400
 su lldelay  if ssamount == 400 
 tab lldelay if ssamount == 400 
 
+tab lldelay if time==1 & ssdelay==0
+tab lldelay if time==1 & ssdelay==7
+tab lldelay if time==1 & ssdelay==14 
+gen delaydiff = lldelay - ssdelay 
+tab delaydiff, m 
 
 
 *******************************************************************************
