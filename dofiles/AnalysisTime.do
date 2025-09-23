@@ -304,17 +304,39 @@ postfoot("Results account for clustering at the individual level" "Standard erro
 
 
 *******************************************************************************
-*** 	8.4 -- Tests on present value       						        ***
+*** 	8.4 -- Tests on R500 present value       						    ***
 *******************************************************************************
 
-estimates restore m1hetero
-margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^(14/365)))) post
+    ****************************************
+    ***     Exponential Discounting      ***
+    ****************************************
+    
+    estimates restore m1hetero
+    margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^(14/365)))) post
 
-   * Test for wave effects
+    * Test for wave effects
     foreach i in 1 2 3 4 5 6 {
         foreach j in `ferest()' {
         test `i'.wave == `j'.wave
-            if r(p) < 0.1 {
+            if r(p) < 0.05 {
+                di as error r(p) 
+            }
+        }
+    }
+
+
+    ****************************************
+    ***   Quasi-Hyperbolic Discounting   ***
+    ****************************************
+    
+    estimates restore m3hetero
+    margins, over(wave) expression(500*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) post 
+    
+    * Test for wave effects
+    foreach i in 1 2 3 4 5 6 {
+        foreach j in `ferest()' {
+        test `i'.wave == `j'.wave
+            if r(p) < 0.05 {
                 di as error r(p) 
             }
         }
