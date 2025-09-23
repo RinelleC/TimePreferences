@@ -134,8 +134,8 @@ sort _by1
 save pvExpQH50margin, replace
 
 * Set graph colours
-local exp_color "black"
-local qh_color  "dkorange"
+local exp_color "black*.7"
+local qh_color  "purple*.7"
 local wide      "thick"
 
 * Now plot the combined margins dataset
@@ -191,8 +191,8 @@ sort _by1
 save deltaestimates, replace 
 
 * Set graph colours
-local exp_color "black"
-local qh_color  "dkorange"
+local exp_color "forest_green"
+local qh_color  "orange*.8" 
 
 * Generate plot 
 marginsplot using deltaestimates, ///
@@ -204,7 +204,6 @@ marginsplot using deltaestimates, ///
     ci2opts(lcolor(`qh_color')) ///
     legend(order(3 "Exponential" 4 "Quasi-Hyperbolic") size(medlarge) cols(1) ring(0) pos(2) nobox) ///
     saving("$figures/deltaestimates", replace)
-//graph export "$figures/deltaestimates.pdf", replace 
 
 gr combine $figures/deltaestimates.gph, cols(1) imargin(zero) xcommon ///
     title("Discount Rates", size(vlarge)) ///
