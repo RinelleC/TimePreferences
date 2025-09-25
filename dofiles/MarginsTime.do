@@ -53,22 +53,22 @@ asdoc margins, over(wave) predict(equation(delta)) post ///
     * 7 days 
     estimates restore m1hetero
 	margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^(7/365))))  ///
-        saving($estimations/pv_500_7days, replace) post
+        saving($estimations/pv_E_500_7days, replace) post
 	
 	* 14 days 
    	estimates restore m1hetero
 	margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^(14/365))))  ///
-    	saving($estimations/pv_500_14days, replace) post
+    	saving($estimations/pv_E_500_14days, replace) post
 
     * 42 days 
     estimates restore m1hetero
 	margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^(42/365))))  ///
-        saving($estimations/pv_500_42days, replace) post
+        saving($estimations/pv_E_500_42days, replace) post
 
     * 48 days 
    	estimates restore m1hetero
 	margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^(48/365))))  ///
-        saving($estimations/pv_500_48days, replace) post
+        saving($estimations/pv_E_500_48days, replace) post
 
 
 
@@ -109,7 +109,6 @@ local beta "(predict(equation(beta)))"
 	* R500 in 14 days 
 	estimates restore m3hetero
 	asdoc margins, over(wave) expression(500*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) post ///
-		saving($estimations/pvQH50margin, replace) ///
 		append save($stata_tables/QH_PresentValues) label dec(2) ///
 		title(PV for R500)
 	
