@@ -64,6 +64,16 @@ asdoc margins, over(wave) predict(equation(delta)) post ///
 		title(PV for R500 and 14 days) ///     	
 		saving($estimations/pv_E_500_14days, replace) post
 
+					* Test for wave effects (R500 and 14 days)
+					foreach i in 1 2 3 4 5 6 {
+						foreach j in `ferest()' {
+						test `i'.wave == `j'.wave
+							if r(p) < 0.05 {
+								di as error r(p) 
+							}
+						}
+					}
+
     * 42 days 
     estimates restore m1hetero
 	asdoc margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^42/365))))  ///
@@ -143,6 +153,16 @@ local beta "(predict(equation(beta)))"
         append save($stata_tables/QH_PresentValues) label dec(2) ///
 		title(PV for R500 and 14 days) ///
         saving($estimations/pv_QH_500_14days, replace) post
+
+					* Test for wave effects
+						foreach i in 1 2 3 4 5 6 {
+							foreach j in `ferest()' {
+							test `i'.wave == `j'.wave
+								if r(p) < 0.05 {
+											di as error r(p) 
+								}
+							}
+						}
 
     * 42 days 
     estimates restore m3hetero
