@@ -208,8 +208,7 @@ marginsplot using deltaestimates, ///
 gr combine $figures/deltaestimates.gph, cols(1) imargin(zero) xcommon ///
     title("Discount Rates", size(vlarge)) ///
     subtitle("Under Exponential and Quasi-Hyperbolic Discounting", ///
-	size(medium) margin(medsmall)) ///
-    saving(deltaestimatescombined, replace)
+	size(medium) margin(medsmall)) 
 graph export "$figures/deltaestimates.pdf", replace 
 
 
