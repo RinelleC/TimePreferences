@@ -304,49 +304,7 @@ postfoot("Results account for clustering at the individual level" "Standard erro
 
 
 *******************************************************************************
-*** 	8.4 -- Tests on R500 present value       						    ***
-*******************************************************************************
-
-    ****************************************
-    ***     Exponential Discounting      ***
-    ****************************************
-    
-    estimates restore m1hetero
-    margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^(14/365))))  ///
-        saving($estimations/pv_E_500_14days, replace) post
-
-    * Test for wave effects
-    foreach i in 1 2 3 4 5 6 {
-        foreach j in `ferest()' {
-        test `i'.wave == `j'.wave
-            if r(p) < 0.05 {
-                di as error r(p) 
-            }
-        }
-    }
-
-
-    ****************************************
-    ***   Quasi-Hyperbolic Discounting   ***
-    ****************************************
-    
-    estimates restore m3hetero
-    margins, over(wave) expression(500*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) ///  
-        saving($estimations/pv_QH_500_14days, replace) post
-    
-    * Test for wave effects
-    foreach i in 1 2 3 4 5 6 {
-        foreach j in `ferest()' {
-        test `i'.wave == `j'.wave
-            if r(p) < 0.05 {
-                di as error r(p) 
-            }
-        }
-    }
-
-
-*******************************************************************************
-*** 	8.5 -- Getting metrics for the graphs						        ***
+*** 	8.4 -- Getting metrics for the graphs						        ***
 *******************************************************************************
 
 tab ssamount, m 			// R250 and R400 principal amounts 
