@@ -118,8 +118,8 @@ mylabels 400(10)500, myscale(@) prefix(R) format(%4.2f) local(ylabel)
 cd $estimations 
 
 * Get the combined margins.dta files into the same format as the infection and death bars above
-use pvExp50margin, clear
-append using pvQH50margin, generate(_by2)
+use pv_E_500_14days, clear
+append using pv_QH_500_14days, generate(_by2)
 rename _by1 by1
 generate _by1 = date("5/29/2020", "MDY")
 format _by1 %td
