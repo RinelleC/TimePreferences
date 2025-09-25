@@ -313,7 +313,7 @@ postfoot("Results account for clustering at the individual level" "Standard erro
     
     estimates restore m1hetero
     margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^(14/365))))  ///
-        saving($estimations/pvExp50margin, replace) post
+        saving($estimations/pv_E_500_14days, replace) post
 
     * Test for wave effects
     foreach i in 1 2 3 4 5 6 {
@@ -332,7 +332,7 @@ postfoot("Results account for clustering at the individual level" "Standard erro
     
     estimates restore m3hetero
     margins, over(wave) expression(500*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) ///  
-        saving($estimations/pvQH50margin, replace) post
+        saving($estimations/pv_QH_500_14days, replace) post
     
     * Test for wave effects
     foreach i in 1 2 3 4 5 6 {
