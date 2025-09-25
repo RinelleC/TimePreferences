@@ -46,6 +46,32 @@ asdoc margins, over(wave) predict(equation(delta)) post ///
 		append save($stata_tables/Exp_PresentValues) label dec(2) ///
 		title(PV for R600)
 
+	****************************************************************
+	* Comparing R500 Present Values across time horizons under EXP *
+	****************************************************************
+
+    * 7 days 
+    estimates restore m1hetero
+	margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^(7/365))))  ///
+        saving($estimations/pv_500_7days, replace) post
+	
+	* 14 days 
+   	estimates restore m1hetero
+	margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^(14/365))))  ///
+    	saving($estimations/pv_500_14days, replace) post
+
+    * 42 days 
+    estimates restore m1hetero
+	margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^(42/365))))  ///
+        saving($estimations/pv_500_42days, replace) post
+
+    * 48 days 
+   	estimates restore m1hetero
+	margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^(48/365))))  ///
+        saving($estimations/pv_500_48days, replace) post
+
+
+
 ****************************************
 ***   Quasi-Hyperbolic Discounting   ***
 ****************************************
@@ -92,6 +118,31 @@ local beta "(predict(equation(beta)))"
 	asdoc margins, over(wave) expression(600*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) post ///
 		append save($stata_tables/QH_PresentValues) label dec(2) ///
 		title(PV for R600)
+
+	***************************************************************
+	* Comparing R500 Present Values across time horizons under QH *
+	***************************************************************
+
+    * 7 days 
+    estimates restore m3hetero
+	margins, over(wave) expression(500*`beta'*(1/((1+predict(equation(delta)))^(7/365)))) ///  
+        saving($estimations/pv_QH_500_7days, replace) post
+	
+	* 14 days 
+    estimates restore m3hetero
+	margins, over(wave) expression(500*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) ///  
+        saving($estimations/pv_QH_500_14days, replace) post
+
+    * 42 days 
+    estimates restore m3hetero
+	margins, over(wave) expression(500*`beta'*(1/((1+predict(equation(delta)))^(42/365)))) ///  
+        saving($estimations/pv_QH_500_42days, replace) post
+
+    * 48 days 
+    estimates restore m3hetero
+	margins, over(wave) expression(500*`beta'*(1/((1+predict(equation(delta)))^(48/365)))) ///  
+        saving($estimations/pv_QH_500_48days, replace) post
+
 
 *******************************************************************************
 
