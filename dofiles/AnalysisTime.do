@@ -275,22 +275,6 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
         }
     }
 
-    * Estimate present value of R500 margins for comparisons across waves and downstream figures
-    estimates restore m3hetero
-
-    local beta "(predict(equation(beta)))"
-
-    * Test for wave effects
-    foreach i in 1 2 3 4 5 6 {
-        foreach j in `ferest()' {
-        test `i'.wave == `j'.wave
-            if r(p) < 0.1 {
-                di as error r(p) 
-            }
-        }
-    }
-
-
 * Export the estimates to .TSV 
 estout m1hetero m3hetero using "$estimations/RDUDiscEstimates_Heterogenous.tsv", ///
 replace starlevels(* 0.10 ** 0.05 *** 0.01) cells( (b(star label("Estimate") fmt(3)) se(label("Std error") fmt(3)) )) ///
