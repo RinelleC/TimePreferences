@@ -38,8 +38,19 @@ asdoc margins, over(wave) predict(equation(delta)) post ///
 	estimates restore m1hetero
 	asdoc margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^(14/365)))) ///
 		append save($stata_tables/ExponentialDiscounting) label dec(2) ///
-		title(PV for R500)
-	
+		title(PV for R500 and 14 days) ///
+		saving($estimations/pv_E_500_14days, replace) post
+
+					* Test for wave effects (R500 and 14 days)
+					foreach i in 1 2 3 4 5 6 {
+						foreach j in `ferest()' {
+						test `i'.wave == `j'.wave
+							if r(p) < 0.05 {
+								di as error r(p) 
+							}
+						}
+					}
+
 	* 600 in 14 days 
 	estimates restore m1hetero
 	asdoc margins, over(wave) expression(600*(1/((1+predict(equation(delta)))^(14/365)))) ///
@@ -57,26 +68,9 @@ asdoc margins, over(wave) predict(equation(delta)) post ///
 		title(PV for R500 and 7 days) /// 
 		saving($estimations/pv_E_500_7days, replace) post
 	
-	* 14 days - conducted in AnalysisTime.do
-   	estimates restore m1hetero
-	asdoc margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^(14/365))))  ///
-		append save($stata_tables/ExponentialDiscounting) label dec(2) ///
-		title(PV for R500 and 14 days) ///     	
-		saving($estimations/pv_E_500_14days, replace) post
-
-					* Test for wave effects (R500 and 14 days)
-					foreach i in 1 2 3 4 5 6 {
-						foreach j in `ferest()' {
-						test `i'.wave == `j'.wave
-							if r(p) < 0.05 {
-								di as error r(p) 
-							}
-						}
-					}
-
     * 42 days 
     estimates restore m1hetero
-	asdoc margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^42/365))))  ///
+	asdoc margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^42/365)))  ///
 		append save($stata_tables/ExponentialDiscounting) label dec(2) ///
 		title(PV for R500 and 42 days) ///         
 		saving($estimations/pv_E_500_42days, replace) post
@@ -124,12 +118,23 @@ local beta "(predict(equation(beta)))"
 		append save($stata_tables/QuasiHyperbolicDiscounting) label dec(2) ///
 		title(PV for R400 and 14 days)
 
-	* R500 in 14 days - conducted in AnalysisTime.do 
+	* R500 in 14 days 
 	estimates restore m3hetero
 	asdoc margins, over(wave) expression(500*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) post ///
 		append save($stata_tables/QuasiHyperbolicDiscounting) label dec(2) ///
-		title(PV for R500 and 14 days)
-	
+		title(PV for R500 and 14 days) ///
+	    saving($estimations/pv_QH_500_14days, replace)
+
+						* Test for wave effects
+						foreach i in 1 2 3 4 5 6 {
+							foreach j in `ferest()' {
+							test `i'.wave == `j'.wave
+								if r(p) < 0.05 {
+											di as error r(p) 
+								}
+							}
+						}
+
 	* 600 in 14 days 
 	estimates restore m3hetero
 	asdoc margins, over(wave) expression(600*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) post ///
@@ -146,23 +151,6 @@ local beta "(predict(equation(beta)))"
         append save($stata_tables/QuasiHyperbolicDiscounting) label dec(2) ///
 		title(PV for R500 and 7 days) ///
 		saving($estimations/pv_QH_500_7days, replace) post
-	
-	* 14 days 
-    estimates restore m3hetero
-	asdoc margins, over(wave) expression(500*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) ///  
-        append save($stata_tables/QuasiHyperbolicDiscounting) label dec(2) ///
-		title(PV for R500 and 14 days) ///
-        saving($estimations/pv_QH_500_14days, replace) post
-
-					* Test for wave effects
-						foreach i in 1 2 3 4 5 6 {
-							foreach j in `ferest()' {
-							test `i'.wave == `j'.wave
-								if r(p) < 0.05 {
-											di as error r(p) 
-								}
-							}
-						}
 
     * 42 days 
     estimates restore m3hetero
