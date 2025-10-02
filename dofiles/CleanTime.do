@@ -82,5 +82,53 @@ capture: generate covid_scale_deaths_sq = covid_scale_deaths * covid_scale_death
 
 
 *******************************************************************************
+***		6.4 -- New Condensed Anxiety and Depression Variables               ***
+*******************************************************************************
+
+* Anxiety condensed (from 21 items to 4 items, according to GAD-7)
+tab anxiety_total, m 
+gen anxcat = . 
+replace anxcat = 1 if (anxiety_total >= 0  & anxiety_total <= 4)    // minimal anxiety
+replace anxcat = 2 if (anxiety_total >= 5  & anxiety_total <= 9)    // mild 
+replace anxcat = 3 if (anxiety_total >= 10 & anxiety_total <= 14)   // moderate
+replace anxcat = 4 if (anxiety_total >= 15)                         // severe anxiety 
+* 
+label define anxietylabel 1 "Minimal Anxiety" 2 "Mild Anxiety" 3 "Moderate Anxiety" 4 "Severe Anxiety"
+label val anxcat anxietylabel 
+numlabel, add 
+tab anxcat, m  
+
+
+* Depression condensed (from 27 categories to 5 categories)
+tab depression_total, m  
+gen depcat = . 
+replace depcat = 1 if (depression_total >= 0  & depression_total <= 4)  // minimal
+replace depcat = 2 if (depression_total >= 5  & depression_total <= 9)  // mild 
+replace depcat = 3 if (depression_total >= 10 & depression_total <= 14) // moderate
+replace depcat = 4 if (depression_total >= 15 & depression_total <= 19) // moderate severe
+replace depcat = 5 if (depression_total >= 20 & depression_total <= 27) // severe 
+tab depression_total depcat, m 
+* 
+label define depressionlabel 1 "Minimal Depression" 2 "Mild Depression" 3 "Moderate Depression" 4 "Moderate Severe Depression" 5 "Severe Depression"
+label val depcat depressionlabel 
+numlabel, add 
+tab depcat 
+
+
+* Depression condensed (from 27 categories to 3 categories)
+tab depcat, m  
+gen depcat2 = . 
+replace depcat2 = 1 if (depcat == 1)                // no or minimal depression 
+replace depcat2 = 2 if (depcat == 2 | depcat == 3)  // mild or moderate depression 
+replace depcat2 = 3 if (depcat == 4 | depcat == 5)  // moderate severe or severe depression 
+tab depcat depcat2, m
+* 
+label define depressionlabel2 1 "None or Minimal Depression" 2 "Mild or Moderate Depression" 3 "Moderate Severe or Severe Depression"
+label val depcat2 depressionlabel2
+numlabel, add 
+tab depcat2 
+
+
+*******************************************************************************
 
 di as error "End of Cleaning do-file" 
