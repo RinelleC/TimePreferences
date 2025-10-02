@@ -275,6 +275,21 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
         }
     }
 
+    * Anxiety 
+    estimates restore m3hetero
+    margins, over(anxcat) predict(equation(delta)) post ///
+        saving($estimations/QH_Anxiety, replace)
+
+    * Testing signif diff in delta between levels of anxiety 
+    foreach i in 1 2 3 4 {
+            foreach j in `ferest()' {
+            test `i'.anxcat == `j'.anxcat 
+                if r(p) < 0.05 {
+                    di as error r(p) 
+                }
+            }
+        }
+
 * Export the estimates to .TSV 
 estout m1hetero m3hetero using "$estimations/RDUDiscEstimates_Heterogenous.tsv", ///
 replace starlevels(* 0.10 ** 0.05 *** 0.01) cells( (b(star label("Estimate") fmt(3)) se(label("Std error") fmt(3)) )) ///
