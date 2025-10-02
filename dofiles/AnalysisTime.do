@@ -1,6 +1,6 @@
 *****************************************************************************
 * This is the Analysis do file to analyse Time Preferences in South Africa  *
-* and fits within section 8 of the Main do-file. Analysis assumes RDU.      * 
+* and fits within section 7 of the Main do-file. Analysis assumes RDU.      * 
 *                                                                           *
 * Date first generated:             28 August 2025                          *
 * Created by:                       Rinelle Chetty                          * 
@@ -8,7 +8,7 @@
 
 
 *******************************************************************************
-*** 	8.1 -- Homogenous Preferences               						***
+*** 	7.1 -- Homogenous Preferences               						***
 *******************************************************************************
 
 estimates clear
@@ -112,7 +112,7 @@ postfoot("Results account for clustering at the individual level" "Standard erro
 
 
 *******************************************************************************
-*** 	8.2 -- Heterogenous Preferences               						***
+*** 	7.2 -- Heterogenous Preferences               						***
 *******************************************************************************
 
 set more off
@@ -218,7 +218,7 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
 
 
 *******************************************************************************
-*** 	8.3 -- Margins for Exponential & Quasi-Hyperbolic Discounting       ***
+*** 	7.3 -- Margins for Exponential & Quasi-Hyperbolic Discounting       ***
 *******************************************************************************
 
     ****************************************
@@ -303,7 +303,7 @@ postfoot("Results account for clustering at the individual level" "Standard erro
 
 
 *******************************************************************************
-*** 	8.4 -- Getting metrics for the graphs						        ***
+*** 	7.4 -- Getting metrics for the graphs						        ***
 *******************************************************************************
 
 tab ssamount, m 			// R250 and R400 principal amounts 
