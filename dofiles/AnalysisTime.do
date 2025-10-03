@@ -240,6 +240,11 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
         }
     }
 
+    * Anxiety 
+    estimates restore m1hetero
+    margins, over(anxcat) predict(equation(delta)) post ///
+        saving($estimations/E_Anxiety, replace)
+
 
     ****************************************
     ***   Quasi-Hyperbolic Discounting   ***
