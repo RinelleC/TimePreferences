@@ -149,9 +149,8 @@ ci2opts(lcolor(`qh_color')) ///
 legend(order(3 "Exponential" 4 "Quasi-Hyperbolic") size(medlarge) cols(1) ring(0) pos(2) nobox) ///
 saving("$figures/pv_sa", replace)
 
-
 * Caption
-local caption ""Point estimates represented by the circles. 95% confidence intervals shown above and below each point estimate." "The solid black line shows time preferences under exponential discounting, and the dashed orange line under Quasi-Hyperbolic discounting." "The daily national COVID-19 infection rate (blue) and death rate(red) in South Africa are indicated in the horizontal bars.""
+local caption ""Point estimates represented by the circles. 95% confidence intervals shown above and below each point estimate." "The solid black line shows time preferences under exponential discounting, and the dashed purple line under"  "Quasi-Hyperbolic discounting. The daily national COVID-19 infection rate (blue) and death rate(red) in" "South Africa are indicated in the horizontal bars.""
 
 * Move to figures folder 
 cd ../ 
@@ -161,7 +160,7 @@ cd $figures
 gr combine pv_sa.gph c_sa_bar.gph d_sa_bar.gph, cols(1) imargin(zero) xcommon ///
 title("Discounting Behavior", size(vlarge)) ///
 subtitle("Based on the present value of a R500 reward received in 14 days", ///
-	size(medium) margin(medsmall)) caption(`caption', size(vsmall)) ///
+	size(medium) margin(medsmall)) caption(`caption', size(small)) ///
     saving(discountingbehaviour, replace)
 graph export "discountingbehaviour.pdf", replace 
 
@@ -215,7 +214,6 @@ gr combine $figures/deltaestimates.gph, cols(1) imargin(zero) xcommon ///
 graph export "$figures/deltaestimates.pdf", replace 
 
 
-
 *********************************************************************************
 ************           South African Time - Anxiety                  ************
 *********************************************************************************
@@ -235,7 +233,7 @@ local qh_color  "orange*.8"
 local caption   ""Minimal anxiety reflects GAD-7 scores of between 0 and 4, Mild anxiety reflects scores 5 to 9, Moderate anxiety is" "scores 10 to 14, and Severe Anxiety reflects scores greater than 15." "Significant differences in discount rate delta found between mild and severe, and moderate and severe anxiety.""
 
 marginsplot using delta_anxietyestimates, ///
-    xlabel(, format(%tdm)) xtitle("") title("") /// 
+    xlabel(, angle(forty_five) format(%tdm)) xtitle("") xtitle(, margin(medsmall)) title("") /// 
     ytitle("") ylabel(, angle(horizontal)) ///
     plot1opts(lwidth(thick) lcolor(`exp_color') mcolor(`exp_color')) ///
     ci1opts(lcolor(`exp_color')) ///
