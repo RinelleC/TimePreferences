@@ -93,7 +93,7 @@ replace anxcat = 2 if (anxiety_total >= 5  & anxiety_total <= 9)    // mild
 replace anxcat = 3 if (anxiety_total >= 10 & anxiety_total <= 14)   // moderate
 replace anxcat = 4 if (anxiety_total >= 15)                         // severe anxiety 
 * 
-label define anxietylabel 1 "Minimal Anxiety" 2 "Mild Anxiety" 3 "Moderate Anxiety" 4 "Severe Anxiety"
+label define anxietylabel 1 "Minimal" 2 "Mild" 3 "Moderate" 4 "Severe"
 label val anxcat anxietylabel 
 numlabel, add 
 tab anxcat, m  
