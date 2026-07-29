@@ -40,7 +40,6 @@ about
 capture: timer clear
 timer on 1
 
-
 *******************************************************************************
 *** 	2. Set up globals for running separate do files or analyses later 	***
 *******************************************************************************
@@ -60,7 +59,6 @@ global doMARGINS		"n"
 * Global for figures
 global doFIGURES		"y" 
 
-
 *******************************************************************************
 *** 	3. Configurations, fonts and graph colours							***
 *******************************************************************************
@@ -79,7 +77,6 @@ graph set window fontface "Garamond"
 * Graphics scheme
 set scheme s1color
 
-
 *******************************************************************************
 *** 	4. Install all packages						 						***
 *******************************************************************************
@@ -96,7 +93,6 @@ if "$doPACKAGES" == "y"		{
 	cap net install tabout.pkg
 }
 
-
 *******************************************************************************
 *** 	5. Run code to define programs 										***
 *******************************************************************************
@@ -106,7 +102,6 @@ qui {
 	do MLfunctionsRisk
 	do MLfunctionsTime
 	}
-
 
 *******************************************************************************
 *** 	6. Open the data, calculate deaths, clean and relabel, drop vars	***
@@ -127,7 +122,6 @@ save "timedata.dta", replace
 * Delete un-zipped version of original data 
 erase "ExpData.dta"
 
-
 *******************************************************************************
 *** 	7. Conduct Time Analyses and Generate Figures 						***
 *******************************************************************************
@@ -144,7 +138,6 @@ if "$doFIGURES" == "y" {
 	do "dofiles/FiguresTime" 
 }
 
-
 *********************************************************************************
 
 * End Timer
@@ -160,9 +153,7 @@ di "Calculations took `secs_' seconds, `mins_' minutes, or `hrs_' hours."
 
 cap log close 
 
-
 *******************************************************************************
 * END of MAIN.do
-*******************************************************************************
 
 di as error "END of TIME PREFERENCES" 
