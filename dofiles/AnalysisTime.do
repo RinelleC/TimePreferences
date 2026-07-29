@@ -29,15 +29,15 @@ global ufunc "crra"
     ***        CRRA utility, exponential discounting        ***
     ***********************************************************
 
-	set more off
 	global discount "exp"
-	ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
-	(phi: $demog) (eta: $demog) (delta: $demog) ///
-	(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-	cluster(id) technique($maxtech) init(0.351 0.489 0.8839 1.48568 0.1423 6.268, copy)
+	
+    ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
+        (phi: $demog) (eta: $demog) (delta: $demog) ///
+        (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+        cluster(id) technique($maxtech) init(0.351 0.489 0.8839 1.48568 0.1423 6.268, copy)
 	ml maximize, difficult
 
-	estimates store m1, title(Model - Prelec2Exp)
+	estimates store m1
 
 	esttab m1 using "$stata_tables/ml_model_homogenous.rtf" , replace ///
 		label se b(%15.3g) ///
@@ -55,17 +55,17 @@ global ufunc "crra"
     ***     CRRA utility, quasi-hyperbolic discounting      ***
     ***********************************************************
     
-	set more off
 	global discount "qh"
-	ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
-	(phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
-	(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-	cluster(id) technique($maxtech) init(0.351 0.489 0.8839 0.978 1.48568 0.1423 6.268, copy)
+	
+    ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
+	    (phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
+	    (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+	    cluster(id) technique($maxtech) init(0.351 0.489 0.8839 0.978 1.48568 0.1423 6.268, copy)
 	ml maximize, difficult
 
-	estimates store m3, title(Model 3 - Prelec2QHyp)
+	estimates store m2
 
-	esttab m3 using "$stata_tables/ml_model_homogenous.rtf" , append ///
+	esttab m2 using "$stata_tables/ml_model_homogenous.rtf" , append ///
 		label se b(%15.3g) ///
         mtitle("Homogenous Preferences B") ///
         title(CRRA Utility & Quasi-Hyperbolic Discounting)
@@ -82,7 +82,7 @@ global ufunc "crra"
 
 * Homogeneous preferences across waves to test whether all waves are best characterised by QH
 forvalues w = 1/6 {
-	estimates restore m3
+	estimates restore m2
 	di "" ""	
 	di as error "Estimates for Wave #`w'"
 	global discount "qh"
@@ -110,6 +110,31 @@ legend eqlabels(none) mlabels(,titles) /// ///
 postfoot("Results account for clustering at the individual level" "Standard errors in parentheses")
 	
 
+    ***********************************************************
+    ***        CRRA utility, hyperbolic discounting         ***
+    ***********************************************************
+
+	global discount "mazur"
+	
+    ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
+	    (phi: $demog) (eta: $demog) (delta: $demog) ///
+	    (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+	    cluster(id) technique($maxtech) init(0.351 0.489 0.8839 1.48568 0.1423 6.268, copy)
+	ml maximize, difficult
+
+	estimates store m3
+
+	esttab m3 using "$stata_tables/ml_model_homogenous.rtf" , append ///
+		label se b(%15.3g) ///
+        mtitle("Homogenous Preferences C") ///
+        title(CRRA Utility & Hyperbolic Discounting)
+
+
+    * Evaluate EXP Discount rate at different horizons, specified in days
+    foreach x of numlist 7 14 42 84 {
+        di as error "EXP discount rate evaluated at `x' day horizon"
+        nlcom (EXPDiscountRate : (1/(1+[delta]_cons)^(`x'/365))^(-1/(`x'/365)) - 1)
+    }	
 
 *******************************************************************************
 *** 	7.2 -- Heterogenous Preferences               						***
@@ -172,7 +197,7 @@ global ufunc "crra"
     
 	set more off
 	global discount "qh"
-	estimates restore m3
+	estimates restore m2
 
 	global demog "i.wave c.age i.male c.anxiety_total c.depression_total i.race i.race#i.wave i.male#i.wave"
 
@@ -198,7 +223,7 @@ global ufunc "crra"
 * Specify stripped down demographics
 global demogX "i.wave c.age i.male i.race c.anxiety_total c.depression_total covid_scale_deaths covid_scale_deaths_sq"
 
-estimates restore m3
+estimates restore m2
 ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demogX) ///
     (phi: $demogX) (eta: $demogX) (beta: $demogX) (delta: $demogX) ///
     (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
