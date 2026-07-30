@@ -254,6 +254,55 @@ esttab m2X using "$stata_tables/ml_model_coviddeaths.rtf" , replace ///
 test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
 
 
+    *-------------------------------------------*
+    *       Hyperbolic Discounting              *
+    *-------------------------------------------*
+    
+	global discount "mazur"
+
+	estimates restore m3
+
+	global demog "i.wave c.age i.male c.anxiety_total c.depression_total i.race i.race#i.wave i.male#i.wave"
+
+	ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
+        (phi: $demog) (eta: $demog) (delta: $demog) ///
+        (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+        cluster(id) technique($maxtech) continue
+	ml maximize, difficult		
+
+	estimates store m3hetero
+	
+	esttab m3hetero using "$stata_tables/ml_model_heterogenous.rtf" , append ///
+		label se b(%15.3g) ///
+        mtitle("Heterogenous Preferences C") ///
+        title(Hyperbolic Discounting)
+
+
+    *-------------------------------------------*
+    *       Weibull Discounting                 *
+    *-------------------------------------------*
+    
+	global discount "weibull"
+
+	estimates restore m4
+
+	global demog "i.wave c.age i.male c.anxiety_total c.depression_total i.race i.race#i.wave i.male#i.wave"
+
+	ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
+        (phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
+        (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+        cluster(id) technique($maxtech) continue
+	ml maximize, difficult		
+
+	estimates store m4hetero
+	
+	esttab m4hetero using "$stata_tables/ml_model_heterogenous.rtf" , append ///
+		label se b(%15.3g) ///
+        mtitle("Heterogenous Preferences D") ///
+        title(Weibull Discounting)
+
+	test [beta]_cons == 1
+	
 
 *******************************************************************************
 *** 	7.3 -- Margins for Exponential & Quasi-Hyperbolic Discounting       ***
