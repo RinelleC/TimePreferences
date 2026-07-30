@@ -25,9 +25,9 @@ global error "context"      // contextual error
 global weigh "prelec2"      // prelec2 weighting function 
 global ufunc "crra"
 
-    ***********************************************************
-    ***        CRRA utility, exponential discounting        ***
-    ***********************************************************
+    *--------------------------------------------------------------------*
+    *       CRRA utility, exponential discounting                        *
+    *--------------------------------------------------------------------*
 
 	global discount "exp"
 	
@@ -51,9 +51,9 @@ global ufunc "crra"
         nlcom (EXPDiscountRate : (1/(1+[delta]_cons)^(`x'/365))^(-1/(`x'/365)) - 1)
     }	
 
-    ***********************************************************
-    ***     CRRA utility, quasi-hyperbolic discounting      ***
-    ***********************************************************
+    *--------------------------------------------------------------------*
+    *       CRRA utility, quasi-hyperbolic discounting                   *
+    *--------------------------------------------------------------------*
     
 	global discount "qh"
 	
@@ -110,9 +110,9 @@ legend eqlabels(none) mlabels(,titles) /// ///
 postfoot("Results account for clustering at the individual level" "Standard errors in parentheses")
 	
 
-    ***********************************************************
-    ***        CRRA utility, hyperbolic discounting         ***
-    ***********************************************************
+    *--------------------------------------------------------------------*
+    *       CRRA utility, hyperbolic discounting                         *
+    *--------------------------------------------------------------------*
 
 	global discount "mazur"
 	
@@ -130,11 +130,31 @@ postfoot("Results account for clustering at the individual level" "Standard erro
         title(CRRA Utility & Hyperbolic Discounting)
 
 
-    * Evaluate EXP Discount rate at different horizons, specified in days
+    * Evaluate Discount rate at different horizons, specified in days
     foreach x of numlist 7 14 42 84 {
-        di as error "EXP discount rate evaluated at `x' day horizon"
+        di as error "Hyperbolic discount rate evaluated at `x' day horizon"
         nlcom (EXPDiscountRate : (1/(1+[delta]_cons)^(`x'/365))^(-1/(`x'/365)) - 1)
     }	
+
+    *--------------------------------------------------------------------*
+    *       CRRA utility, weibull discounting                            *
+    *--------------------------------------------------------------------*
+
+	global discount "weibull"
+
+    ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
+	    (phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
+	    (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+	    cluster(id) technique($maxtech) init(0.351 0.489 0.8839 1 1.48568 0.1423 6.268, copy)
+	ml maximize, difficult
+
+	estimates store m4
+
+	esttab m4 using "$stata_tables/ml_model_homogenous.rtf" , append ///
+		label se b(%15.3g) ///
+        mtitle("Homogenous Preferences D") ///
+        title(CRRA Utility & Weibull Discounting)
+
 
 *******************************************************************************
 *** 	7.2 -- Heterogenous Preferences               						***
@@ -151,9 +171,9 @@ global error "context"
 global weigh "prelec2"
 global ufunc "crra"
 
-    ***********************************************************
-    ***        CRRA utility, exponential discounting        ***
-    ***********************************************************
+    *--------------------------------------------------------------------*
+    *       CRRA utility, exponential discounting                        *
+    *--------------------------------------------------------------------*
 
 	set more off
 	global discount "exp"
@@ -191,9 +211,9 @@ global ufunc "crra"
 	estimates save "$estimations/time_het_exp", replace
 
 
-    ***********************************************************
-    ***     CRRA utility, quasi-hyperbolic discounting      ***
-    ***********************************************************
+    *--------------------------------------------------------------------*
+    *       CRRA utility, quasi-hyperbolic discounting                   *
+    *--------------------------------------------------------------------*
     
 	set more off
 	global discount "qh"
@@ -246,9 +266,9 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
 *** 	7.3 -- Margins for Exponential & Quasi-Hyperbolic Discounting       ***
 *******************************************************************************
 
-    ****************************************
-    ***     Exponential Discounting      ***
-    ****************************************
+    *-------------------------------------------*
+    *       Exponential Discounting             *
+    *-------------------------------------------*
     
     * Delta Equation
     estimates restore m1hetero
@@ -271,9 +291,9 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
         saving($estimations/E_Anxiety, replace)
 
 
-    ****************************************
-    ***   Quasi-Hyperbolic Discounting   ***
-    ****************************************
+    *-------------------------------------------*
+    *       Quasi-Hyperbolic Discounting        *
+    *-------------------------------------------*
     
     * Beta Equation 
 	estimates restore m3hetero
