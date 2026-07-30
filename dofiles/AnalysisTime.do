@@ -15,7 +15,6 @@ estimates clear
 set more off
 
 global cdf          "invlogit"
-global maxtech      "nr"
 global riskvars     "prob1L prob2L prob3L prob1R prob2R prob3R prize1L prize2L prize3L prize1R prize2R prize3R uMax uMin"
 global timevars     "risk ssamount ssdelay llamount lldelay"
 global demog        ""
@@ -34,14 +33,13 @@ global ufunc "crra"
     ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
         (phi: $demog) (eta: $demog) (delta: $demog) ///
         (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-        cluster(id) technique($maxtech) init(0.351 0.489 0.8839 1.48568 0.1423 6.268, copy)
+        cluster(id) technique(nr) init(0.351 0.489 0.8839 1.48568 0.1423 6.268, copy)
 	ml maximize, difficult
 
 	estimates store m1
 
 	esttab m1 using "$stata_tables/ml_model_homogenous.rtf" , replace ///
-		label se b(%15.3g) ///
-        mtitle("Homogenous Preferences A") ///
+		label se b(%15.3g) mtitle("Homogenous Preferences A") ///
         title(Exponential Discounting)
 
 
@@ -60,14 +58,13 @@ global ufunc "crra"
     ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
 	    (phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
 	    (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-	    cluster(id) technique($maxtech) init(0.351 0.489 0.8839 0.978 1.48568 0.1423 6.268, copy)
+	    cluster(id) technique(nr) init(0.351 0.489 0.8839 0.978 1.48568 0.1423 6.268, copy)
 	ml maximize, difficult
 
 	estimates store m2
 
 	esttab m2 using "$stata_tables/ml_model_homogenous.rtf" , append ///
-		label se b(%15.3g) ///
-        mtitle("Homogenous Preferences B") ///
+		label se b(%15.3g) mtitle("Homogenous Preferences B") ///
         title(Quasi-Hyperbolic Discounting)
 
 	test [beta]_cons == 1
@@ -90,7 +87,7 @@ forvalues w = 1/6 {
     ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
         (phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
 	    (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-	    cluster(id) technique($maxtech) continue
+	    cluster(id) technique(nr) continue
 	ml maximize, difficult
 
 	* test for QH
@@ -119,14 +116,13 @@ postfoot("Results account for clustering at the individual level" "Standard erro
     ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
 	    (phi: $demog) (eta: $demog) (delta: $demog) ///
 	    (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-	    cluster(id) technique($maxtech) init(0.351 0.489 0.8839 1.48568 0.1423 6.268, copy)
+	    cluster(id) technique(nr) init(0.351 0.489 0.8839 1.48568 0.1423 6.268, copy)
 	ml maximize, difficult
 
 	estimates store m3
 
 	esttab m3 using "$stata_tables/ml_model_homogenous.rtf" , append ///
-		label se b(%15.3g) ///
-        mtitle("Homogenous Preferences C") ///
+		label se b(%15.3g) mtitle("Homogenous Preferences C") ///
         title(Hyperbolic Discounting)
 
 
@@ -145,14 +141,13 @@ postfoot("Results account for clustering at the individual level" "Standard erro
     ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
 	    (phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
 	    (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-	    cluster(id) technique($maxtech) init(0.351 0.489 0.8839 1 1.48568 0.1423 6.268, copy)
+	    cluster(id) technique(nr) init(0.351 0.489 0.8839 1 1.48568 0.1423 6.268, copy)
 	ml maximize, difficult
 
 	estimates store m4
 
 	esttab m4 using "$stata_tables/ml_model_homogenous.rtf" , append ///
-		label se b(%15.3g) ///
-        mtitle("Homogenous Preferences D") ///
+		label se b(%15.3g) mtitle("Homogenous Preferences D") ///
         title(Weibull Discounting)
 
 
@@ -161,8 +156,8 @@ postfoot("Results account for clustering at the individual level" "Standard erro
 *******************************************************************************
 
 set more off
+
 global cdf "invlogit"
-global maxtech "nr"
 global riskvars "prob1L prob2L prob3L prob1R prob2R prob3R prize1L prize2L prize3L prize1R prize2R prize3R uMax uMin"
 global timevars "risk ssamount ssdelay llamount lldelay"
 global hetero ""
@@ -185,7 +180,7 @@ global ufunc "crra"
 			ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
 			(phi: $demog) (eta: $demog) (delta: ) ///
 			(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-			cluster(id) technique($maxtech) continue
+			cluster(id) technique(nr) continue
 		}
 
 		if `l' == 2 { 
@@ -193,7 +188,7 @@ global ufunc "crra"
 			ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
 			(phi: $demog) (eta: $demog) (delta: $demog) ///
 			(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-			cluster(id) technique($maxtech) continue
+			cluster(id) technique(nr) continue
 		}
 
 		ml maximize, difficult tolerance(1e-04) ltolerance(0) nrtolerance(1e-05)
@@ -201,8 +196,7 @@ global ufunc "crra"
 		estimates store m1hetero
 	
 		esttab m1hetero using "$stata_tables/ml_model_heterogenous.rtf" , replace ///
-		label se b(%15.3g) ///
-        mtitle("Heterogenous Preferences A") ///
+		label se b(%15.3g) mtitle("Heterogenous Preferences A") ///
         title(Exponential Discounting)
 
     }
@@ -220,14 +214,13 @@ global ufunc "crra"
 	ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
         (phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
         (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-        cluster(id) technique($maxtech) continue
+        cluster(id) technique(nr) continue
 	ml maximize, difficult		
 
 	estimates store m2hetero
 	
 	esttab m2hetero using "$stata_tables/ml_model_heterogenous.rtf" , append ///
-		label se b(%15.3g) ///
-        mtitle("Heterogenous Preferences B") ///
+		label se b(%15.3g) mtitle("Heterogenous Preferences B") ///
         title(Quasi-Hyperbolic Discounting)
 
 	test [beta]_cons == 1
@@ -241,14 +234,13 @@ estimates restore m2
 ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demogX) ///
     (phi: $demogX) (eta: $demogX) (beta: $demogX) (delta: $demogX) ///
     (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-    cluster(id) technique($maxtech) continue
+    cluster(id) technique(nr) continue
 ml maximize, difficult
 
 estimates store m2X 
 
 esttab m2X using "$stata_tables/ml_model_coviddeaths.rtf" , replace ///
-		label se b(%15.3g) ///
-        mtitle("Heterogenous Preferences with Covid Deaths") ///
+		label se b(%15.3g) mtitle("Heterogenous Preferences with Covid Deaths") ///
         title(Quasi-Hyperbolic Discounting)
 
 test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
@@ -267,14 +259,13 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
 	ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
         (phi: $demog) (eta: $demog) (delta: $demog) ///
         (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-        cluster(id) technique($maxtech) continue
+        cluster(id) technique(nr) continue
 	ml maximize, difficult		
 
 	estimates store m3hetero
 	
 	esttab m3hetero using "$stata_tables/ml_model_heterogenous.rtf" , append ///
-		label se b(%15.3g) ///
-        mtitle("Heterogenous Preferences C") ///
+		label se b(%15.3g) mtitle("Heterogenous Preferences C") ///
         title(Hyperbolic Discounting)
 
 
@@ -291,14 +282,13 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
 	ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
         (phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
         (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-        cluster(id) technique($maxtech) continue
+        cluster(id) technique(nr) continue
 	ml maximize, difficult		
 
 	estimates store m4hetero
 	
 	esttab m4hetero using "$stata_tables/ml_model_heterogenous.rtf" , append ///
-		label se b(%15.3g) ///
-        mtitle("Heterogenous Preferences D") ///
+		label se b(%15.3g) mtitle("Heterogenous Preferences D") ///
         title(Weibull Discounting)
 
 	test [beta]_cons == 1
