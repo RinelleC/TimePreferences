@@ -25,9 +25,9 @@ global error "context"      // contextual error
 global weigh "prelec2"      // prelec2 weighting function 
 global ufunc "crra"
 
-    *--------------------------------------------------------------------*
-    *       CRRA utility, exponential discounting                        *
-    *--------------------------------------------------------------------*
+    *-------------------------------------------*
+    *       Exponential Discounting             *
+    *-------------------------------------------*
 
 	global discount "exp"
 	
@@ -42,7 +42,7 @@ global ufunc "crra"
 	esttab m1 using "$stata_tables/ml_model_homogenous.rtf" , replace ///
 		label se b(%15.3g) ///
         mtitle("Homogenous Preferences A") ///
-        title(CRRA Utility & Exponential Discounting)
+        title(Exponential Discounting)
 
 
     * Evaluate EXP Discount rate at different horizons, specified in days
@@ -51,9 +51,9 @@ global ufunc "crra"
         nlcom (EXPDiscountRate : (1/(1+[delta]_cons)^(`x'/365))^(-1/(`x'/365)) - 1)
     }	
 
-    *--------------------------------------------------------------------*
-    *       CRRA utility, quasi-hyperbolic discounting                   *
-    *--------------------------------------------------------------------*
+    *-------------------------------------------*
+    *       Quasi-Hyperbolic Discounting        *
+    *-------------------------------------------*
     
 	global discount "qh"
 	
@@ -68,7 +68,7 @@ global ufunc "crra"
 	esttab m2 using "$stata_tables/ml_model_homogenous.rtf" , append ///
 		label se b(%15.3g) ///
         mtitle("Homogenous Preferences B") ///
-        title(CRRA Utility & Quasi-Hyperbolic Discounting)
+        title(Quasi-Hyperbolic Discounting)
 
 	test [beta]_cons == 1
 
@@ -110,9 +110,9 @@ legend eqlabels(none) mlabels(,titles) /// ///
 postfoot("Results account for clustering at the individual level" "Standard errors in parentheses")
 	
 
-    *--------------------------------------------------------------------*
-    *       CRRA utility, hyperbolic discounting                         *
-    *--------------------------------------------------------------------*
+    *-------------------------------------------*
+    *       Hyperbolic Discounting              *
+    *-------------------------------------------*
 
 	global discount "mazur"
 	
@@ -127,7 +127,7 @@ postfoot("Results account for clustering at the individual level" "Standard erro
 	esttab m3 using "$stata_tables/ml_model_homogenous.rtf" , append ///
 		label se b(%15.3g) ///
         mtitle("Homogenous Preferences C") ///
-        title(CRRA Utility & Hyperbolic Discounting)
+        title(Hyperbolic Discounting)
 
 
     * Evaluate Discount rate at different horizons, specified in days
@@ -136,9 +136,9 @@ postfoot("Results account for clustering at the individual level" "Standard erro
         nlcom (EXPDiscountRate : (1/(1+[delta]_cons)^(`x'/365))^(-1/(`x'/365)) - 1)
     }	
 
-    *--------------------------------------------------------------------*
-    *       CRRA utility, weibull discounting                            *
-    *--------------------------------------------------------------------*
+    *-------------------------------------------*
+    *       Weibull Discounting                 *
+    *-------------------------------------------*
 
 	global discount "weibull"
 
@@ -153,7 +153,7 @@ postfoot("Results account for clustering at the individual level" "Standard erro
 	esttab m4 using "$stata_tables/ml_model_homogenous.rtf" , append ///
 		label se b(%15.3g) ///
         mtitle("Homogenous Preferences D") ///
-        title(CRRA Utility & Weibull Discounting)
+        title(Weibull Discounting)
 
 
 *******************************************************************************
@@ -171,11 +171,10 @@ global error "context"
 global weigh "prelec2"
 global ufunc "crra"
 
-    *--------------------------------------------------------------------*
-    *       CRRA utility, exponential discounting                        *
-    *--------------------------------------------------------------------*
+    *-------------------------------------------*
+    *       Exponential Discounting             *
+    *-------------------------------------------*
 
-	set more off
 	global discount "exp"
 
 	forvalues l = 1/2 {
@@ -204,15 +203,14 @@ global ufunc "crra"
 		esttab m1hetero using "$stata_tables/ml_model_heterogenous.rtf" , replace ///
 		label se b(%15.3g) ///
         mtitle("Heterogenous Preferences A") ///
-        title(CRRA Utility & Exponential Discounting)
+        title(Exponential Discounting)
 
     }
 
-    *--------------------------------------------------------------------*
-    *       CRRA utility, quasi-hyperbolic discounting                   *
-    *--------------------------------------------------------------------*
+    *-------------------------------------------*
+    *       Quasi-Hyperbolic Discounting        *
+    *-------------------------------------------*
     
-	set more off
 	global discount "qh"
 
 	estimates restore m2
@@ -225,12 +223,12 @@ global ufunc "crra"
         cluster(id) technique($maxtech) continue
 	ml maximize, difficult		
 
-	estimates store m2hetero, title(Model 3 - Prelec2QHyp)
+	estimates store m2hetero
 	
 	esttab m2hetero using "$stata_tables/ml_model_heterogenous.rtf" , append ///
 		label se b(%15.3g) ///
         mtitle("Heterogenous Preferences B") ///
-        title(CRRA Utility & Quasi-Hyperbolic Discounting)
+        title(Quasi-Hyperbolic Discounting)
 
 	test [beta]_cons == 1
 		
@@ -251,7 +249,7 @@ estimates store m2X
 esttab m2X using "$stata_tables/ml_model_coviddeaths.rtf" , replace ///
 		label se b(%15.3g) ///
         mtitle("Heterogenous Preferences with Covid Deaths") ///
-        title(? Utility & ? Discounting)
+        title(Quasi-Hyperbolic Discounting)
 
 test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
 
