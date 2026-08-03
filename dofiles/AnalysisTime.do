@@ -135,12 +135,12 @@ forvalues w = 1/6 {
 		label se b(%15.3g) mtitle("Homogenous Preferences D") ///
         title(Weibull Discounting)
 
-    *-------------------------------------------*
-    *    Export all results to one TSV table    *
-    *-------------------------------------------*
+    *------------------------------------------------------*
+    *    Export all homogenous results to one TSV table    *
+    *------------------------------------------------------*
     
-estout m1 m2 m3 m4 using "$estimations/Allmodels_Homogenous.tsv" ///
-    replace starlevels(* 0.10 ** 0.05 *** 0.01) ///
+estout m1 m2 m3 m4 using "$estimations/Allmodels_Homogenous.tsv", replace ///
+    starlevels(* 0.10 ** 0.05 *** 0.01) ///
     cells( b(star label("Estimate") fmt(3)) se(label("Std Error") fmt(3)) ) ///
     stats(N ll, fmt(%5.0f %10.3f) labels(N "log-likelihood")) nobaselevels ///
     varlabels(r:_cons "CRRA function parameter (r)" phi:_cons "PWF parameter (phi)" eta:_cons "PWF parameter (eta)" beta:_cons "Discounting parameter (beta)" delta:_cons "Discounting parameter (delta)" noiseRA:_cons "Risk error (mu)" noiseDR:_cons "Time error (nu)") ///
@@ -272,24 +272,51 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
     
 	global discount "weibull"
 
-	estimates restore m4
+	global demog    "i.wave c.age i.male c.anxiety_total c.depression_total i.race i.race#i.wave i.male#i.wave"
 
-	global demog "i.wave c.age i.male c.anxiety_total c.depression_total i.race i.race#i.wave i.male#i.wave"
+	forvalues l = 1/2 {
 
-	ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
-        (phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
-        (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-        cluster(id) technique(nr) continue
-	ml maximize, difficult		
+		if `l' == 1 {
+			estimates restore m4
+			ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
+			(phi: $demog) (eta: $demog) (beta: ) (delta: ) ///
+			(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+			cluster(id) technique(nr) continue
+		    }
 
-	estimates store m4hetero
-	
-	esttab m4hetero using "$stata_tables/ml_model_heterogenous.rtf" , append ///
+		if `l' == 2 {
+			estimates restore m4hetero
+			ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
+			(phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
+			(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+			cluster(id) technique(nr) continue
+		    }
+
+		ml maximize, difficult tolerance(1e-04) ltolerance(0) nrtolerance(1e-05)
+
+		estimates store m4hetero
+
+		esttab m4hetero using "$stata_tables/ml_model_heterogenous.rtf" , append ///
 		label se b(%15.3g) mtitle("Heterogenous Preferences D") ///
         title(Weibull Discounting)
 
-	test [beta]_cons == 1
-	
+	    }
+
+    test [beta]_cons == 1
+
+    *--------------------------------------------------------*
+    *    Export all heterogenous results to one TSV table    *
+    *--------------------------------------------------------*
+    
+estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterogenous.tsv", ///
+    replace starlevels(* 0.10 ** 0.05 *** 0.01) varlabels("$varlabels") ///
+    cells( (b(star label("Estimate") fmt(3)) se(label("Std error") fmt(3)) )) ///
+    stats(N ll, fmt(%5.0f %10.3f) labels(N "log-likelihood")) nobaselevels ///
+    prehead("Table" "Discounting Function ML Estimates" @title) ///
+    title("Concave Utility, Heterogenous Preferences") ///
+    legend eqlabels("CRRA function parameter (r)" "PWF parameter (phi)" "PWF parameter (eta)" "Discounting parameter (delta)" "Risk error (mu)" "Time error (nu)" "Discounting parameter (beta)") mlabels(,titles) ///
+    postfoot("Results account for clustering at the individual level" "Standard errors in parentheses")
+
 
 *******************************************************************************
 *** 	7.3 -- Margins for Discounting Models                               ***
@@ -420,19 +447,6 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
             }
         }
     }
-
-    *-------------------------------------------*
-    *    Export all results to one TSV table    *
-    *-------------------------------------------*
-    
-estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterogenous.tsv", ///
-    replace starlevels(* 0.10 ** 0.05 *** 0.01) varlabels("$varlabels") ///
-    cells( (b(star label("Estimate") fmt(3)) se(label("Std error") fmt(3)) )) ///
-    stats(N ll, fmt(%5.0f %10.3f) labels(N "log-likelihood")) nobaselevels ///
-    prehead("Table" "Discounting Function ML Estimates" @title) ///
-    title("Concave Utility, Heterogenous Preferences") ///
-    legend eqlabels("CRRA function parameter (r)" "PWF parameter (phi)" "PWF parameter (eta)" "Discounting parameter (delta)" "Risk error (mu)" "Time error (nu)" "Discounting parameter (beta)") mlabels(,titles) ///
-    postfoot("Results account for clustering at the individual level" "Standard errors in parentheses")
 
 
 *******************************************************************************
