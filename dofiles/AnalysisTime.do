@@ -341,11 +341,6 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
         }
     }
 
-    * Anxiety 
-    estimates restore m1hetero
-    margins, over(anxcat) predict(equation(delta)) post ///
-        saving($estimations/E_Anxiety, replace)
-
     *-------------------------------------------*
     *       Quasi-Hyperbolic Discounting        *
     *-------------------------------------------*
@@ -379,21 +374,6 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
             }
         }
     }
-
-    * Anxiety 
-    estimates restore m2hetero
-    margins, over(anxcat) predict(equation(delta)) post ///
-        saving($estimations/QH_Anxiety, replace)
-
-    * Testing signif diff in delta between levels of anxiety 
-    foreach i in 1 2 3 4 {
-            foreach j in `ferest()' {
-            test `i'.anxcat == `j'.anxcat 
-                if r(p) < 0.05 {
-                    di as error r(p) 
-                }
-            }
-        }
 
     *-------------------------------------------*
     *       Hyperbolic Discounting             *
