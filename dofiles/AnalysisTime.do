@@ -42,7 +42,6 @@ global ufunc "crra"
 		label se b(%15.3g) mtitle("Homogenous Preferences A") ///
         title(Exponential Discounting)
 
-
     * Evaluate EXP Discount rate at different horizons, specified in days
     foreach x of numlist 7 14 42 84 {
         di as error "EXP discount rate evaluated at `x' day horizon"
@@ -69,13 +68,11 @@ global ufunc "crra"
 
 	test [beta]_cons == 1
 
-
     * Evaluate QH Discount rate at different horizons, specified in days
     foreach x of numlist 7 14 42 84 {
         di as error "QH discount rate evaluated at `x' day horizon"
         nlcom (QHDiscountRate : ([beta]_cons/(1+[delta]_cons)^(`x'/365))^(-1/(`x'/365)) - 1)
     }	
-
 
 * Homogeneous preferences across waves to test whether all waves are best characterised by QH
 forvalues w = 1/6 {
@@ -93,20 +90,8 @@ forvalues w = 1/6 {
 	* test for QH
 	di as error "Test for QH in wave #`w'"
 	test [beta]_cons == 1
-}
-
-
-* Export the estimates to .TSV for easy import in Excel
-estout * using "$estimations/RDUDiscEstimates_Homogenous.tsv", ///
-replace starlevels(* 0.10 ** 0.05 *** 0.01) cells( b(star label("Estimate") fmt(3)) se(label("Std Error") fmt(3))  ) ///
-stats(N ll, fmt(%5.0f %10.3f) labels(N "log-likelihood")) nobaselevels ///
-varlabels(r:_cons "CRRA function parameter (r)" phi:_cons "PWF parameter (phi)" eta:_cons "PWF parameter (eta)" beta:_cons "Discounting parameter (beta)" delta:_cons "Discounting parameter (delta)" noiseRA:_cons "Risk error (mu)" noiseDR:_cons "Time error (nu)") ///
-prehead("Table" "Discounting Function ML Estimates" @title) ///
-title("Concave Utility, Homogenous Preferences") ///
-legend eqlabels(none) mlabels(,titles) /// ///
-postfoot("Results account for clustering at the individual level" "Standard errors in parentheses")
+    }
 	
-
     *-------------------------------------------*
     *       Hyperbolic Discounting              *
     *-------------------------------------------*
@@ -150,6 +135,20 @@ postfoot("Results account for clustering at the individual level" "Standard erro
 		label se b(%15.3g) mtitle("Homogenous Preferences D") ///
         title(Weibull Discounting)
 
+    *-------------------------------------------*
+    *    Export all results to one TSV table    *
+    *-------------------------------------------*
+    
+estout m1 m2 m3 m4 using "$estimations/Allmodels_Homogenous.tsv" ///
+    replace starlevels(* 0.10 ** 0.05 *** 0.01) ///
+    cells( b(star label("Estimate") fmt(3)) se(label("Std Error") fmt(3)) ) ///
+    stats(N ll, fmt(%5.0f %10.3f) labels(N "log-likelihood")) nobaselevels ///
+    varlabels(r:_cons "CRRA function parameter (r)" phi:_cons "PWF parameter (phi)" eta:_cons "PWF parameter (eta)" beta:_cons "Discounting parameter (beta)" delta:_cons "Discounting parameter (delta)" noiseRA:_cons "Risk error (mu)" noiseDR:_cons "Time error (nu)") ///
+    prehead("Table" "Discounting Function ML Estimates" @title) ///
+    title("Concave Utility, Homogenous Preferences") ///
+    legend eqlabels(none) mlabels(,titles) /// ///
+    postfoot("Results account for clustering at the individual level" "Standard errors in parentheses")
+            
 
 *******************************************************************************
 *** 	7.2 -- Heterogenous Preferences               						***
@@ -245,7 +244,6 @@ esttab m2X using "$stata_tables/ml_model_coviddeaths.rtf" , replace ///
 
 test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
 
-
     *-------------------------------------------*
     *       Hyperbolic Discounting              *
     *-------------------------------------------*
@@ -267,7 +265,6 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
 	esttab m3hetero using "$stata_tables/ml_model_heterogenous.rtf" , append ///
 		label se b(%15.3g) mtitle("Heterogenous Preferences C") ///
         title(Hyperbolic Discounting)
-
 
     *-------------------------------------------*
     *       Weibull Discounting                 *
@@ -295,7 +292,7 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
 	
 
 *******************************************************************************
-*** 	7.3 -- Margins for Exponential & Quasi-Hyperbolic Discounting       ***
+*** 	7.3 -- Margins for Discounting Models                               ***
 *******************************************************************************
 
     *-------------------------------------------*
@@ -321,7 +318,6 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
     estimates restore m1hetero
     margins, over(anxcat) predict(equation(delta)) post ///
         saving($estimations/E_Anxiety, replace)
-
 
     *-------------------------------------------*
     *       Quasi-Hyperbolic Discounting        *
@@ -372,16 +368,71 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
             }
         }
 
-* Export the estimates to .TSV 
-estout m1hetero m2hetero using "$estimations/RDUDiscEstimates_Heterogenous.tsv", ///
-replace starlevels(* 0.10 ** 0.05 *** 0.01) cells( (b(star label("Estimate") fmt(3)) se(label("Std error") fmt(3)) )) ///
-stats(N ll, fmt(%5.0f %10.3f) labels(N "log-likelihood")) nobaselevels ///
-varlabels("$varlabels") ///
-prehead("Table" "Discounting Function ML Estimates" @title) ///
-title("Concave Utility, Heterogenous Preferences") ///
-legend eqlabels("CRRA function parameter (r)" "PWF parameter (phi)" "PWF parameter (eta)" "Discounting parameter (delta)" "Risk error (mu)" "Time error (nu)" "Discounting parameter (beta)") mlabels(,titles) ///
-postfoot("Results account for clustering at the individual level" "Standard errors in parentheses")
+    *-------------------------------------------*
+    *       Hyperbolic Discounting             *
+    *-------------------------------------------*
+    
+    * Delta Equation
+    estimates restore m3hetero
+    margins, over(wave) predict(equation(delta)) post ///
+        saving($estimations/Hyperbolic_Delta, replace)
 
+    * Test for wave effects
+    foreach i in 1 2 3 4 5 6 {
+        foreach j in `ferest()' {
+        test `i'.wave == `j'.wave
+            if r(p) < 0.1 {
+                di as error r(p) 
+            }
+        }
+    }
+
+    *-------------------------------------------*
+    *       Weibull Discounting                 *
+    *-------------------------------------------*
+    
+    * Beta Equation 
+	estimates restore m4hetero
+	margins, over(wave) predict(equation(beta)) post ///
+        saving($estimations/Weibull_Beta, replace)
+
+    * Test for wave effects
+    foreach i in 1 2 3 4 5 6 {
+        foreach j in `ferest()' {
+        test `i'.wave == `j'.wave
+            if r(p) < 0.1 {
+                di as error r(p) 
+            }
+        }
+    }
+
+    * Delta Equation
+    estimates restore m4hetero
+    margins, over(wave) predict(equation(delta)) post /// 
+        saving($estimations/Weibull_Delta, replace)
+
+    * Test for wave effects
+    foreach i in 1 2 3 4 5 6 {
+        foreach j in `ferest()' {
+        test `i'.wave == `j'.wave
+            if r(p) < 0.1 {
+                di as error r(p) 
+            }
+        }
+    }
+
+    *-------------------------------------------*
+    *    Export all results to one TSV table    *
+    *-------------------------------------------*
+    
+estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterogenous.tsv", ///
+    replace starlevels(* 0.10 ** 0.05 *** 0.01) varlabels("$varlabels") ///
+    cells( (b(star label("Estimate") fmt(3)) se(label("Std error") fmt(3)) )) ///
+    stats(N ll, fmt(%5.0f %10.3f) labels(N "log-likelihood")) nobaselevels ///
+    prehead("Table" "Discounting Function ML Estimates" @title) ///
+    title("Concave Utility, Heterogenous Preferences") ///
+    legend eqlabels("CRRA function parameter (r)" "PWF parameter (phi)" "PWF parameter (eta)" "Discounting parameter (delta)" "Risk error (mu)" "Time error (nu)" "Discounting parameter (beta)") mlabels(,titles) ///
+    postfoot("Results account for clustering at the individual level" "Standard errors in parentheses")
 
 
 *******************************************************************************
