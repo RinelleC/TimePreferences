@@ -281,7 +281,7 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
 			ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
 			(phi: $demog) (eta: $demog) (beta: ) (delta: ) ///
 			(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-			cluster(id) technique(nr) continue
+			cluster(id) technique(bhhh 10 nr 100) continue
 		    }
 
 		if `l' == 2 {
@@ -289,10 +289,10 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
 			ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
 			(phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
 			(noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
-			cluster(id) technique(nr) continue
+			cluster(id) technique(bhhh 10 nr 100) continue
 		    }
 
-		ml maximize, difficult tolerance(1e-04) ltolerance(0) nrtolerance(1e-05)
+		ml maximize, difficult iterate(200) tolerance(1e-04) ltolerance(0) nrtolerance(1e-05)
 
 		estimates store m4hetero
 
