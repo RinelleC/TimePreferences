@@ -329,15 +329,21 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
     * Delta Equation
     estimates restore m1hetero
     margins, over(wave) predict(equation(delta)) post ///
-        saving($estimations/Exponential_Delta, replace)
+        saving($estimations/Margins_E_Delta, replace)
 
     * Test for wave effects
     foreach i in 1 2 3 4 5 6 {
         foreach j in `ferest()' {
         test `i'.wave == `j'.wave
-            if r(p) < 0.1 {
-                di as error r(p) 
-            }
+        if r(p) < 0.05 {
+			di as error "r(p) at 5%"
+			}
+		if r(p) < 0.01 {
+			di as error "r(p) at 1%"
+			}
+		if r(p) < 0.001 {
+			di as error "r(p) at 0.1%"
+			}
         }
     }
 
@@ -348,30 +354,42 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
     * Beta Equation 
 	estimates restore m2hetero
 	margins, over(wave) predict(equation(beta)) post ///
-        saving($estimations/Quasi_Beta, replace)
+        saving($estimations/Margins_QH_Beta, replace)
 
     * Test for wave effects
     foreach i in 1 2 3 4 5 6 {
         foreach j in `ferest()' {
         test `i'.wave == `j'.wave
-            if r(p) < 0.1 {
-                di as error r(p) 
-            }
+        if r(p) < 0.05 {
+			di as error "r(p) at 5%"
+			}
+		if r(p) < 0.01 {
+			di as error "r(p) at 1%"
+			}
+		if r(p) < 0.001 {
+			di as error "r(p) at 0.1%"
+			}
         }
     }
 
     * Delta Equation
     estimates restore m2hetero
     margins, over(wave) predict(equation(delta)) post /// 
-        saving($estimations/Quasi_Delta, replace)
+        saving($estimations/Margins_QH_Delta, replace)
 
     * Test for wave effects
     foreach i in 1 2 3 4 5 6 {
         foreach j in `ferest()' {
         test `i'.wave == `j'.wave
-            if r(p) < 0.1 {
-                di as error r(p) 
-            }
+        if r(p) < 0.05 {
+			di as error "r(p) at 5%"
+			}
+		if r(p) < 0.01 {
+			di as error "r(p) at 1%"
+			}
+		if r(p) < 0.001 {
+			di as error "r(p) at 0.1%"
+			}
         }
     }
 
@@ -382,15 +400,21 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
     * Delta Equation
     estimates restore m3hetero
     margins, over(wave) predict(equation(delta)) post ///
-        saving($estimations/Hyperbolic_Delta, replace)
+        saving($estimations/Margins_H_Delta, replace)
 
     * Test for wave effects
     foreach i in 1 2 3 4 5 6 {
         foreach j in `ferest()' {
         test `i'.wave == `j'.wave
-            if r(p) < 0.1 {
-                di as error r(p) 
-            }
+        if r(p) < 0.05 {
+			di as error "r(p) at 5%"
+			}
+		if r(p) < 0.01 {
+			di as error "r(p) at 1%"
+			}
+		if r(p) < 0.001 {
+			di as error "r(p) at 0.1%"
+			}
         }
     }
 
@@ -401,30 +425,42 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
     * Beta Equation 
 	estimates restore m4hetero
 	margins, over(wave) predict(equation(beta)) post ///
-        saving($estimations/Weibull_Beta, replace)
+        saving($estimations/Margins_W_Beta, replace)
 
     * Test for wave effects
     foreach i in 1 2 3 4 5 6 {
         foreach j in `ferest()' {
         test `i'.wave == `j'.wave
-            if r(p) < 0.1 {
-                di as error r(p) 
-            }
+        if r(p) < 0.05 {
+			di as error "r(p) at 5%"
+			}
+		if r(p) < 0.01 {
+			di as error "r(p) at 1%"
+			}
+		if r(p) < 0.001 {
+			di as error "r(p) at 0.1%"
+			}
         }
     }
 
     * Delta Equation
     estimates restore m4hetero
     margins, over(wave) predict(equation(delta)) post /// 
-        saving($estimations/Weibull_Delta, replace)
+        saving($estimations/Margins_W_Delta, replace)
 
     * Test for wave effects
     foreach i in 1 2 3 4 5 6 {
         foreach j in `ferest()' {
         test `i'.wave == `j'.wave
-            if r(p) < 0.1 {
-                di as error r(p) 
-            }
+        if r(p) < 0.05 {
+			di as error "r(p) at 5%"
+			}
+		if r(p) < 0.01 {
+			di as error "r(p) at 1%"
+			}
+		if r(p) < 0.001 {
+			di as error "r(p) at 0.1%"
+			}
         }
     }
 
