@@ -68,6 +68,15 @@ global ufunc "crra"
 
 	test [beta]_cons == 1
 
+    * with wave dummies 
+    ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = i.wave) ///
+	    (phi: i.wave) (eta: i.wave) (beta: i.wave) (delta: i.wave) ///
+	    (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+	    cluster(id) technique(nr) continue 
+	ml maximize, difficult
+
+	estimates store m2wave 
+
     * Evaluate QH Discount rate at different horizons, specified in days
     foreach x of numlist 7 14 42 84 {
         di as error "QH discount rate evaluated at `x' day horizon"
@@ -134,6 +143,14 @@ forvalues w = 1/6 {
 	esttab m4 using "$stata_tables/ml_model_homogenous.rtf" , append ///
 		label se b(%15.3g) mtitle("Homogenous Preferences D") ///
         title(Weibull Discounting)
+
+    * with wave dummies 
+    ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = i.wave) ///
+	    (phi: i.wave) (eta: i.wave) (beta: i.wave) (delta: i.wave) ///
+	    (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+	    cluster(id) technique(nr) continue 
+	ml maximize, difficult
+	estimates store m4wave
 
     *------------------------------------------------------*
     *    Export all homogenous results to one TSV table    *
@@ -351,7 +368,27 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
     *       Quasi-Hyperbolic Discounting        *
     *-------------------------------------------*
     
-    * Beta Equation 
+    * Beta Equation - Homogenous
+	estimates restore m2wave
+    margins, over(wave) predict(equation(beta)) post
+
+    * Test for wave effects
+    foreach i in 1 2 3 4 5 6 {
+        foreach j in `ferest()' {
+        test `i'.wave == `j'.wave
+        if r(p) < 0.05 {
+			di as error "r(p) at 5%"
+			}
+		if r(p) < 0.01 {
+			di as error "r(p) at 1%"
+			}
+		if r(p) < 0.001 {
+			di as error "r(p) at 0.1%"
+			}
+        }
+    }
+
+    * Beta Equation - Heterogenous
 	estimates restore m2hetero
 	margins, over(wave) predict(equation(beta)) post ///
         saving($estimations/Margins_QH_Beta, replace)
@@ -422,7 +459,27 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
     *       Weibull Discounting                 *
     *-------------------------------------------*
     
-    * Beta Equation 
+    * Beta Equation - Homogenous 
+	estimates restore m4wave
+    margins, over(wave) predict(equation(beta)) post
+
+    * Test for wave effects
+    foreach i in 1 2 3 4 5 6 {
+        foreach j in `ferest()' {
+        test `i'.wave == `j'.wave
+        if r(p) < 0.05 {
+			di as error "r(p) at 5%"
+			}
+		if r(p) < 0.01 {
+			di as error "r(p) at 1%"
+			}
+		if r(p) < 0.001 {
+			di as error "r(p) at 0.1%"
+			}
+        }
+    }
+
+    * Beta Equation - Heterogenous 
 	estimates restore m4hetero
 	margins, over(wave) predict(equation(beta)) post ///
         saving($estimations/Margins_W_Beta, replace)
@@ -442,7 +499,7 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
 			}
         }
     }
-
+/*
     * Delta Equation
     estimates restore m4hetero
     margins, over(wave) predict(equation(delta)) post /// 
