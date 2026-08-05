@@ -165,55 +165,6 @@ subtitle("Based on the present value of a R500 reward received in 14 days", ///
 graph export "discountingbehaviour.pdf", replace 
 
 
-*********************************************************************************
-************           South African Time - Discount Rates           ************
-*********************************************************************************
-
-* Move back to estimations folder 
-cd ../ 
-cd $estimations 
-
-* Get the combined margins.dta files into the same format as the infection and death bars above
-use Exponential_Delta, clear
-append using Quasi_Delta, generate(_by2)
-rename _by1 by1
-generate _by1 = date("5/29/2020", "MDY")
-format _by1 %td
-replace _by1 = date("6/30/2020", "MDY")     if by1 == 2
-replace _by1 = date("7/31/2020", "MDY")     if by1 == 3
-replace _by1 = date("8/31/2020", "MDY")     if by1 == 4
-replace _by1 = date("9/29/2020", "MDY")     if by1 == 5
-replace _by1 = date("10/29/2020", "MDY")    if by1 == 6
-drop by1
-order _by2, after(_by1)
-sort _by1
-save deltaestimates, replace 
-
-* Set graph colours
-local exp_color "forest_green"
-local qh_color  "orange*.8" 
-local caption   " "Point estimates in circles with 95% confidence intervals. The solid green line represents Exponential discounting and" "the dashed orange line represents Quasi-Hyperbolic discounting." "
-
-* Generate plot 
-marginsplot using deltaestimates, ///
-    xlabel(, format(%tdm)) xtitle("") title("") /// 
-    ytitle("") ylabel(, angle(horizontal)) ///
-    plot1opts(lwidth(thick) lcolor(`exp_color') mcolor(`exp_color')) ///
-    ci1opts(lcolor(`exp_color')) ///
-    plot2opts(lwidth(thick) lpattern(dash) lcolor(`qh_color') mcolor(`qh_color')) ///
-    ci2opts(lcolor(`qh_color')) ///
-    legend(order(3 "Exponential" 4 "Quasi-Hyperbolic") size(medlarge) cols(1) ring(0) pos(2) nobox) ///
-    saving("$figures/deltaestimates", replace)
-
-gr combine $figures/deltaestimates.gph, cols(1) imargin(zero) xcommon ///
-    title("Discount Rates Across Experimental Waves", size(vlarge)) ///
-    subtitle("Under Exponential and Quasi-Hyperbolic Discounting", ///
-	size(medium) margin(medsmall)) ///
-    caption(`caption', size(small)) 
-
-graph export "$figures/deltaestimates.pdf", replace 
-
-
 *******************************************************************************
 
 pwd 
