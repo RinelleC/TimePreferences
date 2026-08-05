@@ -8,9 +8,9 @@
 * Created by:                       Rinelle Chetty                          * 
 *****************************************************************************
 
-****************************************
-***     Exponential Discounting      ***
-****************************************
+*********************************************************************
+***     				Exponential Discounting      			  ***
+*********************************************************************
     
 * Delta Equation
 estimates restore m1hetero
@@ -18,9 +18,9 @@ asdoc margins, over(wave) predict(equation(delta)) post ///
 	replace save($stata_tables/ExponentialDiscounting) label dec(5) ///
 	title(Delta Estimates)
 
-	*********************************************************
-	* Table of Present Values under Exponential Discounting *
-	*********************************************************
+*----------------------------------------------*
+*  Table of PVs under Exponential Discounting  *
+*----------------------------------------------*
 
 	* R300 in 14 days 
 	estimates restore m1hetero
@@ -57,9 +57,9 @@ asdoc margins, over(wave) predict(equation(delta)) post ///
 		append save($stata_tables/ExponentialDiscounting) label dec(2) ///
 		title(PV for R600)
 
-	****************************************************************
-	* Comparing R500 Present Values across time horizons under EXP *
-	****************************************************************
+*-----------------------------------------------------*
+*  Comparing R500 PVs across time horizons under EXP  *
+*-----------------------------------------------------*
 
     * 7 days 
     estimates restore m1hetero
@@ -84,9 +84,9 @@ asdoc margins, over(wave) predict(equation(delta)) post ///
 
 
 
-****************************************
-***   Quasi-Hyperbolic Discounting   ***
-****************************************
+*********************************************************************
+***   				Quasi-Hyperbolic Discounting   				  ***
+*********************************************************************
     
 * Beta Equation 
 estimates restore m2hetero
@@ -102,9 +102,9 @@ asdoc margins, over(wave) predict(equation(delta)) post ///
 
 local beta "(predict(equation(beta)))"
 
-	**************************************************************
-	* Table of Present Values under Quasi-Hyperbolic Discounting *
-	**************************************************************
+*------------------------------------------------*
+*  Table of Present Values under QH Discounting  *
+*------------------------------------------------*
 
     * R300 in 14 days 
 	estimates restore m2hetero
@@ -141,9 +141,9 @@ local beta "(predict(equation(beta)))"
 		append save($stata_tables/QuasiHyperbolicDiscounting) label dec(2) ///
 		title(PV for R600 and 14 days)
 
-	***************************************************************
-	* Comparing R500 Present Values across time horizons under QH *
-	***************************************************************
+*----------------------------------------------------*
+*  Comparing R500 PVs across time horizons under QH  *
+*----------------------------------------------------*
 
     * 7 days 
     estimates restore m2hetero
