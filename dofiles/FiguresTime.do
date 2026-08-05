@@ -214,43 +214,6 @@ gr combine $figures/deltaestimates.gph, cols(1) imargin(zero) xcommon ///
 graph export "$figures/deltaestimates.pdf", replace 
 
 
-*********************************************************************************
-************           South African Time - Anxiety                  ************
-*********************************************************************************
-
-* Move back to estimations folder 
-cd ../ 
-cd $estimations 
-
-use E_Anxiety, clear 
-append using QH_Anxiety, generate(_by2)
-numlabel, remove 
-save delta_anxietyestimates, replace 
-
-* Set graph colours
-local exp_color "forest_green"
-local qh_color  "orange*.8" 
-local caption   ""Minimal anxiety reflects GAD-7 scores of between 0 and 4, Mild anxiety reflects scores 5 to 9, Moderate anxiety is" "scores 10 to 14, and Severe Anxiety reflects scores greater than 15." "Significant differences in discount rate delta found between mild and severe, and moderate and severe anxiety.""
-
-marginsplot using delta_anxietyestimates, ///
-    xlabel(, angle(forty_five) format(%tdm)) xtitle("") xtitle(, margin(medsmall)) title("") /// 
-    ytitle("") ylabel(, angle(horizontal)) ///
-    plot1opts(lwidth(thick) lcolor(`exp_color') mcolor(`exp_color')) ///
-    ci1opts(lcolor(`exp_color')) ///
-    plot2opts(lwidth(thick) lpattern(dash) lcolor(`qh_color') mcolor(`qh_color')) ///
-    ci2opts(lcolor(`qh_color')) ///
-    legend(order(3 "Exponential" 4 "Quasi-Hyperbolic") size(medlarge) cols(1) ring(0) pos(2) nobox) ///
-    saving("$figures/delta_anxietyestimates", replace)
-
-gr combine $figures/delta_anxietyestimates.gph, cols(1) imargin(zero) xcommon ///
-    title("Discount Rates by Anxiety Levels", size(vlarge)) ///
-    subtitle("Under Exponential and Quasi-Hyperbolic Discounting", ///
-	size(medium) margin(medsmall)) ///
-    caption(`caption', size(small)) 
-
-graph export "$figures/delta_anxietyestimates.pdf", replace 
-
-
 *******************************************************************************
 
 pwd 
