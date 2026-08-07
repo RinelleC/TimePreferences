@@ -11,8 +11,6 @@
 *******************           JHU SA Covid Data             *********************
 *********************************************************************************
 
-cd $mainfolder
-
 * Open JHU Data and set file paths 
 use "$figures/jhu_data_rsa.dta", clear   
 sort date                                               // format: mm/dd/yyyy 
