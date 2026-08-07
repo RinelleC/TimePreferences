@@ -117,9 +117,16 @@ mylabels 400(10)500, myscale(@) prefix(R) format(%4.2f) local(ylabel)
 * Move to estimations folder 
 cd $estimations 
 
-* Get the combined margins.dta files into the same format as the infection and death bars above
+* Combine all models starting with exponential 
 use pv_E_500_14days, clear
+* add quasi-hyperbolic
 append using pv_QH_500_14days, generate(_by2)
+* add hyperbolic 
+append using pv_H_500_14days, generate(_by3)
+* add weibull 
+append using pv_W_500_14days, generate(_by4)
+
+* set up wave timeline axis 
 rename _by1 by1
 generate _by1 = date("5/29/2020", "MDY")
 format _by1 %td
@@ -129,25 +136,28 @@ replace _by1 = date("8/31/2020", "MDY")     if by1 == 4
 replace _by1 = date("9/29/2020", "MDY")     if by1 == 5
 replace _by1 = date("10/29/2020", "MDY")    if by1 == 6
 drop by1
-order _by2, after(_by1)
+order _by2 _by3 _by4, after(_by1)
 sort _by1
-save pvExpQH50margin, replace
+* 
+save pv500margin, replace
 
 * Set graph colours
-local exp_color "black*.7"
-local qh_color  "purple*.7"
-local wide      "thick"
+local exp_colour    "black*.7"
+local qh_colour     "purple*.7"
+local hyp_colour    "green*.7"
+local wei_colour    "blue*.7"
+local wide          "thick"
 
 * Now plot the combined margins dataset
-marginsplot using pvExpQH50margin, l1title("Rand", orientation(horizontal)) ///
-ytitle("") ylabel(, angle(horizontal)) title("") ///
-xlabel("", format(%tdm)) xtitle("") ///
-plot1opts(lwidth(`wide') lcolor(`exp_color') mcolor(`exp_color')) ///
-ci1opts(lcolor(`exp_color')) ///
-plot2opts(lwidth(`wide') lpattern(dash) lcolor(`qh_color') mcolor(`qh_color')) ///
-ci2opts(lcolor(`qh_color')) ///
-legend(order(3 "Exponential" 4 "Quasi-Hyperbolic") size(medlarge) cols(1) ring(0) pos(2) nobox) ///
-saving("$figures/pv_sa", replace)
+marginsplot using pv500margin, l1title("Rand", orientation(horizontal)) ///
+    ytitle("") ylabel(, angle(horizontal)) title("") ///
+    xlabel("", format(%tdm)) xtitle("") ///
+    plot1opts(lwidth(`wide') lpattern(solid) lcolor(`exp_colour') mcolor(`exp_colour')) ci1opts(lcolor(`exp_colour')) ///
+    plot2opts(lwidth(`wide') lpattern(dash)  lcolor(`qh_colour')  mcolor(`qh_colour'))  ci2opts(lcolor(`qh_colur'))   ///
+    plot3opts(lwidth(`wide') lpattern(dash)  lcolor(`hyp_colour') mcolor(`hyp_colour')) ci3opts(lcolor(`hyp_colur'))  ///
+    plot4opts(lwidth(`wide') lpattern(dash)  lcolor(`wei_colour') mcolor(`wei_colour')) ci4opts(lcolor(`wei_colur'))  ///
+    legend(order(3 "Exponential" 4 "Quasi-Hyperbolic" 5 "Hyperbolic" 6 "Weibull") size(medlarge) cols(1) ring(0) pos(2) nobox) ///
+    saving("$figures/presentvalue", replace)
 
 * Caption
 local caption ""Point estimates represented by the circles. 95% confidence intervals shown above and below each point estimate." "The solid black line shows time preferences under exponential discounting, and the dashed purple line under"  "Quasi-Hyperbolic discounting. The daily national COVID-19 infection rate (blue) and death rate(red) in" "South Africa are indicated in the horizontal bars.""
@@ -157,11 +167,10 @@ cd ../
 cd $figures 
 
 * Combine the graphs and export 
-gr combine pv_sa.gph c_sa_bar.gph d_sa_bar.gph, cols(1) imargin(zero) xcommon ///
+gr combine presentvalue.gph c_sa_bar.gph d_sa_bar.gph, cols(1) imargin(zero) xcommon ///
 title("Discounting Behavior", size(vlarge)) ///
 subtitle("Based on the present value of a R500 reward received in 14 days", ///
-	size(medium) margin(medsmall)) caption(`caption', size(small)) ///
-    saving(discountingbehaviour, replace)
+	size(medium) margin(medsmall)) caption(`caption', size(small)) 
 graph export "discountingbehaviour.pdf", replace 
 
 
