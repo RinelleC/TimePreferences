@@ -324,7 +324,7 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
     *--------------------------------------------------------*
     *    Export all heterogenous results to one TSV table    *
     *--------------------------------------------------------*
-    
+
 estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterogenous.tsv", ///
     replace starlevels(* 0.10 ** 0.05 *** 0.01) varlabels("$varlabels") ///
     cells( (b(star label("Estimate") fmt(3)) se(label("Std error") fmt(3)) )) ///
@@ -345,9 +345,7 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
     
     * Delta Equation
     estimates restore m1hetero
-    margins, over(wave) predict(equation(delta)) post ///
-        saving($estimations/Margins_E_Delta, replace)
-
+    margins, over(wave) predict(equation(delta)) post 
     * Test for wave effects
     foreach i in 1 2 3 4 5 6 {
         foreach j in `ferest()' {
@@ -390,8 +388,7 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
 
     * Beta Equation - Heterogenous
 	estimates restore m2hetero
-	margins, over(wave) predict(equation(beta)) post ///
-        saving($estimations/Margins_QH_Beta, replace)
+	margins, over(wave) predict(equation(beta)) post 
 
     * Test for wave effects
     foreach i in 1 2 3 4 5 6 {
@@ -411,8 +408,7 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
 
     * Delta Equation
     estimates restore m2hetero
-    margins, over(wave) predict(equation(delta)) post /// 
-        saving($estimations/Margins_QH_Delta, replace)
+    margins, over(wave) predict(equation(delta)) post 
 
     * Test for wave effects
     foreach i in 1 2 3 4 5 6 {
@@ -436,8 +432,7 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
     
     * Delta Equation
     estimates restore m3hetero
-    margins, over(wave) predict(equation(delta)) post ///
-        saving($estimations/Margins_H_Delta, replace)
+    margins, over(wave) predict(equation(delta)) post
 
     * Test for wave effects
     foreach i in 1 2 3 4 5 6 {
@@ -481,8 +476,7 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
 
     * Beta Equation - Heterogenous 
 	estimates restore m4hetero
-	margins, over(wave) predict(equation(beta)) post ///
-        saving($estimations/Margins_W_Beta, replace)
+	margins, over(wave) predict(equation(beta)) post
 
     * Test for wave effects
     foreach i in 1 2 3 4 5 6 {
@@ -499,11 +493,10 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
 			}
         }
     }
-/*
+
     * Delta Equation
     estimates restore m4hetero
-    margins, over(wave) predict(equation(delta)) post /// 
-        saving($estimations/Margins_W_Delta, replace)
+    margins, over(wave) predict(equation(delta)) post 
 
     * Test for wave effects
     foreach i in 1 2 3 4 5 6 {
