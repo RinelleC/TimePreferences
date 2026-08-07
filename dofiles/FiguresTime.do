@@ -142,25 +142,24 @@ sort _by1
 save pv500margin, replace
 
 * Set graph colours
-local exp_colour    "black*.7"
+local exp_colour    "navy*.7"
 local qh_colour     "purple*.7"
-local hyp_colour    "green*.7"
-local wei_colour    "blue*.7"
-local wide          "thick"
+local hyp_colour    "forest_green*.7"
+local wei_colour    "orange*.7"
 
 * Now plot the combined margins dataset
 marginsplot using pv500margin, l1title("Rand", orientation(horizontal)) ///
     ytitle("") ylabel(, angle(horizontal)) title("") ///
     xlabel("", format(%tdm)) xtitle("") ///
-    plot1opts(lwidth(`wide') lpattern(solid) lcolor(`exp_colour') mcolor(`exp_colour')) ci1opts(lcolor(`exp_colour')) ///
-    plot2opts(lwidth(`wide') lpattern(dash)  lcolor(`qh_colour')  mcolor(`qh_colour'))  ci2opts(lcolor(`qh_colur'))   ///
-    plot3opts(lwidth(`wide') lpattern(dash)  lcolor(`hyp_colour') mcolor(`hyp_colour')) ci3opts(lcolor(`hyp_colur'))  ///
-    plot4opts(lwidth(`wide') lpattern(dash)  lcolor(`wei_colour') mcolor(`wei_colour')) ci4opts(lcolor(`wei_colur'))  ///
-    legend(order(3 "Exponential" 4 "Quasi-Hyperbolic" 5 "Hyperbolic" 6 "Weibull") size(medlarge) cols(1) ring(0) pos(2) nobox) ///
+    plot1opts(lwidth(thick) lpattern(solid) lcolor(`exp_colour') mcolor(`exp_colour')) ci1opts(lcolor(`exp_colour')) ///
+    plot2opts(lwidth(thick) lpattern(dash)  lcolor(`qh_colour')  mcolor(`qh_colour'))  ci2opts(lcolor(`qh_colur'))   ///
+    plot3opts(lwidth(thick) lpattern(solid) lcolor(`hyp_colour') mcolor(`hyp_colour')) ci3opts(lcolor(`hyp_colur'))  ///
+    plot4opts(lwidth(thick) lpattern(dash)  lcolor(`wei_colour') mcolor(`wei_colour')) ci4opts(lcolor(`wei_colur'))  ///
+    legend(order(5 "Exponential" 6 "Quasi-Hyperbolic" 7 "Hyperbolic" 8 "Weibull") size(medlarge) cols(1) ring(0) pos(5) nobox) ///
     saving("$figures/presentvalue", replace)
 
 * Caption
-local caption ""Point estimates represented by the circles. 95% confidence intervals shown above and below each point estimate." "The solid black line shows time preferences under exponential discounting, and the dashed purple line under"  "Quasi-Hyperbolic discounting. The daily national COVID-19 infection rate (blue) and death rate(red) in" "South Africa are indicated in the horizontal bars.""
+local caption ""Point estimates represented by the circles. 95% confidence intervals shown above and below each point estimate." "The solid blue line shows time preferences under Exponential discounting, the dashed purple line"  "Quasi-Hyperbolic discounting, the solid green line Hyperbolic discounting, and the dashed yellow line Weibull discounting. The daily national COVID-19 infection rate (blue) and death rate(red) in" "South Africa are indicated in the horizontal bars.""
 
 * Move to figures folder 
 cd ../ 
