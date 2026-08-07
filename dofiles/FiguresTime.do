@@ -111,17 +111,14 @@ local ylabel "400(10)500"
 * Reset
 mylabels 400(10)500, myscale(@) prefix(R) format(%4.2f) local(ylabel)
 
-* Move to estimations folder 
-cd $estimations 
-
-* Combine all models starting with exponential 
-use pv_E_500_14days, clear
+* Combine all models starting with exponential
+use "$estimations/pv_E_500_14days", clear
 * add quasi-hyperbolic
-append using pv_QH_500_14days, generate(_by2)
-* add hyperbolic 
-append using pv_H_500_14days, generate(_by3)
-* add weibull 
-append using pv_W_500_14days, generate(_by4)
+append using "$estimations/pv_QH_500_14days", generate(_by2)
+* add hyperbolic
+append using "$estimations/pv_H_500_14days", generate(_by3)
+* add weibull
+append using "$estimations/pv_W_500_14days", generate(_by4)
 
 * set up wave timeline axis 
 rename _by1 by1
@@ -136,7 +133,7 @@ drop by1
 order _by2 _by3 _by4, after(_by1)
 sort _by1
 * 
-save pv500margin, replace
+save "$estimations/pv500margin", replace
 
 * Set graph colours
 local exp_colour    "navy*.7"
@@ -145,7 +142,7 @@ local hyp_colour    "forest_green*.7"
 local wei_colour    "orange*.7"
 
 * Now plot the combined margins dataset
-marginsplot using pv500margin, l1title("Rand", orientation(horizontal)) ///
+marginsplot using "$estimations/pv500margin", l1title("Rand", orientation(horizontal)) ///
     ytitle("") ylabel(, angle(horizontal)) title("") ///
     xlabel("", format(%tdm)) xtitle("") ///
     plot1opts(lwidth(thick) lpattern(solid) lcolor(`exp_colour') mcolor(`exp_colour')) ci1opts(lcolor(`exp_colour')) ///
