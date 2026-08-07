@@ -74,7 +74,6 @@ twoway  (bar s date if dec_c_sa == 1,   sort fcolor(blue*0.05) lcolor(blue*0.05)
             ylabel(none, labcolor(white) angle(horizontal) tlcolor(white)) ///
             xtitle("") xlabel(none, nolabels noticks) fysize(7.5) ///
             saving($figures/c_sa_bar, replace)
-graph export "$figures/bar_blue.pdf", replace
  
 replace s = uniform()*250
 twoway  (bar s date if dec_d_sa == 1,   sort fcolor(red*0.05) lcolor(red*0.05)) || ///
@@ -92,7 +91,6 @@ twoway  (bar s date if dec_d_sa == 1,   sort fcolor(red*0.05) lcolor(red*0.05)) 
             ylabel(none, labcolor(white) angle(horizontal) tlcolor(white)) ///
             xtitle("") xlabel(none, nolabels noticks) fysize(7.5) ///
             saving($figures/d_sa_bar, replace)
-graph export "$figures/bar_red.pdf", replace
 
 * Save data for regenerating the bar
 keep s date dec_c_sa dec_d_sa
@@ -132,7 +130,6 @@ replace _by1 = date("10/29/2020", "MDY")    if by1 == 6
 drop by1
 order _by2 _by3 _by4, after(_by1)
 sort _by1
-* 
 save "$estimations/pv500margin", replace
 
 * Set graph colours
