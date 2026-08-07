@@ -11,9 +11,6 @@
 *******************           JHU SA Covid Data             *********************
 *********************************************************************************
 
-* Move to main folder - remove this before sharing 
-global mainfolder   "/Volumes/RinellePhD/TimePreferences" 
-global figures      "$mainfolder/figures"
 cd $mainfolder
 
 * Open JHU Data and set file paths 
@@ -155,22 +152,19 @@ marginsplot using pv500margin, l1title("Rand", orientation(horizontal)) ///
     plot2opts(lwidth(thick) lpattern(dash)  lcolor(`qh_colour')  mcolor(`qh_colour'))  ci2opts(lcolor(`qh_colur'))   ///
     plot3opts(lwidth(thick) lpattern(solid) lcolor(`hyp_colour') mcolor(`hyp_colour')) ci3opts(lcolor(`hyp_colur'))  ///
     plot4opts(lwidth(thick) lpattern(dash)  lcolor(`wei_colour') mcolor(`wei_colour')) ci4opts(lcolor(`wei_colur'))  ///
-    legend(order(5 "Exponential" 6 "Quasi-Hyperbolic" 7 "Hyperbolic" 8 "Weibull") size(medlarge) cols(1) ring(0) pos(5) nobox) ///
+    legend(order(5 "Exponential" 6 "Quasi-Hyperbolic" 7 "Hyperbolic" 8 "Weibull") size(small) cols(1) ring(0) pos(5) nobox) ///
     saving("$figures/presentvalue", replace)
 
 * Caption
-local caption ""Point estimates represented by the circles. 95% confidence intervals shown above and below each point estimate." "The solid blue line shows time preferences under Exponential discounting, the dashed purple line"  "Quasi-Hyperbolic discounting, the solid green line Hyperbolic discounting, and the dashed yellow line Weibull discounting. The daily national COVID-19 infection rate (blue) and death rate(red) in" "South Africa are indicated in the horizontal bars.""
+local caption ""Point estimates represented by the circles. 95% confidence intervals shown above and below each point estimate. The solid blue line shows time preferences" "under Exponential discounting, the dashed purple line Quasi-Hyperbolic discounting, the solid green line Hyperbolic discounting, and the dashed yellow line" "Weibull discounting. Daily national COVID-19 infection rate (blue) and death rate(red) in South Africa are indicated in the horizontal bars.""
 
-* Move to figures folder 
-cd ../ 
-cd $figures 
-
-* Combine the graphs and export 
-gr combine presentvalue.gph c_sa_bar.gph d_sa_bar.gph, cols(1) imargin(zero) xcommon ///
-title("Discounting Behavior", size(vlarge)) ///
-subtitle("Based on the present value of a R500 reward received in 14 days", ///
-	size(medium) margin(medsmall)) caption(`caption', size(small)) 
-graph export "discountingbehaviour.pdf", replace 
+* Combine the graphs and export
+gr combine "$figures/presentvalue.gph" "$figures/c_sa_bar.gph" "$figures/d_sa_bar.gph", ///
+    cols(1) imargin(zero) xcommon ///
+    title("Discounting Behavior", size(vlarge)) ///
+    subtitle("Based on the present value of a R500 reward received in 14 days", ///
+	size(medium) margin(medsmall)) caption(`caption', size(vsmall))
+graph export "$figures/discountingbehaviour.pdf", replace
 
 
 *******************************************************************************
