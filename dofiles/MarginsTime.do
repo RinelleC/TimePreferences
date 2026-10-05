@@ -10,7 +10,7 @@
 
 * Start log file 
 cap log close 
-log using "Log_Time_3_Margins.txt", text replace
+log using "Log_Time_4_Margins.txt", text replace
 
 *********************************************************************
 ***     				Exponential Discounting      			  ***
