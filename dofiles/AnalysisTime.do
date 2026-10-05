@@ -1,18 +1,15 @@
-*****************************************************************************
-* This is the Analysis do file to analyse Time Preferences in South Africa  *
-* and fits within section 7 of the Main do-file. Analysis assumes RDU.      * 
-*                                                                           *
-* Date first generated:             28 August 2025                          *
-* Created by:                       Rinelle Chetty                          * 
-*****************************************************************************
+*********************************************************************
+*   DO FILE: RDU Analysis                                           *
+*   Estimate RDU models of time preference using MLE 		 	    *
+*********************************************************************
 
 * Start log file 
 cap log close 
 log using "Log_Time_2_Analysis.txt", text replace
 
-*******************************************************************************
-*** 	7.1 -- Homogenous Preferences               						***
-*******************************************************************************
+*********************************************************************
+*** 	7.1 -- Homogenous Preferences               			  ***
+*********************************************************************
 
 estimates clear
 set more off
@@ -164,9 +161,9 @@ estout m1 m2 m3 m4 using "$estimations/Allmodels_Homogenous.tsv", replace ///
     postfoot("Results account for clustering at the individual level" "Standard errors in parentheses")
             
 
-*******************************************************************************
-*** 	7.2 -- Heterogenous Preferences               						***
-*******************************************************************************
+*********************************************************************
+*** 	7.2 -- Heterogenous Preferences               			  ***
+*********************************************************************
 
 set more off
 
@@ -328,9 +325,9 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
     postfoot("Results account for clustering at the individual level" "Standard errors in parentheses")
 
 
-*******************************************************************************
-*** 	7.3 -- Margins for Discounting Models                               ***
-*******************************************************************************
+*********************************************************************
+*** 	7.3 -- Margins for Discounting Models                     ***
+*********************************************************************
 
     *-------------------------------------------*
     *       Exponential Discounting             *
@@ -533,9 +530,9 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
     }
 
 
-*******************************************************************************
-*** 	7.4 -- Getting metrics for the graphs						        ***
-*******************************************************************************
+*********************************************************************
+*** 	7.4 -- Getting metrics for the graphs					  ***
+*********************************************************************
 
 tab ssamount, m 			// R250 and R400 principal amounts 
 tab llamount, m 
@@ -560,7 +557,7 @@ gen delaydiff = lldelay - ssdelay
 tab delaydiff, m 
 
 
-*******************************************************************************
+*********************************************************************
 
 log close 
 di as error "End of Analysis do-file" 
