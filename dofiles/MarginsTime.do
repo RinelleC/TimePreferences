@@ -1,12 +1,7 @@
-*****************************************************************************
-* This do file builds on the analysis of Time Preferences in South Africa.  *
-* It fits within section 8 of the Main do-file. Analysis assumes RDU.       * 
-* This do file only conducts margins commands and are kept separate         *
-* because of how long the estimations take.                                 * 
-*                                                                           *
-* Date first generated:             8 September 2025                        *
-* Created by:                       Rinelle Chetty                          * 
-*****************************************************************************
+*********************************************************************
+*   DO FILE: Margins                                                *
+*   Estimates margins on time preferences 							*
+*********************************************************************
 
 * Start log file 
 cap log close 
@@ -224,7 +219,7 @@ local beta "(predict(equation(beta)))"
 		append save($stata_tables/Discounting_Weibull) label dec(2) ///
 		title(PV for R600 and 14 days)
 
-*******************************************************************************
+*********************************************************************
 
 log close 
 di as error "End of Margins do-file" 
