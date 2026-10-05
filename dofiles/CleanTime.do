@@ -7,6 +7,9 @@
 * Created by:                       Rinelle Chetty                          * 
 *****************************************************************************
 
+* Start log file 
+cap log close 
+log using "Log_Time_1_Clean.txt", text replace
 
 *******************************************************************************
 ***		6.1 -- Drop USA & unnecessary variables, drop other tasks           ***
@@ -131,4 +134,5 @@ tab depcat2
 
 *******************************************************************************
 
+log close 
 di as error "End of Cleaning do-file" 
