@@ -8,6 +8,10 @@
 * Created by:                       Rinelle Chetty                          * 
 *****************************************************************************
 
+* Start log file 
+cap log close 
+log using "Log_Time_3_Margins.txt", text replace
+
 *********************************************************************
 ***     				Exponential Discounting      			  ***
 *********************************************************************
@@ -222,4 +226,5 @@ local beta "(predict(equation(beta)))"
 
 *******************************************************************************
 
+log close 
 di as error "End of Margins do-file" 
