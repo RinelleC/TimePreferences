@@ -66,9 +66,7 @@ global ufunc "crra"
 		label se b(%15.3g) mtitle("Homogenous Preferences B") ///
         title(Quasi-Hyperbolic Discounting)
 
-	test [beta]_cons == 1
-
-    * with wave dummies 
+    * With wave dummies 
     ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = i.wave) ///
 	    (phi: i.wave) (eta: i.wave) (beta: i.wave) (delta: i.wave) ///
 	    (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
@@ -95,10 +93,6 @@ forvalues w = 1/6 {
 	    (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
 	    cluster(id) technique(nr) continue
 	ml maximize, difficult
-
-	* test for QH
-	di as error "Test for QH in wave #`w'"
-	test [beta]_cons == 1
     }
 	
     *-------------------------------------------*
@@ -239,8 +233,6 @@ global ufunc "crra"
 		label se b(%15.3g) mtitle("Heterogenous Preferences B") ///
         title(Quasi-Hyperbolic Discounting)
 
-	test [beta]_cons == 1
-		
 
 * Now estimate with simpler demographics and covid_scale
 * Specify stripped down demographics
@@ -318,9 +310,7 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
         title(Weibull Discounting)
 
 	    }
-
-    test [beta]_cons == 1
-
+	
     *--------------------------------------------------------*
     *    Export all heterogenous results to one TSV table    *
     *--------------------------------------------------------*
@@ -346,7 +336,8 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
     * Delta Equation
     estimates restore m1hetero
     margins, over(wave) predict(equation(delta)) post 
-    * Test for wave effects
+    
+	* Test for wave effects
     foreach i in 1 2 3 4 5 6 {
         foreach j in `ferest()' {
         test `i'.wave == `j'.wave
@@ -366,7 +357,11 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
     *       Quasi-Hyperbolic Discounting        *
     *-------------------------------------------*
     
-    * Beta Equation - Homogenous
+    * Beta Equation - Homogenous 
+	estimates restore m2 
+	test [beta]_cons == 1
+
+    * Beta Equation - With Wave Dummies 
 	estimates restore m2wave
     margins, over(wave) predict(equation(beta)) post
 
@@ -405,6 +400,14 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
 			}
         }
     }
+
+	* Beta Equation - Heterogenous - Test beta=1
+	estimates restore m2hetero
+	margins, over(wave) predict(equation(beta)) post
+	foreach w in 1 2 3 4 5 6 {
+		di as error "Test for beta = 1 in wave #`w'"
+		test `w'.wave == 1
+		}
 
     * Delta Equation
     estimates restore m2hetero
@@ -454,7 +457,11 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
     *       Weibull Discounting                 *
     *-------------------------------------------*
     
-    * Beta Equation - Homogenous 
+	* Beta Equation - Homogenous - Test beta=1
+	estimates restore m4
+	test [beta]_cons == 1
+
+    * Beta Equation - Wave Dummies  
 	estimates restore m4wave
     margins, over(wave) predict(equation(beta)) post
 
@@ -493,6 +500,14 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
 			}
         }
     }
+
+	* Beta Equation - Heterogenous - Test beta=1
+	estimates restore m4hetero
+	margins, over(wave) predict(equation(beta)) post
+	foreach w in 1 2 3 4 5 6 {
+		di as error "Test for beta = 1 in wave #`w'"
+		test `w'.wave == 1
+		}
 
     * Delta Equation
     estimates restore m4hetero
