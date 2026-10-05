@@ -19,14 +19,11 @@ cd $mainfolder
 * Set paths of subfolders
 global dofiles 		"dofiles"
 global estimations	"estimates"
+global logfiles		"logfiles"
 global stata_tables	"stata_tables"
 global graphs 		"stata_graphs" 
 global figures 		"figures"
 	global simple 		"$figures/simplefigures"
-
-* Start log file 
-cap log close 
-log using "Log_Time_Analysis.txt", text replace 	// text file
 
 * Drop any labels in memory
 capture: label drop _all
@@ -50,14 +47,13 @@ global doPACKAGES		"n"
 * Globals for cleaning & relabelling data
 global doCLEAN			"y"
 
-* Globals for estimations
+* Globals for estimations and margins 
 global doTIMEANALYSIS	"y"
-
-* Globals for margins commands and present value table
+global doTIMEMIXTURE	"y"
 global doMARGINS		"n"
 
 * Global for figures
-global doFIGURES		"y" 
+global doFIGURES		"n" 
 
 *******************************************************************************
 *** 	3. Configurations, fonts and graph colours							***
@@ -128,6 +124,10 @@ erase "ExpData.dta"
 
 if "$doTIMEANALYSIS" == "y" {
 	do "dofiles/AnalysisTime"
+}
+
+if "$doTIMEMIXTURE" == "y" {
+	do "dofiles/MixtureTime"
 }
 
 if "$doMARGINS" == "y" {
