@@ -6,6 +6,9 @@
 * Created by:                       Rinelle Chetty                          * 
 *****************************************************************************
 
+* Start log file 
+cap log close 
+log using "Log_Time_2_Analysis.txt", text replace
 
 *******************************************************************************
 *** 	7.1 -- Homogenous Preferences               						***
@@ -559,4 +562,5 @@ tab delaydiff, m
 
 *******************************************************************************
 
+log close 
 di as error "End of Analysis do-file" 
