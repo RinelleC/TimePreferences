@@ -1,22 +1,19 @@
-*****************************************************************************
-* This is the Analysis do file to analyse Time Preferences in South Africa  *
-* and fits within section 8 of the Main do-file.                            * 
-*                                                                           *
-* Date first generated:             1 September 2025                        *
-* Created by:                       Rinelle Chetty                          * 
-*****************************************************************************
+*********************************************************************
+*   DO FILE: Figures                                                *
+*   Generates all the figures on covid deaths, and present values   *
+*********************************************************************
 
 * Start log file 
 cap log close 
 log using "Log_Time_5_Figures.txt", text replace
 
-*********************************************************************************
-*******************           JHU SA Covid Data             *********************
-*********************************************************************************
+*********************************************************************
+*********                  JHU SA Covid Data                *********
+*********************************************************************
 
 * Open JHU Data and set file paths 
 use "$figures/jhu_data_rsa.dta", clear   
-sort date                                               // format: mm/dd/yyyy 
+sort date                                       // format: mm/dd/yyyy 
 
 * Daily infections and deaths 
 generate confirmed_sa_daily 	= confirmed_sa[_n] - confirmed_sa[_n-1]	
@@ -96,10 +93,9 @@ twoway  (bar s date if dec_d_sa == 1,   sort fcolor(red*0.05) lcolor(red*0.05)) 
 * Save data for regenerating the bar
 keep s date dec_c_sa dec_d_sa
 
-
-*********************************************************************************
-************           South African Time - Present Values           ************
-*********************************************************************************
+*********************************************************************
+********        South African Time - Present Values          ********
+*********************************************************************
 
 * Set size of LL reward
 local LL "500"
@@ -161,9 +157,7 @@ gr combine "$figures/presentvalue.gph" "$figures/c_sa_bar.gph" "$figures/d_sa_ba
 	size(medium) margin(medsmall)) caption(`caption', size(vsmall))
 graph export "$figures/discountingbehaviour.pdf", replace
 
+*********************************************************************
 
-*******************************************************************************
-
-log close 
-pwd 
+log close  
 di as error "End of Figures do-file" 
