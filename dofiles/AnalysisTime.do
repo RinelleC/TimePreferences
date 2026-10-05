@@ -357,15 +357,18 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
     *       Quasi-Hyperbolic Discounting        *
     *-------------------------------------------*
     
-    * Beta Equation - Homogenous 
+	**** 	HOMOGENOUS
+
+    * Beta - Test beta=1
 	estimates restore m2 
 	test [beta]_cons == 1
 
-    * Beta Equation - With Wave Dummies 
+	*** 	HOMOGENOUS WITH WAVE DUMMIES 
+
+    * Beta - Test for wave effects 
 	estimates restore m2wave
     margins, over(wave) predict(equation(beta)) post
-
-    * Test for wave effects
+    * 
     foreach i in 1 2 3 4 5 6 {
         foreach j in `ferest()' {
         test `i'.wave == `j'.wave
@@ -381,11 +384,19 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
         }
     }
 
-    * Beta Equation - Heterogenous
+	* Beta - Test beta=1
+	estimates restore m2wave
+	margins, over(wave) predict(equation(beta)) post
+	foreach w in 1 2 3 4 5 6 {
+		test `w'.wave == 1
+		}
+
+	**** 	HETEROGENOUS
+
+    * Beta - Test for wave effects
 	estimates restore m2hetero
 	margins, over(wave) predict(equation(beta)) post 
-
-    * Test for wave effects
+    * 
     foreach i in 1 2 3 4 5 6 {
         foreach j in `ferest()' {
         test `i'.wave == `j'.wave
@@ -401,11 +412,10 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
         }
     }
 
-	* Beta Equation - Heterogenous - Test beta=1
+	* Beta - Test beta=1
 	estimates restore m2hetero
 	margins, over(wave) predict(equation(beta)) post
 	foreach w in 1 2 3 4 5 6 {
-		di as error "Test for beta = 1 in wave #`w'"
 		test `w'.wave == 1
 		}
 
@@ -457,15 +467,18 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
     *       Weibull Discounting                 *
     *-------------------------------------------*
     
-	* Beta Equation - Homogenous - Test beta=1
+	**** 	HOMOGENOUS
+
+	* Beta - Test beta=1
 	estimates restore m4
 	test [beta]_cons == 1
 
-    * Beta Equation - Wave Dummies  
+	*** 	HOMOGENOUS WITH WAVE DUMMIES 
+
+    * Beta - Test for wave effects  
 	estimates restore m4wave
     margins, over(wave) predict(equation(beta)) post
-
-    * Test for wave effects
+    * 
     foreach i in 1 2 3 4 5 6 {
         foreach j in `ferest()' {
         test `i'.wave == `j'.wave
@@ -481,11 +494,19 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
         }
     }
 
-    * Beta Equation - Heterogenous 
+	* Beta - Test beta=1
+	estimates restore m4wave
+	margins, over(wave) predict(equation(beta)) post
+	foreach w in 1 2 3 4 5 6 {
+		test `w'.wave == 1
+		}
+
+	**** 	HETEROGENOUS
+
+    * Beta - Test for wave effects 
 	estimates restore m4hetero
 	margins, over(wave) predict(equation(beta)) post
-
-    * Test for wave effects
+    *  
     foreach i in 1 2 3 4 5 6 {
         foreach j in `ferest()' {
         test `i'.wave == `j'.wave
@@ -501,11 +522,10 @@ estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterog
         }
     }
 
-	* Beta Equation - Heterogenous - Test beta=1
+	* Beta - Test beta=1
 	estimates restore m4hetero
 	margins, over(wave) predict(equation(beta)) post
 	foreach w in 1 2 3 4 5 6 {
-		di as error "Test for beta = 1 in wave #`w'"
 		test `w'.wave == 1
 		}
 
