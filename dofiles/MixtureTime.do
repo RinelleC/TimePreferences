@@ -65,7 +65,6 @@ global kappavars    ""
 local rsk : word 1 of $timevars
 local lld : word 5 of $timevars
 
-
 *-------------------------------------------------------------------*
 *   Starting values                                                 *
 *-------------------------------------------------------------------*
@@ -129,7 +128,6 @@ foreach p in r phi eta noiseRA noiseDR {
 di "shared start values taken from single model `best'"
 di "start values: `r0' `phi0' `eta0' `dE' `dH' `noiseRA0' `noiseDR0' 0"
 
-
 *-------------------------------------------------------------------*
 *   The mixture                                                     *
 *-------------------------------------------------------------------*
@@ -159,7 +157,6 @@ local llM = e(ll)
 * Share of time choices made by each rule. Only meaningful as written when
 * there are no covariates on kappa.
 nlcom (probExp: invlogit(-[kappa]_b[_cons])) (probHyp: invlogit([kappa]_b[_cons]))
-
 
 *-------------------------------------------------------------------*
 *   Sanity checks. Read these before believing the estimates.       *
@@ -238,7 +235,6 @@ forvalues a = 1/4 {
 * The loop leaves the last alternative fit active, so go back to the mixture.
 estimates restore mEH
 
-
 *-------------------------------------------------------------------*
 *   Table                                                           *
 *-------------------------------------------------------------------*
@@ -247,11 +243,9 @@ estimates restore mEH
    That step is not needed here: this program already estimates everything in
    levels, so the standard errors are on the parameters themselves. */
 
-* CHECK (d): the folder must exist.
 esttab mEH using "$stata_tables/mixture_exp_hyp.rtf",                    ///
     replace label se mtitle("All waves") b(%9.3f) se(%9.3f)              ///
     title(Mixture of exponential and hyperbolic discounting - homogenous preferences)
-
 
 *-------------------------------------------------------------------*
 *   Does the mixture beat each discounting model on its own?        *
@@ -297,7 +291,6 @@ di "2 x (mixture - hyperbolic)  = " %9.1f 2*(`llM' - `llH') "   (no chi-squared 
 
 test [deltaE]_cons = [deltaH]_cons
 
-
 *-------------------------------------------------------------------*
 *   Does the share of exponential choices move across waves?        *
 *-------------------------------------------------------------------*
@@ -329,9 +322,10 @@ estimates store mEHwave, title(Exponential/Hyperbolic mixture by wave)
 testparm i.wave, equation(kappa)
 
 * Share of time choices made by the exponential rule, by wave
+* (restore first so this block can be re-run after -margins, post-)
+estimates restore mEHwave
 quietly levelsof wave if e(sample), local(waves)
-margins, over(wave) expression(invlogit(-predict(equation(kappa))))  ///
-    saving("$margins/mixtureEXPshare", replace) post
+margins, over(wave) expression(invlogit(-predict(equation(kappa)))) post
 
 /* Pairwise differences. With six waves there are fifteen of these, so a few
    will come in under 5% by chance. Do not report them as wave effects unless
@@ -352,4 +346,4 @@ estimates restore mEHwave
 *******************************************************************************
 
 log close 
-di as error "END of DO-FILE: EXPONENTIAL/HYPERBOLIC MIXTURE"
+di as error "END of DO-FILE: MIXTURE MODEL"
