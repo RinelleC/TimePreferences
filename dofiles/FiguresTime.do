@@ -6,6 +6,9 @@
 * Created by:                       Rinelle Chetty                          * 
 *****************************************************************************
 
+* Start log file 
+cap log close 
+log using "Log_Time_5_Figures.txt", text replace
 
 *********************************************************************************
 *******************           JHU SA Covid Data             *********************
@@ -161,5 +164,6 @@ graph export "$figures/discountingbehaviour.pdf", replace
 
 *******************************************************************************
 
+log close 
 pwd 
 di as error "End of Figures do-file" 
