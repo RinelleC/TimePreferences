@@ -1,25 +1,10 @@
+*********************************************************************
+*   DO FILE: Mixture Model                                          *
+*   Estimate mixture model of Exponential and Hyperbolic under RDU  *
+*********************************************************************
+
 *******************************************************************************
-***   MIXTURE MODEL OF EXPONENTIAL AND HYPERBOLIC DISCOUNTING               ***
-***   (RDU utility, joint estimation on the risk and time choices)          ***
-***                                                                         ***
-***   This is PART B for the time preferences chapter: the estimation code  ***
-***   that drives  ml_rdu_discount_mixed , which is already in              ***
-***   MLfunctionsTime.do. It follows the same sequence as Part B of         ***
-***   MixtureEUTRDU.do in the risk chapter:                                 ***
-***                                                                         ***
-***     1. fit each single model for starting values                        ***
-***     2. fit the mixture from those values                                ***
-***     3. sanity checks, including other starting values                   ***
-***     4. export the table                                                 ***
-***     5. compare the mixture with the single models (no p-value)          ***
-***     6. an interior test on the two discounting parameters               ***
-***     7. wave effects on the mixing probability                           ***
-***                                                                         ***
-***   It is self-contained: nothing here depends on estimates left in       ***
-***   memory by another do-file.                                            ***
-***                                                                         ***
 ***   FOUR THINGS TO CHECK BEFORE THE FIRST RUN (all marked CHECK below):   ***
-***     a. the name of the data file                                        ***
 ***     b. the names of the time variables in  global timevars              ***
 ***     c. the starting values for the two single-model fits                ***
 ***     d. the output folders used by  esttab  and  margins                 ***
@@ -31,20 +16,7 @@ log using "Log_Time_3_Mixture.txt", text replace
 
 set more off
 
-* CHECK (a): the data file, with risk and time choices stacked in one file.
 use "timedata.dta", clear
-
-/* Only needed to run this file on its own, outside the main do-file.
-   Uncomment, and drop again once the file is wired into the main run.
-
-clear all
-set more off
-global stata_tables "stata_tables"
-global margins      "margins"
-qui do "MLfunctionsTime.do"
-use "timedata.dta", clear
-*/
-
 
 *-------------------------------------------------------------------*
 *   Settings                                                        *
