@@ -50,10 +50,10 @@ global doCLEAN			"y"
 * Globals for estimations and margins 
 global doTIMEANALYSIS	"y"
 global doTIMEMIXTURE	"y"
-global doMARGINS		"n"
+global doMARGINS		"y"
 
 * Global for figures
-global doFIGURES		"n" 
+global doFIGURES		"y" 
 
 *******************************************************************************
 *** 	3. Configurations, fonts and graph colours							***
@@ -124,19 +124,19 @@ erase "ExpData.dta"
 
 if "$doTIMEANALYSIS" == "y" {
 	do "dofiles/AnalysisTime"
-}
-
-if "$doTIMEMIXTURE" == "y" {
-	do "dofiles/MixtureTime"
-}
+	}
 
 if "$doMARGINS" == "y" {
 	do "dofiles/MarginsTime"
-}
+	}
+
+if "$doTIMEMIXTURE" == "y" {
+	do "dofiles/MixtureTime"
+	}
 
 if "$doFIGURES" == "y" {
 	do "dofiles/FiguresTime" 
-}
+	}
 
 *********************************************************************************
 
