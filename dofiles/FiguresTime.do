@@ -71,7 +71,7 @@ twoway  (bar s date if dec_c_sa == 1,   sort fcolor(blue*0.05) lcolor(blue*0.05)
             plotregion(lcolor(black) lwidth(thin)) ///
             ylabel(none, labcolor(white) angle(horizontal) tlcolor(white)) ///
             xtitle("") xlabel(none, nolabels noticks) fysize(7.5) ///
-            saving($figures/c_sa_bar, replace)
+            saving($covid/c_sa_bar, replace)
  
 replace s = uniform()*250
 twoway  (bar s date if dec_d_sa == 1,   sort fcolor(red*0.05) lcolor(red*0.05)) || ///
@@ -88,7 +88,7 @@ twoway  (bar s date if dec_d_sa == 1,   sort fcolor(red*0.05) lcolor(red*0.05)) 
             plotregion(lcolor(black) lwidth(thin)) ///
             ylabel(none, labcolor(white) angle(horizontal) tlcolor(white)) ///
             xtitle("") xlabel(none, nolabels noticks) fysize(7.5) ///
-            saving($figures/d_sa_bar, replace)
+            saving($covid/d_sa_bar, replace)
 
 * Save data for regenerating the bar
 keep s date dec_c_sa dec_d_sa
@@ -144,18 +144,61 @@ marginsplot using "$estimations/pv500margin", l1title("Rand", orientation(horizo
     plot3opts(lwidth(thick) lpattern(solid) lcolor(`hyp_colour') mcolor(`hyp_colour')) ci3opts(lcolor(`hyp_colur'))  ///
     plot4opts(lwidth(thick) lpattern(dash)  lcolor(`wei_colour') mcolor(`wei_colour')) ci4opts(lcolor(`wei_colur'))  ///
     legend(order(5 "Exponential" 6 "QH" 7 "Hyperbolic" 8 "Weibull") size(small) cols(1) ring(0) pos(5) nobox) ///
-    saving("$figures/presentvalue", replace)
+    saving("$timepref/presentvalue", replace)
 
 * Caption
 local caption ""The circles represent point estimates with 95% confidence intervals. The solid blue line shows time preferences" "under Exponential discounting, the dashed purple line QH discounting, the solid green line Hyperbolic discounting, and the dashed yellow line" "Weibull discounting. Daily national COVID-19 infection rate (blue) and death rate(red) in South Africa are indicated in the horizontal bars.""
 
 * Combine the graphs and export
-gr combine "$figures/presentvalue.gph" "$figures/c_sa_bar.gph" "$figures/d_sa_bar.gph", ///
+gr combine "$timepref/presentvalue.gph" "$covid/c_sa_bar.gph" "$covid/d_sa_bar.gph", ///
     cols(1) imargin(zero) xcommon ///
     title("Discounting Behaviour", size(vlarge)) ///
     subtitle("Based on the present value of a R500 reward received in 14 days", ///
 	size(medium) margin(medsmall)) caption(`caption', size(vsmall))
-graph export "$figures/discountingbehaviour.pdf", replace
+graph export "$timepref/discountingbehaviour.pdf", replace
+
+*********************************************************************
+********           Racial Groups - Present Values            ********
+*********************************************************************
+
+* Load the race x wave margins saved in MarginsTables.do
+use "$explanatory/Race_Exponential", clear
+
+rename _by1 race
+rename _by2 wave
+label define racesa 0 "Black/African" 1 "Asian/Indian" 2 "Coloured" 3 "White", replace
+label values race racesa
+
+* Truncate the CIs for display only (Asian/Indian wave 1 has a very wide CI)
+local ymax = 510
+generate double ci_lb_plot = max(_ci_lb, 0)
+generate double ci_ub_plot = min(_ci_ub, `ymax')
+
+* Colors for each race group
+local c0 "cranberry*.7"
+local c1 "midblue*.7"
+local c2 "midgreen*.7"
+local c3 "dkorange*.7"
+
+twoway 	(rcap ci_lb_plot ci_ub_plot wave if race == 0, lcolor(`c0'%50)) ///
+		(rcap ci_lb_plot ci_ub_plot wave if race == 1, lcolor(`c1'%50)) ///
+		(rcap ci_lb_plot ci_ub_plot wave if race == 2, lcolor(`c2'%50)) ///
+		(rcap ci_lb_plot ci_ub_plot wave if race == 3, lcolor(`c3'%50)) ///
+		(connected _margin wave if race == 0, lcolor(`c0') mcolor(`c0') lwidth(medthick) msymbol(O)) ///
+		(connected _margin wave if race == 1, lcolor(`c1') mcolor(`c1') lwidth(medthick) msymbol(O)) ///
+		(connected _margin wave if race == 2, lcolor(`c2') mcolor(`c2') lwidth(medthick) msymbol(O)) ///
+		(connected _margin wave if race == 3, lcolor(`c3') mcolor(`c3') lwidth(medthick) msymbol(O)), ///
+		xlabel(1 "Wave 1" 2 "Wave 2" 3 "Wave 3" 4 "Wave 4" 5 "Wave 5" 6 "Wave 6", labgap(small)) ///
+		xtitle("") ///
+        ylabel(, angle(horizontal) labgap(small)) ///
+		ytitle("Rand", orientation(horizontal) margin(r=3)) ///
+		title("Discounting Behaviour by Ethnic Group" "Exponential Discounting", linegap(2) margin(medium) size(vlarge) color(black)) ///
+		legend(order(5 "Black/African" 6 "Asian/Indian" 7 "Coloured" 8 "White") ///
+			   rows(1) position(6) region(lcolor(black)) size(small) symxsize(*.6) keygap(*.6) colgap(*2)) ///
+		caption("Point estimates represented by the circles with 95% confidence intervals. Estimates show the present values for each ethnic group," "under Exponential Discounting.", size(vsmall)) ///
+		graphregion(fcolor(white) color(white)) scheme(s1color) xsize(7) ysize(5) 
+
+graph export "$explanatory/Race_Exponential.png", replace
 
 *********************************************************************
 
