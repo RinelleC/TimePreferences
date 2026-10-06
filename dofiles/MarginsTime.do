@@ -24,19 +24,19 @@ asdoc margins, over(wave) predict(equation(delta)) post ///
 	* R300 in 14 days 
 	estimates restore m1hetero
 	asdoc margins, over(wave) expression(300*(1/((1+predict(equation(delta)))^(14/365)))) ///
-		append save($stata_tables/Discounting_Exponential) label dec(2) ///
+		append save($stata_tables/Discounting_Exponential) label dec(0) ///
 		title(PV for R300)
 	
 	* R400 in 14 days 
 	estimates restore m1hetero
 	asdoc margins, over(wave) expression(400*(1/((1+predict(equation(delta)))^(14/365)))) ///
-		append save($stata_tables/Discounting_Exponential) label dec(2) ///
+		append save($stata_tables/Discounting_Exponential) label dec(0) ///
 		title(PV for R400)
 
 	* R500 in 14 days 
 	estimates restore m1hetero
 	asdoc margins, over(wave) expression(500*(1/((1+predict(equation(delta)))^(14/365)))) ///
-		append save($stata_tables/Discounting_Exponential) label dec(2) ///
+		append save($stata_tables/Discounting_Exponential) label dec(0) ///
 		title(PV for R500 and 14 days) ///
 		saving($estimations/pv_E_500_14days, replace) post
 
@@ -53,8 +53,29 @@ asdoc margins, over(wave) predict(equation(delta)) post ///
 	* 600 in 14 days 
 	estimates restore m1hetero
 	asdoc margins, over(wave) expression(600*(1/((1+predict(equation(delta)))^(14/365)))) ///
-		append save($stata_tables/Discounting_Exponential) label dec(2) ///
+		append save($stata_tables/Discounting_Exponential) label dec(0) ///
 		title(PV for R600)
+
+*----------------------------------------------*
+*  Table of PVs by Race - Exponential 	       *
+*----------------------------------------------*
+
+	* R500 in 14 days 
+	estimates restore m1hetero
+	asdoc margins, over(race wave) expression(500*(1/((1+predict(equation(delta)))^(14/365)))) ///
+		replace save($stata_tables/Racial_Groups) label dec(0) ///
+		title(Exponential - PV for R500 and 14 days) ///
+		saving($explanatory/Race_Exponential, replace) post
+
+					* Test for wave effects (R500 and 14 days)
+					foreach i in 1 2 3 4 5 6 {
+						foreach j in `ferest()' {
+						test `i'.wave == `j'.wave
+							if r(p) < 0.05 {
+								di as error r(p) 
+							}
+						}
+					}
 
 *********************************************************************
 ***   				Quasi-Hyperbolic Discounting   				  ***
@@ -81,19 +102,19 @@ local beta "(predict(equation(beta)))"
     * R300 in 14 days 
 	estimates restore m2hetero
 	asdoc margins, over(wave) expression(300*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) post ///
-		append save($stata_tables/Discounting_QuasiHyperbolic) label dec(2) ///
+		append save($stata_tables/Discounting_QuasiHyperbolic) label dec(0) ///
 		title(PV for R300 and 14 days)
 		
 	* R400 in 14 days 
 	estimates restore m2hetero
 	asdoc margins, over(wave) expression(400*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) post ///
-		append save($stata_tables/Discounting_QuasiHyperbolic) label dec(2) ///
+		append save($stata_tables/Discounting_QuasiHyperbolic) label dec(0) ///
 		title(PV for R400 and 14 days)
 
 	* R500 in 14 days 
 	estimates restore m2hetero
 	asdoc margins, over(wave) expression(500*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) post ///
-		append save($stata_tables/Discounting_QuasiHyperbolic) label dec(2) ///
+		append save($stata_tables/Discounting_QuasiHyperbolic) label dec(0) ///
 		title(PV for R500 and 14 days) ///
 	    saving($estimations/pv_QH_500_14days, replace)
 
@@ -110,8 +131,19 @@ local beta "(predict(equation(beta)))"
 	* 600 in 14 days 
 	estimates restore m2hetero
 	asdoc margins, over(wave) expression(600*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) post ///
-		append save($stata_tables/Discounting_QuasiHyperbolic) label dec(2) ///
+		append save($stata_tables/Discounting_QuasiHyperbolic) label dec(0) ///
 		title(PV for R600 and 14 days)
+
+*----------------------------------------------*
+*  Table of PVs by Race - Quasi-Hyperbolic     *
+*----------------------------------------------*
+
+	* R500 in 14 days 
+	estimates restore m2hetero
+	asdoc margins, over(race wave) expression(600*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) ///
+		append save($stata_tables/Racial_Groups) label dec(0) ///
+		title(Quasi-Hyperbolic - PV for R500 and 14 days) ///
+		saving($explanatory/Race_QuasiHyperbolic, replace) post
 
 *********************************************************************
 ***     				Hyperbolic Discounting      			  ***
@@ -130,19 +162,19 @@ asdoc margins, over(wave) predict(equation(delta)) post ///
 	* R300 in 14 days 
 	estimates restore m3hetero
 	asdoc margins, over(wave) expression(300*(1/(1+predict(equation(delta))*(14/365)))) ///
-		append save($stata_tables/Discounting_Hyperbolic) label dec(2) ///
+		append save($stata_tables/Discounting_Hyperbolic) label dec(0) ///
 		title(PV for R300)
 	
 	* R400 in 14 days 
 	estimates restore m3hetero
 	asdoc margins, over(wave) expression(400*(1/(1+predict(equation(delta))*(14/365)))) ///
-		append save($stata_tables/Discounting_Hyperbolic) label dec(2) ///
+		append save($stata_tables/Discounting_Hyperbolic) label dec(0) ///
 		title(PV for R400)
 
 	* R500 in 14 days 
 	estimates restore m3hetero
 	asdoc margins, over(wave) expression(500*(1/(1+predict(equation(delta))*(14/365)))) ///
-		append save($stata_tables/Discounting_Hyperbolic) label dec(2) ///
+		append save($stata_tables/Discounting_Hyperbolic) label dec(0) ///
 		title(PV for R500 and 14 days) ///
 		saving($estimations/pv_H_500_14days, replace) post
 
@@ -159,8 +191,19 @@ asdoc margins, over(wave) predict(equation(delta)) post ///
 	* 600 in 14 days 
 	estimates restore m3hetero
 	asdoc margins, over(wave) expression(600*(1/(1+predict(equation(delta))*(14/365)))) ///
-		append save($stata_tables/Discounting_Hyperbolic) label dec(2) ///
+		append save($stata_tables/Discounting_Hyperbolic) label dec(0) ///
 		title(PV for R600)
+
+*----------------------------------------------*
+*  Table of PVs by Race - Hyperbolic 	       *
+*----------------------------------------------*
+
+	* R500 in 14 days 
+	estimates restore m3hetero
+	asdoc margins, over(race wave) expression(500*(1/(1+predict(equation(delta))*(14/365)))) ///
+		append save($stata_tables/Racial_Groups) label dec(0) ///
+		title(Hyperbolic - PV for R500 and 14 days) ///
+		saving($explanatory/Race_Hyperbolic, replace) post
 
 *********************************************************************
 ***   					Weibull Discounting   					  ***
@@ -187,19 +230,19 @@ local beta "(predict(equation(beta)))"
     * R300 in 14 days 
 	estimates restore m4hetero
 	asdoc margins, over(wave) expression(300*exp(-predict(equation(delta))*((14/365)^(1/`beta')))) post ///
-		append save($stata_tables/Discounting_Weibull) label dec(2) ///
+		append save($stata_tables/Discounting_Weibull) label dec(0) ///
 		title(PV for R300 and 14 days)
 		
 	* R400 in 14 days 
 	estimates restore m4hetero
 	asdoc margins, over(wave) expression(400*exp(-predict(equation(delta))*((14/365)^(1/`beta')))) post ///
-		append save($stata_tables/Discounting_Weibull) label dec(2) ///
+		append save($stata_tables/Discounting_Weibull) label dec(0) ///
 		title(PV for R400 and 14 days)
 
 	* R500 in 14 days 
 	estimates restore m4hetero
 	asdoc margins, over(wave) expression(500*exp(-predict(equation(delta))*((14/365)^(1/`beta')))) post ///
-		append save($stata_tables/Discounting_Weibull) label dec(2) ///
+		append save($stata_tables/Discounting_Weibull) label dec(0) ///
 		title(PV for R500 and 14 days) ///
 	    saving($estimations/pv_W_500_14days, replace)
 
@@ -216,8 +259,19 @@ local beta "(predict(equation(beta)))"
 	* 600 in 14 days 
 	estimates restore m4hetero
 	asdoc margins, over(wave) expression(600*exp(-predict(equation(delta))*((14/365)^(1/`beta')))) post ///
-		append save($stata_tables/Discounting_Weibull) label dec(2) ///
+		append save($stata_tables/Discounting_Weibull) label dec(0) ///
 		title(PV for R600 and 14 days)
+
+*----------------------------------------------*
+*  Table of PVs by Race - Weibull  	           *
+*----------------------------------------------*
+
+	* R500 in 14 days 
+	estimates restore m4hetero
+	asdoc margins, over(race wave) expression(600*exp(-predict(equation(delta))*((14/365)^(1/`beta')))) ///
+		append save($stata_tables/Racial_Groups) label dec(0) ///
+		title(Weibull - PV for R500 and 14 days) ///
+		saving($explanatory/Race_Weibull, replace) post
 
 *********************************************************************
 
