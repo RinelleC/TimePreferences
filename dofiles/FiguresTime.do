@@ -5,7 +5,7 @@
 
 * Start log file 
 cap log close 
-log using "Log_Time_5_Figures.txt", text replace
+log using "$logfiles/Log_Time_5_Figures.txt", text replace
 
 *********************************************************************
 *********                  JHU SA Covid Data                *********
