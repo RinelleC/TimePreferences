@@ -67,15 +67,19 @@ asdoc margins, over(wave) predict(equation(delta)) post ///
 		title(Exponential - PV for R500 and 14 days) ///
 		saving($explanatory/Race_Exponential, replace) post
 
-					* Test for wave effects (R500 and 14 days)
-					foreach i in 1 2 3 4 5 6 {
-						foreach j in `ferest()' {
-						test `i'.wave == `j'.wave
-							if r(p) < 0.05 {
-								di as error r(p) 
-							}
-						}
+	* Test whether each pairwise race gap is stable across waves (difference-in-differences)
+	di _newline(1) "Test whether the race gap changes across waves"
+	forvalues r1 = 0/2 {
+		local r2start = `r1' + 1
+		forvalues r2 = `r2start'/3 {
+			forvalues w1 = 1/5 {
+				local w2start = `w1' + 1
+				forvalues w2 = `w2start'/6 {
+					test (`r1'.race#`w1'.wave - `r2'.race#`w1'.wave) == (`r1'.race#`w2'.wave - `r2'.race#`w2'.wave)
 					}
+				}
+			}
+		}
 
 *********************************************************************
 ***   				Quasi-Hyperbolic Discounting   				  ***
@@ -145,6 +149,20 @@ local beta "(predict(equation(beta)))"
 		title(Quasi-Hyperbolic - PV for R500 and 14 days) ///
 		saving($explanatory/Race_QuasiHyperbolic, replace) post
 
+	* Test whether each pairwise race gap is stable across waves (difference-in-differences)
+	di _newline(1) "Test whether the race gap changes across waves"
+	forvalues r1 = 0/2 {
+		local r2start = `r1' + 1
+		forvalues r2 = `r2start'/3 {
+			forvalues w1 = 1/5 {
+				local w2start = `w1' + 1
+				forvalues w2 = `w2start'/6 {
+					test (`r1'.race#`w1'.wave - `r2'.race#`w1'.wave) == (`r1'.race#`w2'.wave - `r2'.race#`w2'.wave)
+					}
+				}
+			}
+		}
+
 *********************************************************************
 ***     				Hyperbolic Discounting      			  ***
 *********************************************************************
@@ -204,6 +222,20 @@ asdoc margins, over(wave) predict(equation(delta)) post ///
 		append save($stata_tables/Racial_Groups) label dec(0) ///
 		title(Hyperbolic - PV for R500 and 14 days) ///
 		saving($explanatory/Race_Hyperbolic, replace) post
+
+	* Test whether each pairwise race gap is stable across waves (difference-in-differences)
+	di _newline(1) "Test whether the race gap changes across waves"
+	forvalues r1 = 0/2 {
+		local r2start = `r1' + 1
+		forvalues r2 = `r2start'/3 {
+			forvalues w1 = 1/5 {
+				local w2start = `w1' + 1
+				forvalues w2 = `w2start'/6 {
+					test (`r1'.race#`w1'.wave - `r2'.race#`w1'.wave) == (`r1'.race#`w2'.wave - `r2'.race#`w2'.wave)
+					}
+				}
+			}
+		}
 
 *********************************************************************
 ***   					Weibull Discounting   					  ***
@@ -272,6 +304,20 @@ local beta "(predict(equation(beta)))"
 		append save($stata_tables/Racial_Groups) label dec(0) ///
 		title(Weibull - PV for R500 and 14 days) ///
 		saving($explanatory/Race_Weibull, replace) post
+
+	* Test whether each pairwise race gap is stable across waves (difference-in-differences)
+	di _newline(1) "Test whether the race gap changes across waves"
+	forvalues r1 = 0/2 {
+		local r2start = `r1' + 1
+		forvalues r2 = `r2start'/3 {
+			forvalues w1 = 1/5 {
+				local w2start = `w1' + 1
+				forvalues w2 = `w2start'/6 {
+					test (`r1'.race#`w1'.wave - `r2'.race#`w1'.wave) == (`r1'.race#`w2'.wave - `r2'.race#`w2'.wave)
+					}
+				}
+			}
+		}
 
 *********************************************************************
 
