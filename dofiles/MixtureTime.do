@@ -12,7 +12,7 @@
 
 * Start log file 
 cap log close 
-log using "Log_Time_3_Mixture.txt", text replace
+log using "$logfiles/Log_Time_4_Mixture.txt", text replace
 
 set more off
 
