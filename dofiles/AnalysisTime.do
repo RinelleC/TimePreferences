@@ -5,7 +5,7 @@
 
 * Start log file 
 cap log close 
-log using "Log_Time_2_Analysis.txt", text replace
+log using "$logfiles/Log_Time_2_Analysis.txt", text replace
 
 *********************************************************************
 *** 	7.1 -- Homogenous Preferences               			  ***
