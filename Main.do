@@ -21,8 +21,10 @@ global dofiles 		"dofiles"
 global estimations	"estimates"
 global logfiles		"logfiles"
 global stata_tables	"stata_tables"
-global graphs 		"stata_graphs" 
 global figures 		"figures"
+	global covid		"$figures/covid"
+	global timepref 	"$figures/timepreferences"
+	global explanatory	"$figures/explanatory"
 	global simple 		"$figures/simplefigures"
 
 * Drop any labels in memory
@@ -49,8 +51,9 @@ global doCLEAN			"y"
 
 * Globals for estimations and margins 
 global doTIMEANALYSIS	"y"
-global doTIMEMIXTURE	"y"
 global doMARGINS		"y"
+global doMARGINSRACE	"y"				// takes very long
+global doTIMEMIXTURE	"y"
 
 * Global for figures
 global doFIGURES		"y" 
