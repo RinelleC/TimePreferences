@@ -12,7 +12,7 @@ log using "$logfiles/Log_Time_5_Figures.txt", text replace
 *********************************************************************
 
 * Open JHU Data and set file paths 
-use "$figures/jhu_data_rsa.dta", clear   
+use "$covid/jhu_data_rsa.dta", clear   
 sort date                                       // format: mm/dd/yyyy 
 
 * Daily infections and deaths 
@@ -213,7 +213,7 @@ twoway 	(rcap ci_lb_plot ci_ub_plot wave if race == 0, lcolor(`c0'%50)) ///
 		xtitle("") ///
         ylabel(, angle(horizontal) labgap(small)) ///
 		ytitle("Rand", orientation(horizontal) margin(r=3)) ///
-        title("Exponential Discounting", box ring(0) pos(1) fcolor(khaki) color(black) size(medsmall)) ///
+        title("Exponential", box ring(0) pos(1) fcolor(khaki) color(black) size(medsmall)) ///
 		legend(order(5 "Black/African" 6 "Asian/Indian" 7 "Coloured" 8 "White") ///
 			   rows(1) position(6) region(lcolor(black)) size(small) symxsize(*.6) keygap(*.6) colgap(*2)) ///
 		graphregion(fcolor(white) color(white)) scheme(s1color) xsize(7) ysize(5) 
@@ -275,18 +275,144 @@ twoway 	(rcap ci_lb_plot ci_ub_plot wave if race == 0, lcolor(`c0'%50)) ///
 		xtitle("") ///
         ylabel(, angle(horizontal) labgap(small)) ///
 		ytitle("Rand", orientation(horizontal) margin(r=3)) ///
-        title("Hyperbolic Discounting", box ring(0) pos(1) fcolor(khaki) color(black) size(medsmall)) ///
+        title("Hyperbolic", box ring(0) pos(1) fcolor(khaki) color(black) size(medsmall)) ///
 		legend(order(5 "Black/African" 6 "Asian/Indian" 7 "Coloured" 8 "White") ///
 			   rows(1) position(6) region(lcolor(black)) size(small) symxsize(*.6) keygap(*.6) colgap(*2)) ///
 		graphregion(fcolor(white) color(white)) scheme(s1color) xsize(7) ysize(5) 
 graph save "$explanatory/Race_Hyperbolic_plain", replace 
 
 *********************************************************************
+*****        Racial Groups - Present Values - QH                *****
+*********************************************************************
+
+* Load the race x wave margins saved in MarginsTables.do
+use "$explanatory/Race_QuasiHyperbolic", clear
+
+rename _by1 race
+rename _by2 wave
+label define racesa 0 "Black/African" 1 "Asian/Indian" 2 "Coloured" 3 "White", replace
+label values race racesa
+
+* Truncate the CIs for display only (Asian/Indian wave 1 has a very wide CI)
+local ymax = 510
+generate double ci_lb_plot = max(_ci_lb, 0)
+generate double ci_ub_plot = min(_ci_ub, `ymax')
+
+* Colors for each race group
+local c0 "cranberry*.7"
+local c1 "midblue*.7"
+local c2 "midgreen*.7"
+local c3 "dkorange*.7"
+
+* full graph
+twoway 	(rcap ci_lb_plot ci_ub_plot wave if race == 0, lcolor(`c0'%50)) ///
+		(rcap ci_lb_plot ci_ub_plot wave if race == 1, lcolor(`c1'%50)) ///
+		(rcap ci_lb_plot ci_ub_plot wave if race == 2, lcolor(`c2'%50)) ///
+		(rcap ci_lb_plot ci_ub_plot wave if race == 3, lcolor(`c3'%50)) ///
+		(connected _margin wave if race == 0, lcolor(`c0') mcolor(`c0') lwidth(medthick) msymbol(O)) ///
+		(connected _margin wave if race == 1, lcolor(`c1') mcolor(`c1') lwidth(medthick) msymbol(O)) ///
+		(connected _margin wave if race == 2, lcolor(`c2') mcolor(`c2') lwidth(medthick) msymbol(O)) ///
+		(connected _margin wave if race == 3, lcolor(`c3') mcolor(`c3') lwidth(medthick) msymbol(O)), ///
+		xlabel(1 "Wave 1" 2 "Wave 2" 3 "Wave 3" 4 "Wave 4" 5 "Wave 5" 6 "Wave 6", labgap(small)) ///
+		xtitle("") ///
+        ylabel(, angle(horizontal) labgap(small)) ///
+		ytitle("Rand", orientation(horizontal) margin(r=3)) ///
+		title("Discounting Behaviour by Ethnic Group" "QH Discounting", linegap(2) margin(medium) size(vlarge) color(black)) ///
+		legend(order(5 "Black/African" 6 "Asian/Indian" 7 "Coloured" 8 "White") ///
+			   rows(1) position(6) region(lcolor(black)) size(small) symxsize(*.6) keygap(*.6) colgap(*2)) ///
+		caption("Point estimates represented by the circles with 95% confidence intervals. Estimates show the present values for each ethnic group," "under QH Discounting.", size(vsmall)) ///
+		graphregion(fcolor(white) color(white)) scheme(s1color) xsize(7) ysize(5) 
+graph export "$explanatory/Race_QuasiHyperbolic.png", replace
+
+* plain graph
+twoway 	(rcap ci_lb_plot ci_ub_plot wave if race == 0, lcolor(`c0'%50)) ///
+		(rcap ci_lb_plot ci_ub_plot wave if race == 1, lcolor(`c1'%50)) ///
+		(rcap ci_lb_plot ci_ub_plot wave if race == 2, lcolor(`c2'%50)) ///
+		(rcap ci_lb_plot ci_ub_plot wave if race == 3, lcolor(`c3'%50)) ///
+		(connected _margin wave if race == 0, lcolor(`c0') mcolor(`c0') lwidth(medthick) msymbol(O)) ///
+		(connected _margin wave if race == 1, lcolor(`c1') mcolor(`c1') lwidth(medthick) msymbol(O)) ///
+		(connected _margin wave if race == 2, lcolor(`c2') mcolor(`c2') lwidth(medthick) msymbol(O)) ///
+		(connected _margin wave if race == 3, lcolor(`c3') mcolor(`c3') lwidth(medthick) msymbol(O)), ///
+		xlabel(1 "Wave 1" 2 "Wave 2" 3 "Wave 3" 4 "Wave 4" 5 "Wave 5" 6 "Wave 6", labgap(small)) ///
+		xtitle("") ///
+        ylabel(, angle(horizontal) labgap(small)) ///
+		ytitle("Rand", orientation(horizontal) margin(r=3)) ///
+        title("Quasi-Hyperbolic", box ring(0) pos(1) fcolor(khaki) color(black) size(medsmall)) ///
+		legend(order(5 "Black/African" 6 "Asian/Indian" 7 "Coloured" 8 "White") ///
+			   rows(1) position(6) region(lcolor(black)) size(small) symxsize(*.6) keygap(*.6) colgap(*2)) ///
+		graphregion(fcolor(white) color(white)) scheme(s1color) xsize(7) ysize(5) 
+graph save "$explanatory/Race_QuasiHyperbolic_plain", replace 
+
+*********************************************************************
+*****        Racial Groups - Present Values - Weibull           *****
+*********************************************************************
+
+* Load the race x wave margins saved in MarginsTables.do
+use "$explanatory/Race_Weibull", clear
+
+rename _by1 race
+rename _by2 wave
+label define racesa 0 "Black/African" 1 "Asian/Indian" 2 "Coloured" 3 "White", replace
+label values race racesa
+
+* Truncate the CIs for display only 
+local ymax = 510
+generate double ci_lb_plot = max(_ci_lb, 0)
+generate double ci_ub_plot = min(_ci_ub, `ymax')
+
+* Colors for each race group
+local c0 "cranberry*.7"
+local c1 "midblue*.7"
+local c2 "midgreen*.7"
+local c3 "dkorange*.7"
+
+* full graph
+twoway 	(rcap ci_lb_plot ci_ub_plot wave if race == 0, lcolor(`c0'%50)) ///
+		(rcap ci_lb_plot ci_ub_plot wave if race == 1, lcolor(`c1'%50)) ///
+		(rcap ci_lb_plot ci_ub_plot wave if race == 2, lcolor(`c2'%50)) ///
+		(rcap ci_lb_plot ci_ub_plot wave if race == 3, lcolor(`c3'%50)) ///
+		(connected _margin wave if race == 0, lcolor(`c0') mcolor(`c0') lwidth(medthick) msymbol(O)) ///
+		(connected _margin wave if race == 1, lcolor(`c1') mcolor(`c1') lwidth(medthick) msymbol(O)) ///
+		(connected _margin wave if race == 2, lcolor(`c2') mcolor(`c2') lwidth(medthick) msymbol(O)) ///
+		(connected _margin wave if race == 3, lcolor(`c3') mcolor(`c3') lwidth(medthick) msymbol(O)), ///
+		xlabel(1 "Wave 1" 2 "Wave 2" 3 "Wave 3" 4 "Wave 4" 5 "Wave 5" 6 "Wave 6", labgap(small)) ///
+		xtitle("") ///
+        ylabel(, angle(horizontal) labgap(small)) ///
+		ytitle("Rand", orientation(horizontal) margin(r=3)) ///
+		title("Discounting Behaviour by Ethnic Group" "Weibull Discounting", linegap(2) margin(medium) size(vlarge) color(black)) ///
+		legend(order(5 "Black/African" 6 "Asian/Indian" 7 "Coloured" 8 "White") ///
+			   rows(1) position(6) region(lcolor(black)) size(small) symxsize(*.6) keygap(*.6) colgap(*2)) ///
+		caption("Point estimates represented by the circles with 95% confidence intervals. Estimates show the present values for each ethnic group," "under Weibull Discounting.", size(vsmall)) ///
+		graphregion(fcolor(white) color(white)) scheme(s1color) xsize(7) ysize(5) 
+graph export "$explanatory/Race_Weibull.png", replace
+
+* plain graph
+twoway 	(rcap ci_lb_plot ci_ub_plot wave if race == 0, lcolor(`c0'%50)) ///
+		(rcap ci_lb_plot ci_ub_plot wave if race == 1, lcolor(`c1'%50)) ///
+		(rcap ci_lb_plot ci_ub_plot wave if race == 2, lcolor(`c2'%50)) ///
+		(rcap ci_lb_plot ci_ub_plot wave if race == 3, lcolor(`c3'%50)) ///
+		(connected _margin wave if race == 0, lcolor(`c0') mcolor(`c0') lwidth(medthick) msymbol(O)) ///
+		(connected _margin wave if race == 1, lcolor(`c1') mcolor(`c1') lwidth(medthick) msymbol(O)) ///
+		(connected _margin wave if race == 2, lcolor(`c2') mcolor(`c2') lwidth(medthick) msymbol(O)) ///
+		(connected _margin wave if race == 3, lcolor(`c3') mcolor(`c3') lwidth(medthick) msymbol(O)), ///
+		xlabel(1 "Wave 1" 2 "Wave 2" 3 "Wave 3" 4 "Wave 4" 5 "Wave 5" 6 "Wave 6", labgap(small)) ///
+		xtitle("") ///
+        ylabel(, angle(horizontal) labgap(small)) ///
+		ytitle("Rand", orientation(horizontal) margin(r=3)) ///
+        title("Weibull", box ring(0) pos(1) fcolor(khaki) color(black) size(medsmall)) ///
+		legend(order(5 "Black/African" 6 "Asian/Indian" 7 "Coloured" 8 "White") ///
+			   rows(1) position(6) region(lcolor(black)) size(small) symxsize(*.6) keygap(*.6) colgap(*2)) ///
+		graphregion(fcolor(white) color(white)) scheme(s1color) xsize(7) ysize(5) 
+graph save "$explanatory/Race_Weibull_plain", replace 
+
+*********************************************************************
 *****                   Racial Groups - Combining               *****
 *********************************************************************
 
-graph use "$explanatory/Race_Exponential_plain.gph", name(exponential, replace)
-graph use "$explanatory/Race_Hyperbolic_plain.gph",  name(hyperbolic, replace)
+graph use "$explanatory/Race_Exponential_plain.gph",        name(exponential, replace)
+graph use "$explanatory/Race_Hyperbolic_plain.gph",         name(hyperbolic, replace)
+//graph use "$explanatory/Race_QuasiHyperbolic_plain.gph",    name(quasihyperbolic, replace)
+//graph use "$explanatory/Race_Weibull_plain.gph",            name(weib, replace)
 
 * caption 
 local caption "The circles represent point estimates. 95% confidence intervals. Estimates show the present values for each ethnic group. "
@@ -300,6 +426,15 @@ grc1leg2 	exponential hyperbolic, ///
 			caption(`caption', size(vsmall) margin(small)) 
 
 graph export "$explanatory/RaceCombined.png", replace 
+
+erase     "$explanatory/Race_Exponential_plain.gph"
+erase     "$explanatory/Race_Exponential.dta"
+erase     "$explanatory/Race_Hyperbolic_plain.gph"
+erase     "$explanatory/Race_Hyperbolic.dta"
+erase     "$explanatory/Race_QuasiHyperbolic_plain.gph"
+erase     "$explanatory/Race_QuasiHyperbolic.dta"
+erase     "$explanatory/Race_Weibull_plain.gph"
+erase     "$explanatory/Race_Weibull.dta"
 
 *********************************************************************
 
