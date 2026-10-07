@@ -52,7 +52,7 @@ global doCLEAN			"y"
 * Globals for estimations and margins 
 global doTIMEANALYSIS	"y"
 global doMARGINS		"y"
-global doMARGINSRACE	"y"				// takes very long
+global doMARGINSRACE	"y"					// takes very long
 global doTIMEMIXTURE	"y"
 
 * Global for figures
@@ -131,6 +131,10 @@ if "$doTIMEANALYSIS" == "y" {
 
 if "$doMARGINS" == "y" {
 	do "dofiles/MarginsTime"
+	}
+
+if "$doMARGINSRACE" == "y" {
+	do "dofiles/MarginsRaceTime"
 	}
 
 if "$doTIMEMIXTURE" == "y" {
