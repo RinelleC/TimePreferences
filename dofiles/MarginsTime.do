@@ -241,19 +241,23 @@ if "$doMARGINSRACE" == "y" {
 		title(Exponential - PV for R500 and 14 days) ///
 		saving($explanatory/Race_Exponential, replace) post
 
-	* Test whether each pairwise race gap is stable across waves (difference-in-differences)
-	di _newline(1) "Test whether the race gap changes across waves"
-	forvalues r1 = 0/2 {
-		local r2start = `r1' + 1
-		forvalues r2 = `r2start'/3 {
-			forvalues w1 = 1/5 {
-				local w2start = `w1' + 1
-				forvalues w2 = `w2start'/6 {
-					test (`r1'.race#`w1'.wave - `r2'.race#`w1'.wave) == (`r1'.race#`w2'.wave - `r2'.race#`w2'.wave)
-					}
-				}
+	* Test whether the margin for race differs between two waves
+	di _newline(1) "Test whether race differs between two waves"
+	* Race = 1
+	forvalues w1 = 1/5 {
+		local w2start = `w1' + 1
+		forvalues w2 = `w2start'/6 {
+			test 1.race#`w1'.wave == 1.race#`w2'.wave
 			}
 		}
+	* Race = 2
+	forvalues w1 = 1/5 {
+		local w2start = `w1' + 1
+		forvalues w2 = `w2start'/6 {
+			test 2.race#`w1'.wave == 2.race#`w2'.wave
+			}
+		}
+	*
 
 	*---------------------*
 	*  Quasi-Hyperbolic   *
@@ -268,20 +272,6 @@ if "$doMARGINSRACE" == "y" {
 		title(Quasi-Hyperbolic - PV for R500 and 14 days) ///
 		saving($explanatory/Race_QuasiHyperbolic, replace) post
 
-	* Test whether each pairwise race gap is stable across waves (difference-in-differences)
-	di _newline(1) "Test whether the race gap changes across waves"
-	forvalues r1 = 0/2 {
-		local r2start = `r1' + 1
-		forvalues r2 = `r2start'/3 {
-			forvalues w1 = 1/5 {
-				local w2start = `w1' + 1
-				forvalues w2 = `w2start'/6 {
-					test (`r1'.race#`w1'.wave - `r2'.race#`w1'.wave) == (`r1'.race#`w2'.wave - `r2'.race#`w2'.wave)
-					}
-				}
-			}
-		}
-
 	*---------------------*
 	*  Hyperbolic 	      *
 	*---------------------*
@@ -292,20 +282,6 @@ if "$doMARGINSRACE" == "y" {
 		append save($stata_tables/Racial_Groups) label dec(0) ///
 		title(Hyperbolic - PV for R500 and 14 days) ///
 		saving($explanatory/Race_Hyperbolic, replace) post
-
-	* Test whether each pairwise race gap is stable across waves (difference-in-differences)
-	di _newline(1) "Test whether the race gap changes across waves"
-	forvalues r1 = 0/2 {
-		local r2start = `r1' + 1
-		forvalues r2 = `r2start'/3 {
-			forvalues w1 = 1/5 {
-				local w2start = `w1' + 1
-				forvalues w2 = `w2start'/6 {
-					test (`r1'.race#`w1'.wave - `r2'.race#`w1'.wave) == (`r1'.race#`w2'.wave - `r2'.race#`w2'.wave)
-					}
-				}
-			}
-		}
 
 	*---------------------*
 	*  Weibull  	      *
@@ -319,20 +295,6 @@ if "$doMARGINSRACE" == "y" {
 		append save($stata_tables/Racial_Groups) label dec(0) ///
 		title(Weibull - PV for R500 and 14 days) ///
 		saving($explanatory/Race_Weibull, replace) post
-
-	* Test whether each pairwise race gap is stable across waves (difference-in-differences)
-	di _newline(1) "Test whether the race gap changes across waves"
-	forvalues r1 = 0/2 {
-		local r2start = `r1' + 1
-		forvalues r2 = `r2start'/3 {
-			forvalues w1 = 1/5 {
-				local w2start = `w1' + 1
-				forvalues w2 = `w2start'/6 {
-					test (`r1'.race#`w1'.wave - `r2'.race#`w1'.wave) == (`r1'.race#`w2'.wave - `r2'.race#`w2'.wave)
-					}
-				}
-			}
-		}
 
 log close 
 
