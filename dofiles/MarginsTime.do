@@ -56,31 +56,6 @@ asdoc margins, over(wave) predict(equation(delta)) post ///
 		append save($stata_tables/Discounting_Exponential) label dec(0) ///
 		title(PV for R600)
 
-*----------------------------------------------*
-*  Table of PVs by Race - Exponential 	       *
-*----------------------------------------------*
-
-	* R500 in 14 days 
-	estimates restore m1hetero
-	asdoc margins, over(race wave) expression(500*(1/((1+predict(equation(delta)))^(14/365)))) ///
-		replace save($stata_tables/Racial_Groups) label dec(0) ///
-		title(Exponential - PV for R500 and 14 days) ///
-		saving($explanatory/Race_Exponential, replace) post
-
-	* Test whether each pairwise race gap is stable across waves (difference-in-differences)
-	di _newline(1) "Test whether the race gap changes across waves"
-	forvalues r1 = 0/2 {
-		local r2start = `r1' + 1
-		forvalues r2 = `r2start'/3 {
-			forvalues w1 = 1/5 {
-				local w2start = `w1' + 1
-				forvalues w2 = `w2start'/6 {
-					test (`r1'.race#`w1'.wave - `r2'.race#`w1'.wave) == (`r1'.race#`w2'.wave - `r2'.race#`w2'.wave)
-					}
-				}
-			}
-		}
-
 *********************************************************************
 ***   				Quasi-Hyperbolic Discounting   				  ***
 *********************************************************************
@@ -138,31 +113,6 @@ local beta "(predict(equation(beta)))"
 		append save($stata_tables/Discounting_QuasiHyperbolic) label dec(0) ///
 		title(PV for R600 and 14 days)
 
-*----------------------------------------------*
-*  Table of PVs by Race - Quasi-Hyperbolic     *
-*----------------------------------------------*
-
-	* R500 in 14 days 
-	estimates restore m2hetero
-	asdoc margins, over(race wave) expression(600*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) ///
-		append save($stata_tables/Racial_Groups) label dec(0) ///
-		title(Quasi-Hyperbolic - PV for R500 and 14 days) ///
-		saving($explanatory/Race_QuasiHyperbolic, replace) post
-
-	* Test whether each pairwise race gap is stable across waves (difference-in-differences)
-	di _newline(1) "Test whether the race gap changes across waves"
-	forvalues r1 = 0/2 {
-		local r2start = `r1' + 1
-		forvalues r2 = `r2start'/3 {
-			forvalues w1 = 1/5 {
-				local w2start = `w1' + 1
-				forvalues w2 = `w2start'/6 {
-					test (`r1'.race#`w1'.wave - `r2'.race#`w1'.wave) == (`r1'.race#`w2'.wave - `r2'.race#`w2'.wave)
-					}
-				}
-			}
-		}
-
 *********************************************************************
 ***     				Hyperbolic Discounting      			  ***
 *********************************************************************
@@ -211,31 +161,6 @@ asdoc margins, over(wave) predict(equation(delta)) post ///
 	asdoc margins, over(wave) expression(600*(1/(1+predict(equation(delta))*(14/365)))) ///
 		append save($stata_tables/Discounting_Hyperbolic) label dec(0) ///
 		title(PV for R600)
-
-*----------------------------------------------*
-*  Table of PVs by Race - Hyperbolic 	       *
-*----------------------------------------------*
-
-	* R500 in 14 days 
-	estimates restore m3hetero
-	asdoc margins, over(race wave) expression(500*(1/(1+predict(equation(delta))*(14/365)))) ///
-		append save($stata_tables/Racial_Groups) label dec(0) ///
-		title(Hyperbolic - PV for R500 and 14 days) ///
-		saving($explanatory/Race_Hyperbolic, replace) post
-
-	* Test whether each pairwise race gap is stable across waves (difference-in-differences)
-	di _newline(1) "Test whether the race gap changes across waves"
-	forvalues r1 = 0/2 {
-		local r2start = `r1' + 1
-		forvalues r2 = `r2start'/3 {
-			forvalues w1 = 1/5 {
-				local w2start = `w1' + 1
-				forvalues w2 = `w2start'/6 {
-					test (`r1'.race#`w1'.wave - `r2'.race#`w1'.wave) == (`r1'.race#`w2'.wave - `r2'.race#`w2'.wave)
-					}
-				}
-			}
-		}
 
 *********************************************************************
 ***   					Weibull Discounting   					  ***
@@ -294,9 +219,99 @@ local beta "(predict(equation(beta)))"
 		append save($stata_tables/Discounting_Weibull) label dec(0) ///
 		title(PV for R600 and 14 days)
 
-*----------------------------------------------*
-*  Table of PVs by Race - Weibull  	           *
-*----------------------------------------------*
+log close 
+
+*********************************************************************
+***   				Race Group Margins and Tests    			  ***
+*********************************************************************
+
+if "$doMARGINSRACE" == "y" {
+
+	cap log close 
+	log using "$logfiles/Log_Time_3_MarginsRace.txt", text replace
+
+	*---------------------*
+	*  Exponential        *
+	*---------------------*
+
+	* R500 in 14 days 
+	estimates restore m1hetero
+	asdoc margins, over(race wave) expression(500*(1/((1+predict(equation(delta)))^(14/365)))) ///
+		replace save($stata_tables/Racial_Groups) label dec(0) ///
+		title(Exponential - PV for R500 and 14 days) ///
+		saving($explanatory/Race_Exponential, replace) post
+
+	* Test whether each pairwise race gap is stable across waves (difference-in-differences)
+	di _newline(1) "Test whether the race gap changes across waves"
+	forvalues r1 = 0/2 {
+		local r2start = `r1' + 1
+		forvalues r2 = `r2start'/3 {
+			forvalues w1 = 1/5 {
+				local w2start = `w1' + 1
+				forvalues w2 = `w2start'/6 {
+					test (`r1'.race#`w1'.wave - `r2'.race#`w1'.wave) == (`r1'.race#`w2'.wave - `r2'.race#`w2'.wave)
+					}
+				}
+			}
+		}
+
+	*---------------------*
+	*  Quasi-Hyperbolic   *
+	*---------------------*
+
+	local beta "(predict(equation(beta)))"
+
+	* R500 in 14 days 
+	estimates restore m2hetero
+	asdoc margins, over(race wave) expression(600*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) ///
+		append save($stata_tables/Racial_Groups) label dec(0) ///
+		title(Quasi-Hyperbolic - PV for R500 and 14 days) ///
+		saving($explanatory/Race_QuasiHyperbolic, replace) post
+
+	* Test whether each pairwise race gap is stable across waves (difference-in-differences)
+	di _newline(1) "Test whether the race gap changes across waves"
+	forvalues r1 = 0/2 {
+		local r2start = `r1' + 1
+		forvalues r2 = `r2start'/3 {
+			forvalues w1 = 1/5 {
+				local w2start = `w1' + 1
+				forvalues w2 = `w2start'/6 {
+					test (`r1'.race#`w1'.wave - `r2'.race#`w1'.wave) == (`r1'.race#`w2'.wave - `r2'.race#`w2'.wave)
+					}
+				}
+			}
+		}
+
+	*---------------------*
+	*  Hyperbolic 	      *
+	*---------------------*
+
+	* R500 in 14 days 
+	estimates restore m3hetero
+	asdoc margins, over(race wave) expression(500*(1/(1+predict(equation(delta))*(14/365)))) ///
+		append save($stata_tables/Racial_Groups) label dec(0) ///
+		title(Hyperbolic - PV for R500 and 14 days) ///
+		saving($explanatory/Race_Hyperbolic, replace) post
+
+	* Test whether each pairwise race gap is stable across waves (difference-in-differences)
+	di _newline(1) "Test whether the race gap changes across waves"
+	forvalues r1 = 0/2 {
+		local r2start = `r1' + 1
+		forvalues r2 = `r2start'/3 {
+			forvalues w1 = 1/5 {
+				local w2start = `w1' + 1
+				forvalues w2 = `w2start'/6 {
+					test (`r1'.race#`w1'.wave - `r2'.race#`w1'.wave) == (`r1'.race#`w2'.wave - `r2'.race#`w2'.wave)
+					}
+				}
+			}
+		}
+
+	*---------------------*
+	*  Weibull  	      *
+	*---------------------*
+
+	local beta "(predict(equation(beta)))"
 
 	* R500 in 14 days 
 	estimates restore m4hetero
@@ -319,7 +334,10 @@ local beta "(predict(equation(beta)))"
 			}
 		}
 
+log close 
+
+}
+
 *********************************************************************
 
-log close 
 di as error "End of Margins do-file" 
