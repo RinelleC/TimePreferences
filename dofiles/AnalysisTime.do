@@ -316,7 +316,7 @@ test covid_scale_deaths covid_scale_deaths_sq, mtest(noadjust)
     *--------------------------------------------------------*
 
 estout m1hetero m2hetero m3hetero m4hetero using "$estimations/Allmodels_Heterogenous.tsv", ///
-    replace starlevels(* 0.10 ** 0.05 *** 0.01) varlabels("$varlabels") ///
+    replace starlevels(* 0.05 ** 0.01 *** 0.001) varlabels("$varlabels") ///
     cells( (b(star label("Estimate") fmt(3)) se(label("Std error") fmt(3)) )) ///
     stats(N ll, fmt(%5.0f %10.3f) labels(N "log-likelihood")) nobaselevels ///
     prehead("Table" "Discounting Function ML Estimates" @title) ///
