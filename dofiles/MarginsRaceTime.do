@@ -107,15 +107,15 @@ log using "$logfiles/Log_Time_3_MarginsRace.txt", text replace
 			}
 		}
 
-	* Test whether the margins differ between race groups within each wave under Exponential
+	* Test whether the margins differ between race groups within each wave under QH
 	forvalues w = 1/6 {
-		* Joint test: all four race groups equal in wave `w' [Exp]
-		di as text _n "Wave `w': joint test of equality across race groups [Exp]"
+		* Joint test: all four race groups equal in wave `w' [QH]
+		di as text _n "Wave `w': joint test of equality across race groups [QH]"
 		test (0.race#`w'.wave == 1.race#`w'.wave) ///
 			 (0.race#`w'.wave == 2.race#`w'.wave) ///
 			 (0.race#`w'.wave == 3.race#`w'.wave)
 
-		* Pairwise tests between race groups in wave `w' [Exp]
+		* Pairwise tests between race groups in wave `w' [QH]
 		forvalues r1 = 0/2 {
 			local r2start = `r1' + 1
 			forvalues r2 = `r2start'/3 {
@@ -165,15 +165,15 @@ log using "$logfiles/Log_Time_3_MarginsRace.txt", text replace
 			}
 		}
 
-	* Test whether the margins differ between race groups within each wave under Exponential
+	* Test whether the margins differ between race groups within each wave under Hyperbolic
 	forvalues w = 1/6 {
-		* Joint test: all four race groups equal in wave `w' [Exp]
-		di as text _n "Wave `w': joint test of equality across race groups [Exp]"
+		* Joint test: all four race groups equal in wave `w' [HYP]
+		di as text _n "Wave `w': joint test of equality across race groups [HYP]"
 		test (0.race#`w'.wave == 1.race#`w'.wave) ///
 			 (0.race#`w'.wave == 2.race#`w'.wave) ///
 			 (0.race#`w'.wave == 3.race#`w'.wave)
 
-		* Pairwise tests between race groups in wave `w' [Exp]
+		* Pairwise tests between race groups in wave `w' [HYP]
 		forvalues r1 = 0/2 {
 			local r2start = `r1' + 1
 			forvalues r2 = `r2start'/3 {
@@ -225,15 +225,15 @@ log using "$logfiles/Log_Time_3_MarginsRace.txt", text replace
 			}
 		}
 
-	* Test whether the margins differ between race groups within each wave under Exponential
+	* Test whether the margins differ between race groups within each wave under Weibull
 	forvalues w = 1/6 {
-		* Joint test: all four race groups equal in wave `w' [Exp]
-		di as text _n "Wave `w': joint test of equality across race groups [Exp]"
+		* Joint test: all four race groups equal in wave `w' [Weibull]
+		di as text _n "Wave `w': joint test of equality across race groups [Weibull]"
 		test (0.race#`w'.wave == 1.race#`w'.wave) ///
 			 (0.race#`w'.wave == 2.race#`w'.wave) ///
 			 (0.race#`w'.wave == 3.race#`w'.wave)
 
-		* Pairwise tests between race groups in wave `w' [Exp]
+		* Pairwise tests between race groups in wave `w' [Weibull]
 		forvalues r1 = 0/2 {
 			local r2start = `r1' + 1
 			forvalues r2 = `r2start'/3 {
@@ -241,7 +241,6 @@ log using "$logfiles/Log_Time_3_MarginsRace.txt", text replace
 				}
 			}
 		}
-
 
 *********************************************************************
 
