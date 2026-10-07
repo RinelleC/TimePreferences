@@ -147,7 +147,7 @@ marginsplot using "$estimations/pv500margin", l1title("Rand", orientation(horizo
     saving("$timepref/presentvalue", replace)
 
 * Caption
-local caption ""The circles represent point estimates with 95% confidence intervals. The solid blue line shows time preferences" "under Exponential discounting, the dashed purple line QH discounting, the solid green line Hyperbolic discounting, and the dashed yellow line" "Weibull discounting. Daily national COVID-19 infection rate (blue) and death rate(red) in South Africa are indicated in the horizontal bars.""
+local caption ""The circles represent point estimates with 95% confidence intervals. The solid blue line shows time preferences under Exponential discounting, the dashed purple" "line QH discounting, the solid green line Hyperbolic discounting, and the dashed yellow line Weibull discounting. Daily national COVID-19 infection rate (blue)" "and death rate(red) in South Africa are indicated in the horizontal bars.""
 
 * Combine the graphs and export
 gr combine "$timepref/presentvalue.gph" "$covid/c_sa_bar.gph" "$covid/d_sa_bar.gph", ///
@@ -428,13 +428,9 @@ grc1leg2 	exponential hyperbolic, ///
 graph export "$explanatory/RaceCombined.png", replace 
 
 erase     "$explanatory/Race_Exponential_plain.gph"
-erase     "$explanatory/Race_Exponential.dta"
 erase     "$explanatory/Race_Hyperbolic_plain.gph"
-erase     "$explanatory/Race_Hyperbolic.dta"
 erase     "$explanatory/Race_QuasiHyperbolic_plain.gph"
-erase     "$explanatory/Race_QuasiHyperbolic.dta"
 erase     "$explanatory/Race_Weibull_plain.gph"
-erase     "$explanatory/Race_Weibull.dta"
 
 *********************************************************************
 
