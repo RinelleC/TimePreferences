@@ -241,23 +241,35 @@ if "$doMARGINSRACE" == "y" {
 		title(Exponential - PV for R500 and 14 days) ///
 		saving($explanatory/Race_Exponential, replace) post
 
-	* Test whether the margin for race differs between two waves
-	di _newline(1) "Test whether race differs between two waves"
-	* Race = 1
+	* Test whether the margins for race differs between two waves under Exponential 
+	* Race = 0 (Black) [Exp]
+	forvalues w1 = 1/5 {
+		local w2start = `w1' + 1
+		forvalues w2 = `w2start'/6 {
+			test 0.race#`w1'.wave == 0.race#`w2'.wave
+			}
+		}
+	* Race = 1 (Asian/Indian) [Exp]
 	forvalues w1 = 1/5 {
 		local w2start = `w1' + 1
 		forvalues w2 = `w2start'/6 {
 			test 1.race#`w1'.wave == 1.race#`w2'.wave
 			}
 		}
-	* Race = 2
+	* Race = 2 (Coloured) [Exp]
 	forvalues w1 = 1/5 {
 		local w2start = `w1' + 1
 		forvalues w2 = `w2start'/6 {
 			test 2.race#`w1'.wave == 2.race#`w2'.wave
 			}
 		}
-	*
+	* Race = 3 (White) [Exp]
+	forvalues w1 = 1/5 {
+		local w2start = `w1' + 1
+		forvalues w2 = `w2start'/6 {
+			test 3.race#`w1'.wave == 3.race#`w2'.wave
+			}
+		}
 
 	*---------------------*
 	*  Quasi-Hyperbolic   *
@@ -272,6 +284,36 @@ if "$doMARGINSRACE" == "y" {
 		title(Quasi-Hyperbolic - PV for R500 and 14 days) ///
 		saving($explanatory/Race_QuasiHyperbolic, replace) post
 
+	* Test whether the margins for race differs between two waves under QH 
+	* Race = 0 (Black) [QH]
+	forvalues w1 = 1/5 {
+		local w2start = `w1' + 1
+		forvalues w2 = `w2start'/6 {
+			test 0.race#`w1'.wave == 0.race#`w2'.wave
+			}
+		}
+	* Race = 1 (Asian/Indian) [QH]
+	forvalues w1 = 1/5 {
+		local w2start = `w1' + 1
+		forvalues w2 = `w2start'/6 {
+			test 1.race#`w1'.wave == 1.race#`w2'.wave
+			}
+		}
+	* Race = 2 (Coloured) [QH]
+	forvalues w1 = 1/5 {
+		local w2start = `w1' + 1
+		forvalues w2 = `w2start'/6 {
+			test 2.race#`w1'.wave == 2.race#`w2'.wave
+			}
+		}
+	* Race = 3 (White) [QH]
+	forvalues w1 = 1/5 {
+		local w2start = `w1' + 1
+		forvalues w2 = `w2start'/6 {
+			test 3.race#`w1'.wave == 3.race#`w2'.wave
+			}
+		}
+
 	*---------------------*
 	*  Hyperbolic 	      *
 	*---------------------*
@@ -282,6 +324,36 @@ if "$doMARGINSRACE" == "y" {
 		append save($stata_tables/Racial_Groups) label dec(0) ///
 		title(Hyperbolic - PV for R500 and 14 days) ///
 		saving($explanatory/Race_Hyperbolic, replace) post
+
+	* Test whether the margins for race differs between two waves under Hyperbolic 
+	* Race = 0 (Black) [H]
+	forvalues w1 = 1/5 {
+		local w2start = `w1' + 1
+		forvalues w2 = `w2start'/6 {
+			test 0.race#`w1'.wave == 0.race#`w2'.wave
+			}
+		}
+	* Race = 1 (Asian/Indian) [H]
+	forvalues w1 = 1/5 {
+		local w2start = `w1' + 1
+		forvalues w2 = `w2start'/6 {
+			test 1.race#`w1'.wave == 1.race#`w2'.wave
+			}
+		}
+	* Race = 2 (Coloured) [H]
+	forvalues w1 = 1/5 {
+		local w2start = `w1' + 1
+		forvalues w2 = `w2start'/6 {
+			test 2.race#`w1'.wave == 2.race#`w2'.wave
+			}
+		}
+	* Race = 3 (White) [H]
+	forvalues w1 = 1/5 {
+		local w2start = `w1' + 1
+		forvalues w2 = `w2start'/6 {
+			test 3.race#`w1'.wave == 3.race#`w2'.wave
+			}
+		}
 
 	*---------------------*
 	*  Weibull  	      *
@@ -295,6 +367,36 @@ if "$doMARGINSRACE" == "y" {
 		append save($stata_tables/Racial_Groups) label dec(0) ///
 		title(Weibull - PV for R500 and 14 days) ///
 		saving($explanatory/Race_Weibull, replace) post
+
+	* Test whether the margins for race differs between two waves under Weibull 
+	* Race = 0 (Black) [W]
+	forvalues w1 = 1/5 {
+		local w2start = `w1' + 1
+		forvalues w2 = `w2start'/6 {
+			test 0.race#`w1'.wave == 0.race#`w2'.wave
+			}
+		}
+	* Race = 1 (Asian/Indian) [W]
+	forvalues w1 = 1/5 {
+		local w2start = `w1' + 1
+		forvalues w2 = `w2start'/6 {
+			test 1.race#`w1'.wave == 1.race#`w2'.wave
+			}
+		}
+	* Race = 2 (Coloured) [W]
+	forvalues w1 = 1/5 {
+		local w2start = `w1' + 1
+		forvalues w2 = `w2start'/6 {
+			test 2.race#`w1'.wave == 2.race#`w2'.wave
+			}
+		}
+	* Race = 3 (White) [W]
+	forvalues w1 = 1/5 {
+		local w2start = `w1' + 1
+		forvalues w2 = `w2start'/6 {
+			test 3.race#`w1'.wave == 3.race#`w2'.wave
+			}
+		}
 
 log close 
 
