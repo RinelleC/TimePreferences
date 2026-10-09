@@ -347,8 +347,8 @@ estimates restore mEHwave
 *   Heterogeneous Model                                             *
 *-------------------------------------------------------------------*
 
-global demog        "age male race"
-global hetero       "age male race"
+global demog        "c.age i.male i.race"
+global hetero       "c.age i.male i.race"
 global kappavars    ""
 
 estimates restore mEH
@@ -381,6 +381,11 @@ foreach i in `waves' {
         }
     }
 }
+
+estout mEHwave mEHhetero using "$estimations/Mixture.tsv", ///
+    replace starlevels(* 0.05 ** 0.01 *** 0.001) varlabels("$varlabels") ///
+    cells( (b(star label("Estimate") fmt(3)) se(label("Std error") fmt(3)) )) ///
+    stats(N ll, fmt(%5.0f %10.3f) labels(N "log-likelihood")) nobaselevels 
 
 * -margins, post- has replaced the active estimates. Put the wave model back
 * before doing anything else with it.
