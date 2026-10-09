@@ -343,6 +343,49 @@ foreach i in `waves' {
 * before doing anything else with it.
 estimates restore mEHwave
 
+*-------------------------------------------------------------------*
+*   Heterogeneous Model                                             *
+*-------------------------------------------------------------------*
+
+global demog        "age male race"
+global hetero       "age male race"
+global kappavars    ""
+
+estimates restore mEH
+matrix b0 = e(b)
+
+ml model lf ml_rdu_discount_mixed (r: choice $riskvars $timevars = $demog)      ///
+    (phi: $demog) (eta: $demog) (deltaE: $demog) (deltaH: $demog)               ///
+    (noiseRA: $hetero) (noiseDR: $hetero) (kappa: i.wave $kappavars),           ///
+    cluster(id) technique($maxtech)
+ml init b0, skip
+ml maximize, difficult iterate(150)
+di as error "converged = " e(converged)
+estimates store mEHhetero, title(Exponential/Hyperbolic mixture by heterogenous preferences)
+
+* Joint test of the wave effects on the mixing probability. This is the
+* headline result. The pairwise tests below are descriptive only.
+testparm i.wave, equation(kappa)
+
+* Share of time choices made by the exponential rule, by wave
+* (restore first so this block can be re-run after -margins, post-)
+estimates restore mEHhetero
+quietly levelsof wave if e(sample), local(waves)
+margins, over(wave) expression(invlogit(-predict(equation(kappa)))) post
+
+foreach i in `waves' {
+    foreach j in `ferest()' {
+        test `i'.wave == `j'.wave
+        if r(p) < 0.05 {
+            di as error "waves `i' and `j' differ at 5%"
+        }
+    }
+}
+
+* -margins, post- has replaced the active estimates. Put the wave model back
+* before doing anything else with it.
+estimates restore mEHwave
+
 *******************************************************************************
 
 log close 
