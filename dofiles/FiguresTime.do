@@ -181,17 +181,22 @@ local c2 "midgreen*.7"
 local c3 "dkorange*.7"
 
 * full graph
-twoway 	(rcap ci_lb_plot ci_ub_plot wave if race == 0, lcolor(`c0'%50)) ///
-		(rcap ci_lb_plot ci_ub_plot wave if race == 1, lcolor(`c1'%50)) ///
-		(rcap ci_lb_plot ci_ub_plot wave if race == 2, lcolor(`c2'%50)) ///
-		(rcap ci_lb_plot ci_ub_plot wave if race == 3, lcolor(`c3'%50)) ///
+* Stata cannot shrink an axis below the range of the data, so the CIs are
+* truncated to the 450-500 range plotted on the y-axis
+generate double ci_lb_full = max(_ci_lb, 450)
+generate double ci_ub_full = min(_ci_ub, 500)
+
+twoway 	(rcap ci_lb_full ci_ub_full wave if race == 0, lcolor(`c0'%50)) ///
+		(rcap ci_lb_full ci_ub_full wave if race == 1, lcolor(`c1'%50)) ///
+		(rcap ci_lb_full ci_ub_full wave if race == 2, lcolor(`c2'%50)) ///
+		(rcap ci_lb_full ci_ub_full wave if race == 3, lcolor(`c3'%50)) ///
 		(connected _margin wave if race == 0, lcolor(`c0') mcolor(`c0') lwidth(medthick) msymbol(O)) ///
 		(connected _margin wave if race == 1, lcolor(`c1') mcolor(`c1') lwidth(medthick) msymbol(O)) ///
 		(connected _margin wave if race == 2, lcolor(`c2') mcolor(`c2') lwidth(medthick) msymbol(O)) ///
 		(connected _margin wave if race == 3, lcolor(`c3') mcolor(`c3') lwidth(medthick) msymbol(O)), ///
 		xlabel(1 "Wave 1" 2 "Wave 2" 3 "Wave 3" 4 "Wave 4" 5 "Wave 5" 6 "Wave 6", labgap(small)) ///
 		xtitle("") ///
-        ylabel(, angle(horizontal) labgap(small)) ///
+        ylabel(450(10)500, angle(horizontal) labgap(small)) yscale(range(450 500)) ///
 		ytitle("Rand", orientation(horizontal) margin(r=3)) ///
 		title("Discounting Behaviour by Ethnic Group" "Exponential Discounting", linegap(2) margin(medium) size(vlarge) color(black)) ///
 		legend(order(5 "Black/African" 6 "Asian/Indian" 7 "Coloured" 8 "White") ///
@@ -211,9 +216,9 @@ twoway 	(rcap ci_lb_plot ci_ub_plot wave if race == 0, lcolor(`c0'%50)) ///
 		(connected _margin wave if race == 3, lcolor(`c3') mcolor(`c3') lwidth(medthick) msymbol(O)), ///
 		xlabel(1 "Wave 1" 2 "Wave 2" 3 "Wave 3" 4 "Wave 4" 5 "Wave 5" 6 "Wave 6", labgap(small)) ///
 		xtitle("") ///
-        ylabel(, angle(horizontal) labgap(small)) ///
+        ylabel(450(10)500, angle(horizontal) labgap(small)) ///
 		ytitle("Rand", orientation(horizontal) margin(r=3)) ///
-        title("Exponential", box ring(0) pos(1) fcolor(khaki) color(black) size(medsmall)) ///
+        title("Exponential", box ring(0) pos(11) fcolor(khaki) color(black) size(medsmall)) ///
 		legend(order(5 "Black/African" 6 "Asian/Indian" 7 "Coloured" 8 "White") ///
 			   rows(1) position(6) region(lcolor(black)) size(small) symxsize(*.6) keygap(*.6) colgap(*2)) ///
 		graphregion(fcolor(white) color(white)) scheme(s1color) xsize(7) ysize(5) 
@@ -253,7 +258,7 @@ twoway 	(rcap ci_lb_plot ci_ub_plot wave if race == 0, lcolor(`c0'%50)) ///
 		(connected _margin wave if race == 3, lcolor(`c3') mcolor(`c3') lwidth(medthick) msymbol(O)), ///
 		xlabel(1 "Wave 1" 2 "Wave 2" 3 "Wave 3" 4 "Wave 4" 5 "Wave 5" 6 "Wave 6", labgap(small)) ///
 		xtitle("") ///
-        ylabel(, angle(horizontal) labgap(small)) ///
+        ylabel(450(10)500, angle(horizontal) labgap(small)) ///
 		ytitle("Rand", orientation(horizontal) margin(r=3)) ///
 		title("Discounting Behaviour by Ethnic Group" "Hyperbolic Discounting", linegap(2) margin(medium) size(vlarge) color(black)) ///
 		legend(order(5 "Black/African" 6 "Asian/Indian" 7 "Coloured" 8 "White") ///
@@ -273,9 +278,9 @@ twoway 	(rcap ci_lb_plot ci_ub_plot wave if race == 0, lcolor(`c0'%50)) ///
 		(connected _margin wave if race == 3, lcolor(`c3') mcolor(`c3') lwidth(medthick) msymbol(O)), ///
 		xlabel(1 "Wave 1" 2 "Wave 2" 3 "Wave 3" 4 "Wave 4" 5 "Wave 5" 6 "Wave 6", labgap(small)) ///
 		xtitle("") ///
-        ylabel(, angle(horizontal) labgap(small)) ///
+        ylabel(450(10)500, angle(horizontal) labgap(small)) ///
 		ytitle("Rand", orientation(horizontal) margin(r=3)) ///
-        title("Hyperbolic", box ring(0) pos(1) fcolor(khaki) color(black) size(medsmall)) ///
+        title("Hyperbolic", box ring(0) pos(11) fcolor(khaki) color(black) size(medsmall)) ///
 		legend(order(5 "Black/African" 6 "Asian/Indian" 7 "Coloured" 8 "White") ///
 			   rows(1) position(6) region(lcolor(black)) size(small) symxsize(*.6) keygap(*.6) colgap(*2)) ///
 		graphregion(fcolor(white) color(white)) scheme(s1color) xsize(7) ysize(5) 
@@ -294,7 +299,7 @@ label define racesa 0 "Black/African" 1 "Asian/Indian" 2 "Coloured" 3 "White", r
 label values race racesa
 
 * Truncate the CIs for display only (Asian/Indian wave 1 has a very wide CI)
-local ymax = 510
+local ymax = 610
 generate double ci_lb_plot = max(_ci_lb, 0)
 generate double ci_ub_plot = min(_ci_ub, `ymax')
 
@@ -356,7 +361,7 @@ label define racesa 0 "Black/African" 1 "Asian/Indian" 2 "Coloured" 3 "White", r
 label values race racesa
 
 * Truncate the CIs for display only 
-local ymax = 510
+local ymax = 700
 generate double ci_lb_plot = max(_ci_lb, 0)
 generate double ci_ub_plot = min(_ci_ub, `ymax')
 
