@@ -1,0 +1,19 @@
+----------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Volumes/RinellePhD/TimePreferences/logfiles/Log_Time_3_Margins.txt
+  log type:  text
+ opened on:  12 Oct 2026, 09:04:50
+
+. 
+. *********************************************************************
+. ***                                     Exponential Discounting                 
+>           ***
+. *********************************************************************
+. 
+. * Delta Equation
+. estimates restore m1hetero
+(results m1hetero are active now)
+
+. asdoc margins, over(wave) predict(equation(delta)) post ///
+>         replace save($stata_tables/Discounting_Exponential) label dec(5) ///
+>         title(Delta Estimates)

@@ -1,0 +1,426 @@
+----------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Volumes/RinellePhD/TimePreferences/logfiles/Log_Time_1_Clean.txt
+  log type:  text
+ opened on:  12 Oct 2026, 08:38:54
+
+. 
+. *******************************************************************************
+. ***             6.1 -- Drop USA & unnecessary variables, drop other tasks       
+>     ***
+. *******************************************************************************
+. 
+. * Keep only Risk and Time task observations 
+. drop if task == 3 | task == 4 // drop CA data and beliefs data 
+(53,814 observations deleted)
+
+. 
+. * Drop some USA- and SA-specific variables and other unnecessary variables
+. drop expenditure_daily expenditure_daily_cat
+
+. drop prize4* prob4*
+
+. drop residence_type rsa_home_type 
+
+. drop rsa_householdN
+
+. drop rsa_covid_info_* rsa_covid_information rsa_information_confidence 
+
+. drop rsa_experts_confidence rsa_covid_one_month rsa_covid_peak_capetown rsa_covi
+> d_situation_one_month 
+
+. drop covid_*     
+
+. drop hyp_risk BIS2Attimpulse BIS2Motorimpulse 
+
+. drop householdN-BIS2Nonplanimpulse
+
+. drop race location_completed relationship financial_situation 
+
+. drop rsa_covid_personal_* 
+
+. 
+. * Drop depression and anxiety line items 
+. drop depression_pleasure depression_hopeless depression_sleep depression_energy 
+
+. drop depression_appetite depression_failure depression_concentration 
+
+. drop depression_movement depression_dead
+
+. drop anxiety_nervous anxiety_worry_uncontrolled anxiety_worry_multiple 
+
+. drop anxiety_relax anxiety_restless anxiety_irritable anxiety_afraid
+
+. 
+. * Keep the variables for SA analyses
+. /*keep subjectid wave taskorder showupfee period age male rsa_* ///
+> work anxiety_total anxiety_difficulty depression_total depression_difficulty ///
+> task qid choice risk time prize* prob* uMax uMin */ 
+. 
+. * Drop beliefs and CA task variables 
+. drop beliefs gid alpha beta text bin* token_allocation_bin* 
+
+. drop ca cashorterdays calongerdays camoneysmaller camoneylarger calsprob
+
+. 
+. * Drop all USA data
+. drop usa_*
+
+. drop if usa == 1
+(113,620 observations deleted)
+
+. drop usa
+
+. 
+. 
+. *******************************************************************************
+. ***             6.2 -- Generate, relabel, and rename variables                  
+>         ***
+. *******************************************************************************
+. 
+. rename rsa_race race 
+
+. rename subjectid id 
+
+. 
+. 
+. *******************************************************************************
+. ***             6.3 -- Calculate Covid Deaths                                   
+>         ***
+. *******************************************************************************
+. 
+. * Generate Covid cumulative deaths scale for complementary analyses 
+. capture: generate covid_scale_deaths = 0
+
+. replace covid_scale_deaths = 106031 if wave == 1
+(17,480 real changes made)
+
+. replace covid_scale_deaths = 127787 if wave == 2
+(17,670 real changes made)
+
+. replace covid_scale_deaths = 154093 if wave == 3
+(19,000 real changes made)
+
+. replace covid_scale_deaths = 183684 if wave == 4
+(19,000 real changes made)
+
+. replace covid_scale_deaths = 206257 if wave == 5
+(15,200 real changes made)
+
+. replace covid_scale_deaths = 229214 if wave == 6
+(15,010 real changes made)
+
+. 
+. * Normalize
+. summ covid_scale_deaths
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+covid_scal~s |    103,360    165487.5    41949.52     106031     229214
+
+. local max = r(max)
+
+. replace covid_scale_deaths = covid_scale_deaths/`max'
+(103,360 real changes made)
+
+. summ covid_scale_deaths
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+covid_scal~s |    103,360    .7219782    .1830147   .4625852          1
+
+. 
+. * Add the squared term
+. capture: generate covid_scale_deaths_sq = covid_scale_deaths * covid_scale_death
+> s
+
+. 
+. 
+. *******************************************************************************
+. ***             6.4 -- New Condensed Anxiety and Depression Variables           
+>     ***
+. *******************************************************************************
+. 
+. * Anxiety condensed (from 21 items to 4 items, according to GAD-7)
+. tab anxiety_total, m 
+
+                anxiety_total |      Freq.     Percent        Cum.
+------------------------------+-----------------------------------
+                      0. mild |      6,460        6.25        6.25
+                      1. mild |      5,130        4.96       11.21
+                      2. mild |      6,270        6.07       17.28
+                      3. mild |      6,650        6.43       23.71
+                      4. mild |      8,170        7.90       31.62
+                      5. mild |      7,220        6.99       38.60
+                  6. moderate |      7,790        7.54       46.14
+                  7. moderate |      7,410        7.17       53.31
+                  8. moderate |      6,460        6.25       59.56
+                  9. moderate |      4,750        4.60       64.15
+                 10. moderate |      4,560        4.41       68.57
+11. moderately severe anxiety |      4,370        4.23       72.79
+12. moderately severe anxiety |      5,510        5.33       78.12
+13. moderately severe anxiety |      3,230        3.12       81.25
+14. moderately severe anxiety |      3,420        3.31       84.56
+15. moderately severe anxiety |      1,900        1.84       86.40
+           16. severe anxiety |      2,850        2.76       89.15
+           17. severe anxiety |      2,660        2.57       91.73
+           18. severe anxiety |      2,280        2.21       93.93
+           19. severe anxiety |      1,900        1.84       95.77
+           20. severe anxiety |      2,090        2.02       97.79
+           21. severe anxiety |      2,280        2.21      100.00
+------------------------------+-----------------------------------
+                        Total |    103,360      100.00
+
+. gen anxcat = . 
+(103,360 missing values generated)
+
+. replace anxcat = 1 if (anxiety_total >= 0  & anxiety_total <= 4)    // minimal a
+> nxiety
+(32,680 real changes made)
+
+. replace anxcat = 2 if (anxiety_total >= 5  & anxiety_total <= 9)    // mild 
+(33,630 real changes made)
+
+. replace anxcat = 3 if (anxiety_total >= 10 & anxiety_total <= 14)   // moderate
+(21,090 real changes made)
+
+. replace anxcat = 4 if (anxiety_total >= 15)                         // severe an
+> xiety 
+(15,960 real changes made)
+
+. * 
+. label define anxietylabel 1 "Minimal" 2 "Mild" 3 "Moderate" 4 "Severe"
+
+. label val anxcat anxietylabel 
+
+. numlabel, add 
+
+. tab anxcat, m  
+
+     anxcat |      Freq.     Percent        Cum.
+------------+-----------------------------------
+ 1. Minimal |     32,680       31.62       31.62
+    2. Mild |     33,630       32.54       64.15
+3. Moderate |     21,090       20.40       84.56
+  4. Severe |     15,960       15.44      100.00
+------------+-----------------------------------
+      Total |    103,360      100.00
+
+. 
+. 
+. * Depression condensed (from 27 categories to 5 categories)
+. tab depression_total, m  
+
+              depression_total |      Freq.     Percent        Cum.
+-------------------------------+-----------------------------------
+                             0 |      3,800        3.68        3.68
+         1. minimal depression |      3,040        2.94        6.62
+         2. minimal depression |      4,940        4.78       11.40
+         3. minimal depression |      9,310        9.01       20.40
+         4. minimal depression |      6,270        6.07       26.47
+            5. mild depression |      7,410        7.17       33.64
+            6. mild depression |      7,220        6.99       40.62
+            7. mild depression |      7,220        6.99       47.61
+            8. mild depression |      4,940        4.78       52.39
+            9. mild depression |      5,890        5.70       58.09
+       10. moderate depression |      4,940        4.78       62.87
+       11. moderate depression |      4,750        4.60       67.46
+       12. moderate depression |      4,940        4.78       72.24
+       13. moderate depression |      3,800        3.68       75.92
+       14. moderate depression |      2,660        2.57       78.49
+15. moderate severe depression |      4,180        4.04       82.54
+16. moderate severe depression |      3,040        2.94       85.48
+17. moderate severe depression |      1,710        1.65       87.13
+18. moderate severe depression |      2,850        2.76       89.89
+19. moderate severe depression |      2,850        2.76       92.65
+         20. severe depression |      1,900        1.84       94.49
+         21. severe depression |      1,140        1.10       95.59
+         22. severe depression |        950        0.92       96.51
+         23. severe depression |      1,710        1.65       98.16
+         24. severe depression |        380        0.37       98.53
+         25. severe depression |        570        0.55       99.08
+         27. severe depression |        950        0.92      100.00
+-------------------------------+-----------------------------------
+                         Total |    103,360      100.00
+
+. gen depcat = . 
+(103,360 missing values generated)
+
+. replace depcat = 1 if (depression_total >= 0  & depression_total <= 4)  // minim
+> al
+(27,360 real changes made)
+
+. replace depcat = 2 if (depression_total >= 5  & depression_total <= 9)  // mild 
+(32,680 real changes made)
+
+. replace depcat = 3 if (depression_total >= 10 & depression_total <= 14) // moder
+> ate
+(21,090 real changes made)
+
+. replace depcat = 4 if (depression_total >= 15 & depression_total <= 19) // moder
+> ate severe
+(14,630 real changes made)
+
+. replace depcat = 5 if (depression_total >= 20 & depression_total <= 27) // sever
+> e 
+(7,600 real changes made)
+
+. tab depression_total depcat, m 
+
+                      |                   depcat
+     depression_total |         1          2          3          4 |     Total
+----------------------+--------------------------------------------+----------
+                    0 |     3,800          0          0          0 |     3,800 
+1. minimal depression |     3,040          0          0          0 |     3,040 
+2. minimal depression |     4,940          0          0          0 |     4,940 
+3. minimal depression |     9,310          0          0          0 |     9,310 
+4. minimal depression |     6,270          0          0          0 |     6,270 
+   5. mild depression |         0      7,410          0          0 |     7,410 
+   6. mild depression |         0      7,220          0          0 |     7,220 
+   7. mild depression |         0      7,220          0          0 |     7,220 
+   8. mild depression |         0      4,940          0          0 |     4,940 
+   9. mild depression |         0      5,890          0          0 |     5,890 
+10. moderate depressi |         0          0      4,940          0 |     4,940 
+11. moderate depressi |         0          0      4,750          0 |     4,750 
+12. moderate depressi |         0          0      4,940          0 |     4,940 
+13. moderate depressi |         0          0      3,800          0 |     3,800 
+14. moderate depressi |         0          0      2,660          0 |     2,660 
+15. moderate severe d |         0          0          0      4,180 |     4,180 
+16. moderate severe d |         0          0          0      3,040 |     3,040 
+17. moderate severe d |         0          0          0      1,710 |     1,710 
+18. moderate severe d |         0          0          0      2,850 |     2,850 
+19. moderate severe d |         0          0          0      2,850 |     2,850 
+20. severe depression |         0          0          0          0 |     1,900 
+21. severe depression |         0          0          0          0 |     1,140 
+22. severe depression |         0          0          0          0 |       950 
+23. severe depression |         0          0          0          0 |     1,710 
+24. severe depression |         0          0          0          0 |       380 
+25. severe depression |         0          0          0          0 |       570 
+27. severe depression |         0          0          0          0 |       950 
+----------------------+--------------------------------------------+----------
+                Total |    27,360     32,680     21,090     14,630 |   103,360 
+
+
+                      |   depcat
+     depression_total |         5 |     Total
+----------------------+-----------+----------
+                    0 |         0 |     3,800 
+1. minimal depression |         0 |     3,040 
+2. minimal depression |         0 |     4,940 
+3. minimal depression |         0 |     9,310 
+4. minimal depression |         0 |     6,270 
+   5. mild depression |         0 |     7,410 
+   6. mild depression |         0 |     7,220 
+   7. mild depression |         0 |     7,220 
+   8. mild depression |         0 |     4,940 
+   9. mild depression |         0 |     5,890 
+10. moderate depressi |         0 |     4,940 
+11. moderate depressi |         0 |     4,750 
+12. moderate depressi |         0 |     4,940 
+13. moderate depressi |         0 |     3,800 
+14. moderate depressi |         0 |     2,660 
+15. moderate severe d |         0 |     4,180 
+16. moderate severe d |         0 |     3,040 
+17. moderate severe d |         0 |     1,710 
+18. moderate severe d |         0 |     2,850 
+19. moderate severe d |         0 |     2,850 
+20. severe depression |     1,900 |     1,900 
+21. severe depression |     1,140 |     1,140 
+22. severe depression |       950 |       950 
+23. severe depression |     1,710 |     1,710 
+24. severe depression |       380 |       380 
+25. severe depression |       570 |       570 
+27. severe depression |       950 |       950 
+----------------------+-----------+----------
+                Total |     7,600 |   103,360 
+
+. * 
+. label define depressionlabel 1 "Minimal Depression" 2 "Mild Depression" 3 "Moder
+> ate Depression" 4 "Moderate Severe Depression" 5 "Severe Depression"
+
+. label val depcat depressionlabel 
+
+. numlabel, add 
+
+. tab depcat 
+
+                       depcat |      Freq.     Percent        Cum.
+------------------------------+-----------------------------------
+        1. Minimal Depression |     27,360       26.47       26.47
+           2. Mild Depression |     32,680       31.62       58.09
+       3. Moderate Depression |     21,090       20.40       78.49
+4. Moderate Severe Depression |     14,630       14.15       92.65
+         5. Severe Depression |      7,600        7.35      100.00
+------------------------------+-----------------------------------
+                        Total |    103,360      100.00
+
+. 
+. 
+. * Depression condensed (from 27 categories to 3 categories)
+. tab depcat, m  
+
+                       depcat |      Freq.     Percent        Cum.
+------------------------------+-----------------------------------
+        1. Minimal Depression |     27,360       26.47       26.47
+           2. Mild Depression |     32,680       31.62       58.09
+       3. Moderate Depression |     21,090       20.40       78.49
+4. Moderate Severe Depression |     14,630       14.15       92.65
+         5. Severe Depression |      7,600        7.35      100.00
+------------------------------+-----------------------------------
+                        Total |    103,360      100.00
+
+. gen depcat2 = . 
+(103,360 missing values generated)
+
+. replace depcat2 = 1 if (depcat == 1)                // no or minimal depression 
+(27,360 real changes made)
+
+. replace depcat2 = 2 if (depcat == 2 | depcat == 3)  // mild or moderate depressi
+> on 
+(53,770 real changes made)
+
+. replace depcat2 = 3 if (depcat == 4 | depcat == 5)  // moderate severe or severe
+>  depression 
+(22,230 real changes made)
+
+. tab depcat depcat2, m
+
+                      |             depcat2
+               depcat |         1          2          3 |     Total
+----------------------+---------------------------------+----------
+1. Minimal Depression |    27,360          0          0 |    27,360 
+   2. Mild Depression |         0     32,680          0 |    32,680 
+3. Moderate Depressio |         0     21,090          0 |    21,090 
+4. Moderate Severe De |         0          0     14,630 |    14,630 
+ 5. Severe Depression |         0          0      7,600 |     7,600 
+----------------------+---------------------------------+----------
+                Total |    27,360     53,770     22,230 |   103,360 
+
+. * 
+. label define depressionlabel2 1 "None or Minimal Depression" 2 "Mild or Moderate
+>  Depression" 3 "Moderate Severe or Severe Depression"
+
+. label val depcat2 depressionlabel2
+
+. numlabel, add 
+
+. tab depcat2 
+
+                                depcat2 |      Freq.     Percent        Cum.
+----------------------------------------+-----------------------------------
+          1. None or Minimal Depression |     27,360       26.47       26.47
+         2. Mild or Moderate Depression |     53,770       52.02       78.49
+3. Moderate Severe or Severe Depression |     22,230       21.51      100.00
+----------------------------------------+-----------------------------------
+                                  Total |    103,360      100.00
+
+. 
+. 
+. *******************************************************************************
+. 
+. log close 
+      name:  <unnamed>
+       log:  /Volumes/RinellePhD/TimePreferences/logfiles/Log_Time_1_Clean.txt
+  log type:  text
+ closed on:  12 Oct 2026, 08:38:55
+----------------------------------------------------------------------------------

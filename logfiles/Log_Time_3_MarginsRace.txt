@@ -1,0 +1,676 @@
+----------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Volumes/RinellePhD/TimePreferences/logfiles/Log_Time_3_MarginsRace.t
+> xt
+  log type:  text
+ opened on:   7 Oct 2026, 19:25:03
+
+. 
+. *---------------------*
+. *  Exponential        *
+. *---------------------*
+. 
+.         * R500 in 14 days 
+.         estimates restore m1hetero
+(results m1hetero are active now)
+
+.         margins, over(race wave) ///
+>                 expression(500*(1/((1+predict(equation(delta)))^(14/365)))) post
+>  ///
+>                 saving($explanatory/Race_Exponential, replace)
+
+Predictive margins                                     Number of obs = 102,600
+Model VCE: Robust
+
+Expression: 500*(1/((1+predict(equation(delta)))^(14/365)))
+Over:       race wave
+
+---------------------------------------------------------------------------------
+                |            Delta-method
+                |     Margin   std. err.      z    P>|z|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+      race#wave |
+0. Black/Afr.. #|
+             1  |   473.0701   4.846904    97.60   0.000     463.5703    482.5698
+0. Black/Afr.. #|
+             2  |   479.0465   2.716047   176.38   0.000     473.7231    484.3698
+0. Black/Afr.. #|
+             3  |   478.2741   3.087964   154.88   0.000     472.2218    484.3264
+0. Black/Afr.. #|
+             4  |   483.7638    1.98045   244.27   0.000     479.8822    487.6454
+0. Black/Afr.. #|
+             5  |   475.6404   2.855415   166.57   0.000     470.0439    481.2369
+0. Black/Afr.. #|
+             6  |    471.468   7.501628    62.85   0.000     456.7651    486.1709
+1. Asian/Ind.. #|
+             1  |   487.1124   2.657064   183.33   0.000     481.9047    492.3202
+1. Asian/Ind.. #|
+             2  |   488.2648   5.331653    91.58   0.000      477.815    498.7147
+1. Asian/Ind.. #|
+             3  |   479.2518   2.650173   180.84   0.000     474.0576    484.4461
+1. Asian/Ind.. #|
+             4  |   479.9899   5.286021    90.80   0.000     469.6295    490.3503
+1. Asian/Ind.. #|
+             5  |   490.9672   5.361164    91.58   0.000     480.4596    501.4749
+1. Asian/Ind.. #|
+             6  |   495.4858   4.477251   110.67   0.000     486.7106    504.2611
+ 2. Coloured#1  |   483.9515   3.699122   130.83   0.000     476.7014    491.2017
+ 2. Coloured#2  |   486.0033   3.905177   124.45   0.000     478.3493    493.6573
+ 2. Coloured#3  |    481.988   4.028392   119.65   0.000     474.0925    489.8835
+ 2. Coloured#4  |   481.2901   3.364275   143.06   0.000     474.6962    487.8839
+ 2. Coloured#5  |   483.7997   5.961958    81.15   0.000     472.1144    495.4849
+ 2. Coloured#6  |   474.9754   4.129772   115.01   0.000     466.8812    483.0696
+    3. White#1  |   486.2108    1.75566   276.94   0.000     482.7698    489.6519
+    3. White#2  |   486.6664   2.101133   231.62   0.000     482.5483    490.7846
+    3. White#3  |   486.8946   1.883712   258.48   0.000     483.2026    490.5866
+    3. White#4  |   490.3185   1.833253   267.46   0.000     486.7253    493.9116
+    3. White#5  |   485.7848   2.214259   219.39   0.000     481.4449    490.1247
+    3. White#6  |   486.5118   3.052805   159.37   0.000     480.5284    492.4952
+---------------------------------------------------------------------------------
+
+. 
+.         * Test whether the margins for race differs between two waves under Expo
+> nential 
+.         * Race = 0 (Black) [Exp]
+.         forvalues w1 = 1/5 {
+  2.                 local w2start = `w1' + 1
+  3.                 forvalues w2 = `w2start'/6 {
+  4.                         test 0.race#`w1'.wave == 0.race#`w2'.wave
+  5.                         }
+  6.                 }
+
+ ( 1)  0bn.race#1bn.wave - 0bn.race#2.wave = 0
+
+           chi2(  1) =    1.34
+         Prob > chi2 =    0.2463
+
+ ( 1)  0bn.race#1bn.wave - 0bn.race#3.wave = 0
+
+           chi2(  1) =    0.90
+         Prob > chi2 =    0.3434
+
+ ( 1)  0bn.race#1bn.wave - 0bn.race#4.wave = 0
+
+           chi2(  1) =    4.58
+         Prob > chi2 =    0.0323
+
+ ( 1)  0bn.race#1bn.wave - 0bn.race#5.wave = 0
+
+           chi2(  1) =    0.23
+         Prob > chi2 =    0.6286
+
+ ( 1)  0bn.race#1bn.wave - 0bn.race#6.wave = 0
+
+           chi2(  1) =    0.04
+         Prob > chi2 =    0.8496
+
+ ( 1)  0bn.race#2.wave - 0bn.race#3.wave = 0
+
+           chi2(  1) =    0.04
+         Prob > chi2 =    0.8433
+
+ ( 1)  0bn.race#2.wave - 0bn.race#4.wave = 0
+
+           chi2(  1) =    2.24
+         Prob > chi2 =    0.1340
+
+ ( 1)  0bn.race#2.wave - 0bn.race#5.wave = 0
+
+           chi2(  1) =    0.86
+         Prob > chi2 =    0.3524
+
+ ( 1)  0bn.race#2.wave - 0bn.race#6.wave = 0
+
+           chi2(  1) =    0.98
+         Prob > chi2 =    0.3234
+
+ ( 1)  0bn.race#3.wave - 0bn.race#4.wave = 0
+
+           chi2(  1) =    2.41
+         Prob > chi2 =    0.1209
+
+ ( 1)  0bn.race#3.wave - 0bn.race#5.wave = 0
+
+           chi2(  1) =    0.43
+         Prob > chi2 =    0.5111
+
+ ( 1)  0bn.race#3.wave - 0bn.race#6.wave = 0
+
+           chi2(  1) =    0.74
+         Prob > chi2 =    0.3884
+
+ ( 1)  0bn.race#4.wave - 0bn.race#5.wave = 0
+
+           chi2(  1) =    6.01
+         Prob > chi2 =    0.0142
+
+ ( 1)  0bn.race#4.wave - 0bn.race#6.wave = 0
+
+           chi2(  1) =    2.67
+         Prob > chi2 =    0.1019
+
+ ( 1)  0bn.race#5.wave - 0bn.race#6.wave = 0
+
+           chi2(  1) =    0.28
+         Prob > chi2 =    0.5936
+
+.         * Race = 1 (Asian/Indian) [Exp]
+.         forvalues w1 = 1/5 {
+  2.                 local w2start = `w1' + 1
+  3.                 forvalues w2 = `w2start'/6 {
+  4.                         test 1.race#`w1'.wave == 1.race#`w2'.wave
+  5.                         }
+  6.                 }
+
+ ( 1)  1.race#1bn.wave - 1.race#2.wave = 0
+
+           chi2(  1) =    0.04
+         Prob > chi2 =    0.8446
+
+ ( 1)  1.race#1bn.wave - 1.race#3.wave = 0
+
+           chi2(  1) =    4.51
+         Prob > chi2 =    0.0338
+
+ ( 1)  1.race#1bn.wave - 1.race#4.wave = 0
+
+           chi2(  1) =    1.47
+         Prob > chi2 =    0.2261
+
+ ( 1)  1.race#1bn.wave - 1.race#5.wave = 0
+
+           chi2(  1) =    0.42
+         Prob > chi2 =    0.5188
+
+ ( 1)  1.race#1bn.wave - 1.race#6.wave = 0
+
+           chi2(  1) =    2.57
+         Prob > chi2 =    0.1090
+
+ ( 1)  1.race#2.wave - 1.race#3.wave = 0
+
+           chi2(  1) =    2.41
+         Prob > chi2 =    0.1208
+
+ ( 1)  1.race#2.wave - 1.race#4.wave = 0
+
+           chi2(  1) =    1.24
+         Prob > chi2 =    0.2652
+
+ ( 1)  1.race#2.wave - 1.race#5.wave = 0
+
+           chi2(  1) =    0.13
+         Prob > chi2 =    0.7213
+
+ ( 1)  1.race#2.wave - 1.race#6.wave = 0
+
+           chi2(  1) =    1.07
+         Prob > chi2 =    0.3011
+
+ ( 1)  1.race#3.wave - 1.race#4.wave = 0
+
+           chi2(  1) =    0.02
+         Prob > chi2 =    0.9002
+
+ ( 1)  1.race#3.wave - 1.race#5.wave = 0
+
+           chi2(  1) =    3.83
+         Prob > chi2 =    0.0502
+
+ ( 1)  1.race#3.wave - 1.race#6.wave = 0
+
+           chi2(  1) =    9.51
+         Prob > chi2 =    0.0020
+
+ ( 1)  1.race#4.wave - 1.race#5.wave = 0
+
+           chi2(  1) =    2.12
+         Prob > chi2 =    0.1453
+
+ ( 1)  1.race#4.wave - 1.race#6.wave = 0
+
+           chi2(  1) =    4.92
+         Prob > chi2 =    0.0265
+
+ ( 1)  1.race#5.wave - 1.race#6.wave = 0
+
+           chi2(  1) =    0.42
+         Prob > chi2 =    0.5168
+
+.         * Race = 2 (Coloured) [Exp]
+.         forvalues w1 = 1/5 {
+  2.                 local w2start = `w1' + 1
+  3.                 forvalues w2 = `w2start'/6 {
+  4.                         test 2.race#`w1'.wave == 2.race#`w2'.wave
+  5.                         }
+  6.                 }
+
+ ( 1)  2.race#1bn.wave - 2.race#2.wave = 0
+
+           chi2(  1) =    0.15
+         Prob > chi2 =    0.7000
+
+ ( 1)  2.race#1bn.wave - 2.race#3.wave = 0
+
+           chi2(  1) =    0.13
+         Prob > chi2 =    0.7139
+
+ ( 1)  2.race#1bn.wave - 2.race#4.wave = 0
+
+           chi2(  1) =    0.29
+         Prob > chi2 =    0.5877
+
+ ( 1)  2.race#1bn.wave - 2.race#5.wave = 0
+
+           chi2(  1) =    0.00
+         Prob > chi2 =    0.9825
+
+ ( 1)  2.race#1bn.wave - 2.race#6.wave = 0
+
+           chi2(  1) =    2.76
+         Prob > chi2 =    0.0969
+
+ ( 1)  2.race#2.wave - 2.race#3.wave = 0
+
+           chi2(  1) =    0.52
+         Prob > chi2 =    0.4702
+
+ ( 1)  2.race#2.wave - 2.race#4.wave = 0
+
+           chi2(  1) =    0.85
+         Prob > chi2 =    0.3567
+
+ ( 1)  2.race#2.wave - 2.race#5.wave = 0
+
+           chi2(  1) =    0.10
+         Prob > chi2 =    0.7546
+
+ ( 1)  2.race#2.wave - 2.race#6.wave = 0
+
+           chi2(  1) =    3.86
+         Prob > chi2 =    0.0493
+
+ ( 1)  2.race#3.wave - 2.race#4.wave = 0
+
+           chi2(  1) =    0.02
+         Prob > chi2 =    0.8908
+
+ ( 1)  2.race#3.wave - 2.race#5.wave = 0
+
+           chi2(  1) =    0.07
+         Prob > chi2 =    0.7981
+
+ ( 1)  2.race#3.wave - 2.race#6.wave = 0
+
+           chi2(  1) =    1.57
+         Prob > chi2 =    0.2104
+
+ ( 1)  2.race#4.wave - 2.race#5.wave = 0
+
+           chi2(  1) =    0.14
+         Prob > chi2 =    0.7095
+
+ ( 1)  2.race#4.wave - 2.race#6.wave = 0
+
+           chi2(  1) =    1.52
+         Prob > chi2 =    0.2177
+
+ ( 1)  2.race#5.wave - 2.race#6.wave = 0
+
+           chi2(  1) =    1.55
+         Prob > chi2 =    0.2135
+
+.         * Race = 3 (White) [Exp]
+.         forvalues w1 = 1/5 {
+  2.                 local w2start = `w1' + 1
+  3.                 forvalues w2 = `w2start'/6 {
+  4.                         test 3.race#`w1'.wave == 3.race#`w2'.wave
+  5.                         }
+  6.                 }
+
+ ( 1)  3.race#1bn.wave - 3.race#2.wave = 0
+
+           chi2(  1) =    0.03
+         Prob > chi2 =    0.8654
+
+ ( 1)  3.race#1bn.wave - 3.race#3.wave = 0
+
+           chi2(  1) =    0.07
+         Prob > chi2 =    0.7844
+
+ ( 1)  3.race#1bn.wave - 3.race#4.wave = 0
+
+           chi2(  1) =    2.82
+         Prob > chi2 =    0.0934
+
+ ( 1)  3.race#1bn.wave - 3.race#5.wave = 0
+
+           chi2(  1) =    0.02
+         Prob > chi2 =    0.8771
+
+ ( 1)  3.race#1bn.wave - 3.race#6.wave = 0
+
+           chi2(  1) =    0.01
+         Prob > chi2 =    0.9312
+
+ ( 1)  3.race#2.wave - 3.race#3.wave = 0
+
+           chi2(  1) =    0.01
+         Prob > chi2 =    0.9348
+
+ ( 1)  3.race#2.wave - 3.race#4.wave = 0
+
+           chi2(  1) =    1.79
+         Prob > chi2 =    0.1812
+
+ ( 1)  3.race#2.wave - 3.race#5.wave = 0
+
+           chi2(  1) =    0.08
+         Prob > chi2 =    0.7713
+
+ ( 1)  3.race#2.wave - 3.race#6.wave = 0
+
+           chi2(  1) =    0.00
+         Prob > chi2 =    0.9665
+
+ ( 1)  3.race#3.wave - 3.race#4.wave = 0
+
+           chi2(  1) =    1.77
+         Prob > chi2 =    0.1829
+
+ ( 1)  3.race#3.wave - 3.race#5.wave = 0
+
+           chi2(  1) =    0.15
+         Prob > chi2 =    0.6966
+
+ ( 1)  3.race#3.wave - 3.race#6.wave = 0
+
+           chi2(  1) =    0.01
+         Prob > chi2 =    0.9145
+
+ ( 1)  3.race#4.wave - 3.race#5.wave = 0
+
+           chi2(  1) =    2.60
+         Prob > chi2 =    0.1072
+
+ ( 1)  3.race#4.wave - 3.race#6.wave = 0
+
+           chi2(  1) =    1.18
+         Prob > chi2 =    0.2774
+
+ ( 1)  3.race#5.wave - 3.race#6.wave = 0
+
+           chi2(  1) =    0.04
+         Prob > chi2 =    0.8473
+
+. 
+.         * Test whether the margins differ between race groups within each wave u
+> nder Exponential
+.         forvalues w = 1/6 {
+  2.                 * Joint test: all four race groups equal in wave `w' [Exp]
+.                 di as text _n "Wave `w': joint test of equality across race grou
+> ps [Exp]"
+  3.                 test (0.race#`w'.wave == 1.race#`w'.wave) ///
+>                          (0.race#`w'.wave == 2.race#`w'.wave) ///
+>                          (0.race#`w'.wave == 3.race#`w'.wave)
+  4. 
+.                 * Pairwise tests between race groups in wave `w' [Exp]
+.                 forvalues r1 = 0/2 {
+  5.                         local r2start = `r1' + 1
+  6.                         forvalues r2 = `r2start'/3 {
+  7.                                 test `r1'.race#`w'.wave == `r2'.race#`w'.wave
+  8.                                 }
+  9.                         }
+ 10.                 }
+
+Wave 1: joint test of equality across race groups [Exp]
+
+ ( 1)  0bn.race#1bn.wave - 1.race#1bn.wave = 0
+ ( 2)  0bn.race#1bn.wave - 2.race#1bn.wave = 0
+ ( 3)  0bn.race#1bn.wave - 3.race#1bn.wave = 0
+
+           chi2(  3) =    7.57
+         Prob > chi2 =    0.0557
+
+ ( 1)  0bn.race#1bn.wave - 1.race#1bn.wave = 0
+
+           chi2(  1) =    6.63
+         Prob > chi2 =    0.0100
+
+ ( 1)  0bn.race#1bn.wave - 2.race#1bn.wave = 0
+
+           chi2(  1) =    3.56
+         Prob > chi2 =    0.0592
+
+ ( 1)  0bn.race#1bn.wave - 3.race#1bn.wave = 0
+
+           chi2(  1) =    7.07
+         Prob > chi2 =    0.0078
+
+ ( 1)  1.race#1bn.wave - 2.race#1bn.wave = 0
+
+           chi2(  1) =    0.49
+         Prob > chi2 =    0.4834
+
+ ( 1)  1.race#1bn.wave - 3.race#1bn.wave = 0
+
+           chi2(  1) =    0.08
+         Prob > chi2 =    0.7725
+
+ ( 1)  2.race#1bn.wave - 3.race#1bn.wave = 0
+
+           chi2(  1) =    0.31
+         Prob > chi2 =    0.5753
+
+Wave 2: joint test of equality across race groups [Exp]
+
+ ( 1)  0bn.race#2.wave - 1.race#2.wave = 0
+ ( 2)  0bn.race#2.wave - 2.race#2.wave = 0
+ ( 3)  0bn.race#2.wave - 3.race#2.wave = 0
+
+           chi2(  3) =    6.52
+         Prob > chi2 =    0.0890
+
+ ( 1)  0bn.race#2.wave - 1.race#2.wave = 0
+
+           chi2(  1) =    2.97
+         Prob > chi2 =    0.0847
+
+ ( 1)  0bn.race#2.wave - 2.race#2.wave = 0
+
+           chi2(  1) =    2.02
+         Prob > chi2 =    0.1551
+
+ ( 1)  0bn.race#2.wave - 3.race#2.wave = 0
+
+           chi2(  1) =    4.58
+         Prob > chi2 =    0.0323
+
+ ( 1)  1.race#2.wave - 2.race#2.wave = 0
+
+           chi2(  1) =    0.11
+         Prob > chi2 =    0.7392
+
+ ( 1)  1.race#2.wave - 3.race#2.wave = 0
+
+           chi2(  1) =    0.07
+         Prob > chi2 =    0.7850
+
+ ( 1)  2.race#2.wave - 3.race#2.wave = 0
+
+           chi2(  1) =    0.02
+         Prob > chi2 =    0.8768
+
+Wave 3: joint test of equality across race groups [Exp]
+
+ ( 1)  0bn.race#3.wave - 1.race#3.wave = 0
+ ( 2)  0bn.race#3.wave - 2.race#3.wave = 0
+ ( 3)  0bn.race#3.wave - 3.race#3.wave = 0
+
+           chi2(  3) =    8.98
+         Prob > chi2 =    0.0296
+
+ ( 1)  0bn.race#3.wave - 1.race#3.wave = 0
+
+           chi2(  1) =    0.06
+         Prob > chi2 =    0.8055
+
+ ( 1)  0bn.race#3.wave - 2.race#3.wave = 0
+
+           chi2(  1) =    0.57
+         Prob > chi2 =    0.4498
+
+ ( 1)  0bn.race#3.wave - 3.race#3.wave = 0
+
+           chi2(  1) =    5.95
+         Prob > chi2 =    0.0147
+
+ ( 1)  1.race#3.wave - 2.race#3.wave = 0
+
+           chi2(  1) =    0.34
+         Prob > chi2 =    0.5618
+
+ ( 1)  1.race#3.wave - 3.race#3.wave = 0
+
+           chi2(  1) =    5.68
+         Prob > chi2 =    0.0171
+
+ ( 1)  2.race#3.wave - 3.race#3.wave = 0
+
+           chi2(  1) =    1.30
+         Prob > chi2 =    0.2544
+
+Wave 4: joint test of equality across race groups [Exp]
+
+ ( 1)  0bn.race#4.wave - 1.race#4.wave = 0
+ ( 2)  0bn.race#4.wave - 2.race#4.wave = 0
+ ( 3)  0bn.race#4.wave - 3.race#4.wave = 0
+
+           chi2(  3) =   10.55
+         Prob > chi2 =    0.0144
+
+ ( 1)  0bn.race#4.wave - 1.race#4.wave = 0
+
+           chi2(  1) =    0.45
+         Prob > chi2 =    0.5002
+
+ ( 1)  0bn.race#4.wave - 2.race#4.wave = 0
+
+           chi2(  1) =    0.43
+         Prob > chi2 =    0.5132
+
+ ( 1)  0bn.race#4.wave - 3.race#4.wave = 0
+
+           chi2(  1) =    6.33
+         Prob > chi2 =    0.0118
+
+ ( 1)  1.race#4.wave - 2.race#4.wave = 0
+
+           chi2(  1) =    0.04
+         Prob > chi2 =    0.8353
+
+ ( 1)  1.race#4.wave - 3.race#4.wave = 0
+
+           chi2(  1) =    3.45
+         Prob > chi2 =    0.0632
+
+ ( 1)  2.race#4.wave - 3.race#4.wave = 0
+
+           chi2(  1) =    5.78
+         Prob > chi2 =    0.0162
+
+Wave 5: joint test of equality across race groups [Exp]
+
+ ( 1)  0bn.race#5.wave - 1.race#5.wave = 0
+ ( 2)  0bn.race#5.wave - 2.race#5.wave = 0
+ ( 3)  0bn.race#5.wave - 3.race#5.wave = 0
+
+           chi2(  3) =   10.89
+         Prob > chi2 =    0.0123
+
+ ( 1)  0bn.race#5.wave - 1.race#5.wave = 0
+
+           chi2(  1) =    6.29
+         Prob > chi2 =    0.0122
+
+ ( 1)  0bn.race#5.wave - 2.race#5.wave = 0
+
+           chi2(  1) =    1.57
+         Prob > chi2 =    0.2095
+
+ ( 1)  0bn.race#5.wave - 3.race#5.wave = 0
+
+           chi2(  1) =    8.33
+         Prob > chi2 =    0.0039
+
+ ( 1)  1.race#5.wave - 2.race#5.wave = 0
+
+           chi2(  1) =    0.81
+         Prob > chi2 =    0.3693
+
+ ( 1)  1.race#5.wave - 3.race#5.wave = 0
+
+           chi2(  1) =    0.78
+         Prob > chi2 =    0.3766
+
+ ( 1)  2.race#5.wave - 3.race#5.wave = 0
+
+           chi2(  1) =    0.10
+         Prob > chi2 =    0.7560
+
+Wave 6: joint test of equality across race groups [Exp]
+
+ ( 1)  0bn.race#6.wave - 1.race#6.wave = 0
+ ( 2)  0bn.race#6.wave - 2.race#6.wave = 0
+ ( 3)  0bn.race#6.wave - 3.race#6.wave = 0
+
+           chi2(  3) =   12.90
+         Prob > chi2 =    0.0049
+
+ ( 1)  0bn.race#6.wave - 1.race#6.wave = 0
+
+           chi2(  1) =    6.95
+         Prob > chi2 =    0.0084
+
+ ( 1)  0bn.race#6.wave - 2.race#6.wave = 0
+
+           chi2(  1) =    0.18
+         Prob > chi2 =    0.6717
+
+ ( 1)  0bn.race#6.wave - 3.race#6.wave = 0
+
+           chi2(  1) =    2.96
+         Prob > chi2 =    0.0855
+
+ ( 1)  1.race#6.wave - 2.race#6.wave = 0
+
+           chi2(  1) =   11.02
+         Prob > chi2 =    0.0009
+
+ ( 1)  1.race#6.wave - 3.race#6.wave = 0
+
+           chi2(  1) =    2.78
+         Prob > chi2 =    0.0952
+
+ ( 1)  2.race#6.wave - 3.race#6.wave = 0
+
+           chi2(  1) =    5.11
+         Prob > chi2 =    0.0238
+
+. 
+. *---------------------*
+. *  Quasi-Hyperbolic   *
+. *---------------------*
+. 
+.         local beta "(predict(equation(beta)))"
+
+. 
+.         * R500 in 14 days 
+.         estimates restore m2hetero
+(results m2hetero are active now)
+
+.         asdoc margins, over(race wave) expression(600*`beta'*(1/((1+predict(equa
+> tion(delta)))^(14/365)))) ///
+>                 append save($stata_tables/Racial_Groups) label dec(0) ///
+>                 title(Quasi-Hyperbolic - PV for R500 and 14 days) ///
+>                 saving($explanatory/Race_QuasiHyperbolic, replace) post
