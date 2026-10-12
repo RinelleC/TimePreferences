@@ -9,7 +9,7 @@
 
 * Start log file 
 cap log close 
-log using "Log_Time_1_Clean.txt", text replace
+log using "$logfiles/Log_Time_1_Clean.txt", text replace
 
 *******************************************************************************
 ***		6.1 -- Drop USA & unnecessary variables, drop other tasks           ***
@@ -52,14 +52,12 @@ drop usa_*
 drop if usa == 1
 drop usa
 
-
 *******************************************************************************
 ***		6.2 -- Generate, relabel, and rename variables 		                ***
 *******************************************************************************
 
 rename rsa_race race 
 rename subjectid id 
-
 
 *******************************************************************************
 ***		6.3 -- Calculate Covid Deaths                		                ***
@@ -83,7 +81,6 @@ summ covid_scale_deaths
 * Add the squared term
 capture: generate covid_scale_deaths_sq = covid_scale_deaths * covid_scale_deaths
 
-
 *******************************************************************************
 ***		6.4 -- New Condensed Anxiety and Depression Variables               ***
 *******************************************************************************
@@ -101,7 +98,6 @@ label val anxcat anxietylabel
 numlabel, add 
 tab anxcat, m  
 
-
 * Depression condensed (from 27 categories to 5 categories)
 tab depression_total, m  
 gen depcat = . 
@@ -117,7 +113,6 @@ label val depcat depressionlabel
 numlabel, add 
 tab depcat 
 
-
 * Depression condensed (from 27 categories to 3 categories)
 tab depcat, m  
 gen depcat2 = . 
@@ -130,7 +125,6 @@ label define depressionlabel2 1 "None or Minimal Depression" 2 "Mild or Moderate
 label val depcat2 depressionlabel2
 numlabel, add 
 tab depcat2 
-
 
 *******************************************************************************
 
