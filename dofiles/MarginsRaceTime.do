@@ -82,9 +82,8 @@ log using "$logfiles/Log_Time_3_MarginsRace.txt", text replace
 
 	* R500 in 14 days 
 	estimates restore m2hetero
-	asdoc margins, over(race wave) expression(500*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) ///
-		append save($stata_tables/Racial_Groups) label dec(0) ///
-		title(Quasi-Hyperbolic - PV for R500 and 14 days) ///
+	di as text _n "Quasi-Hyperbolic - PV for R500 and 14 days"
+	margins, over(race wave) expression(500*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) ///
 		saving($explanatory/Race_QuasiHyperbolic, replace) post
 
 	* Test whether the margins for race differs between two waves under QH 
@@ -150,9 +149,8 @@ log using "$logfiles/Log_Time_3_MarginsRace.txt", text replace
 
 	* R500 in 14 days 
 	estimates restore m3hetero
-	asdoc margins, over(race wave) expression(500*(1/(1+predict(equation(delta))*(14/365)))) ///
-		append save($stata_tables/Racial_Groups) label dec(0) ///
-		title(Hyperbolic - PV for R500 and 14 days) ///
+	di as text _n "Hyperbolic - PV for R500 and 14 days"
+	margins, over(race wave) expression(500*(1/(1+predict(equation(delta))*(14/365)))) ///
 		saving($explanatory/Race_Hyperbolic, replace) post
 
 	* Test whether the margins for race differs between two waves under Hyperbolic 
@@ -220,9 +218,8 @@ log using "$logfiles/Log_Time_3_MarginsRace.txt", text replace
 
 	* R500 in 14 days 
 	estimates restore m4hetero
-	asdoc margins, over(race wave) expression(500*exp(-predict(equation(delta))*((14/365)^(1/`beta')))) ///
-		append save($stata_tables/Racial_Groups) label dec(0) ///
-		title(Weibull - PV for R500 and 14 days) ///
+	di as text _n "Weibull - PV for R500 and 14 days"
+	margins, over(race wave) expression(500*exp(-predict(equation(delta))*((14/365)^(1/`beta')))) ///
 		saving($explanatory/Race_Weibull, replace) post
 
 	* Test whether the margins for race differs between two waves under Weibull 
