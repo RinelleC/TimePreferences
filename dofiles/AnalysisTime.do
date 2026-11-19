@@ -90,9 +90,11 @@ forvalues w = 1/6 {
 		
     ml model lf ml_rdu_discount_flex (r: choice $riskvars $timevars = $demog) ///
         (phi: $demog) (eta: $demog) (beta: $demog) (delta: $demog) ///
-	    (noiseRA: $hetero) (noiseDR: $hetero) if risk == 1 | time == 1, ///
+	    (noiseRA: $hetero) (noiseDR: $hetero) if (risk == 1 | time == 1) & wave == `w', ///
 	    cluster(id) technique(nr) continue
 	ml maximize, difficult
+
+	estimates store m2_w`w'
     }
 	
     *-------------------------------------------*
