@@ -47,6 +47,16 @@ log using "$logfiles/Log_Time_3_MarginsRace.txt", text replace
 			}
 		}
 
+	* Joint test: is each race group's margin stable across all six waves? [Exp]
+	forvalues r = 0/3 {
+		di as text _n "Race `r': joint test of equality across all six waves [Exp]"
+		test (`r'.race#1.wave == `r'.race#2.wave) ///
+			 (`r'.race#1.wave == `r'.race#3.wave) ///
+			 (`r'.race#1.wave == `r'.race#4.wave) ///
+			 (`r'.race#1.wave == `r'.race#5.wave) ///
+			 (`r'.race#1.wave == `r'.race#6.wave)
+		}
+
 	* Test whether the margins differ between race groups within each wave under Exponential
 	forvalues w = 1/6 {
 		* Joint test: all four race groups equal in wave `w' [Exp]
@@ -72,7 +82,7 @@ log using "$logfiles/Log_Time_3_MarginsRace.txt", text replace
 
 	* R500 in 14 days 
 	estimates restore m2hetero
-	asdoc margins, over(race wave) expression(600*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) ///
+	asdoc margins, over(race wave) expression(500*`beta'*(1/((1+predict(equation(delta)))^(14/365)))) ///
 		append save($stata_tables/Racial_Groups) label dec(0) ///
 		title(Quasi-Hyperbolic - PV for R500 and 14 days) ///
 		saving($explanatory/Race_QuasiHyperbolic, replace) post
@@ -105,6 +115,16 @@ log using "$logfiles/Log_Time_3_MarginsRace.txt", text replace
 		forvalues w2 = `w2start'/6 {
 			test 3.race#`w1'.wave == 3.race#`w2'.wave
 			}
+		}
+
+	* Joint test: is each race group's margin stable across all six waves? [QH]
+	forvalues r = 0/3 {
+		di as text _n "Race `r': joint test of equality across all six waves [QH]"
+		test (`r'.race#1.wave == `r'.race#2.wave) ///
+			 (`r'.race#1.wave == `r'.race#3.wave) ///
+			 (`r'.race#1.wave == `r'.race#4.wave) ///
+			 (`r'.race#1.wave == `r'.race#5.wave) ///
+			 (`r'.race#1.wave == `r'.race#6.wave)
 		}
 
 	* Test whether the margins differ between race groups within each wave under QH
@@ -165,6 +185,16 @@ log using "$logfiles/Log_Time_3_MarginsRace.txt", text replace
 			}
 		}
 
+	* Joint test: is each race group's margin stable across all six waves? [H]
+	forvalues r = 0/3 {
+		di as text _n "Race `r': joint test of equality across all six waves [H]"
+		test (`r'.race#1.wave == `r'.race#2.wave) ///
+			 (`r'.race#1.wave == `r'.race#3.wave) ///
+			 (`r'.race#1.wave == `r'.race#4.wave) ///
+			 (`r'.race#1.wave == `r'.race#5.wave) ///
+			 (`r'.race#1.wave == `r'.race#6.wave)
+		}
+
 	* Test whether the margins differ between race groups within each wave under Hyperbolic
 	forvalues w = 1/6 {
 		* Joint test: all four race groups equal in wave `w' [HYP]
@@ -190,7 +220,7 @@ log using "$logfiles/Log_Time_3_MarginsRace.txt", text replace
 
 	* R500 in 14 days 
 	estimates restore m4hetero
-	asdoc margins, over(race wave) expression(600*exp(-predict(equation(delta))*((14/365)^(1/`beta')))) ///
+	asdoc margins, over(race wave) expression(500*exp(-predict(equation(delta))*((14/365)^(1/`beta')))) ///
 		append save($stata_tables/Racial_Groups) label dec(0) ///
 		title(Weibull - PV for R500 and 14 days) ///
 		saving($explanatory/Race_Weibull, replace) post
@@ -223,6 +253,16 @@ log using "$logfiles/Log_Time_3_MarginsRace.txt", text replace
 		forvalues w2 = `w2start'/6 {
 			test 3.race#`w1'.wave == 3.race#`w2'.wave
 			}
+		}
+
+	* Joint test: is each race group's margin stable across all six waves? [W]
+	forvalues r = 0/3 {
+		di as text _n "Race `r': joint test of equality across all six waves [W]"
+		test (`r'.race#1.wave == `r'.race#2.wave) ///
+			 (`r'.race#1.wave == `r'.race#3.wave) ///
+			 (`r'.race#1.wave == `r'.race#4.wave) ///
+			 (`r'.race#1.wave == `r'.race#5.wave) ///
+			 (`r'.race#1.wave == `r'.race#6.wave)
 		}
 
 	* Test whether the margins differ between race groups within each wave under Weibull
